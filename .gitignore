@@ -1,73 +1,59 @@
-# ########################### #
-# Arquivos Globais e do SO    #
-# ########################### #
-
-# Ficheiros do Windows
+###########################
+Ficheiros Globais e do SO
+###########################
+Ficheiros do Windows
 Thumbs.db
 ehthumbs.db
 
-# Ficheiros do macOS
+Ficheiros do macOS
 .DS_Store
 .AppleDouble
 .LSOverride
 
-# Ficheiros do Editor (VSCode)
+Ficheiros do Editor (VSCode)
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# ########################### #
-# Backend (.NET / C#)         #
-# ########################### #
+###########################
+Backend (.NET / C#)
+###########################
+Pastas de compilação
+**/[Bb]in/
+**/[Oo]bj/
 
-# Pastas de compilação
-[Bb]in/
-[Oo]bj/
-
-# Ficheiros de configuração de utilizador
+Ficheiros de configuração de utilizador
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
 
-# Ficheiros de build do Rider
+Ficheiros de build do Rider
 .idea/
 *.sln.iml
 
-# Ficheiros sensíveis de configuração local
-# IMPORTANTE: Nunca envie as suas senhas para o GitHub!
-appsettings.Development.json
-
-# Ficheiro do banco de dados SQLite (se usar)
+Ficheiro do banco de dados SQLite (se usar)
 *.db
 *.db-journal
 
-# ########################### #
-# Frontend (Next.js / Node)   #
-# ########################### #
+###########################
+Frontend (Next.js / Node)
+###########################
+Pasta de dependências
+**/node_modules/
 
-# Pasta de dependências (a mais importante a ser ignorada)
-node_modules/
+Pasta de build do Next.js
+**/.next/
+**/out/
 
-# Pasta de build do Next.js
-.next/
-out/
-
-# Ficheiros de log
+Ficheiros de log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Ficheiros de ambiente locais (contêm chaves de API)
-
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Ficheiros de cache e outros
+Ficheiros de cache e outros
 .npm
 .pnp.*
 
