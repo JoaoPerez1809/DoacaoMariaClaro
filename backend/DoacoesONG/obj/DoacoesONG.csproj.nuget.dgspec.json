@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ofici\\Downloads\\DoacaoMariaClaro\\backend\\doacoesong\\DoacoesONG.csproj": {}
+    "C:\\Users\\ofici\\Downloads\\DoacaoMariaClaro\\backend\\DoacoesONG\\DoacoesONG.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ofici\\Downloads\\DoacaoMariaClaro\\backend\\doacoesong\\DoacoesONG.csproj": {
+    "C:\\Users\\ofici\\Downloads\\DoacaoMariaClaro\\backend\\DoacoesONG\\DoacoesONG.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ofici\\Downloads\\DoacaoMariaClaro\\backend\\doacoesong\\DoacoesONG.csproj",
+        "projectUniqueName": "C:\\Users\\ofici\\Downloads\\DoacaoMariaClaro\\backend\\DoacoesONG\\DoacoesONG.csproj",
         "projectName": "DoacoesONG",
-        "projectPath": "C:\\Users\\ofici\\Downloads\\DoacaoMariaClaro\\backend\\doacoesong\\DoacoesONG.csproj",
+        "projectPath": "C:\\Users\\ofici\\Downloads\\DoacaoMariaClaro\\backend\\DoacoesONG\\DoacoesONG.csproj",
         "packagesPath": "C:\\Users\\ofici\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ofici\\Downloads\\DoacaoMariaClaro\\backend\\doacoesong\\obj\\",
+        "outputPath": "C:\\Users\\ofici\\Downloads\\DoacaoMariaClaro\\backend\\DoacoesONG\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -22,15 +22,15 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net8.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -47,8 +47,8 @@
         "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "BCrypt.Net-Next": {
               "target": "Package",
@@ -56,29 +56,33 @@
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
-              "version": "[9.0.7, )"
+              "version": "[8.0.8, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[9.0.7, )"
+              "version": "[8.0.8, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.7, )"
+              "version": "[8.0.8, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[9.0.7, )"
+              "version": "[8.0.8, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[9.0.7, )"
+              "version": "[8.0.8, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[8.0.4, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[8.1.4, )"
+              "version": "[6.6.2, )"
             }
           },
           "imports": [

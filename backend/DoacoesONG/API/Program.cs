@@ -14,9 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // --- Adicionar serviços ao contêiner ---
 
-// 1. Configuração do DbContext com SQLite (do nosso projeto)
+// 1. Configuração do DbContext com PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 2. Injeção de Dependência (do nosso projeto)
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();

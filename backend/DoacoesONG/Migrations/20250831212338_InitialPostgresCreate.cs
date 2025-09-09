@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace DoacoesONG.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialPostgresCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,13 +15,13 @@ namespace DoacoesONG.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Nome = table.Column<string>(type: "TEXT", nullable: false),
-                    Email = table.Column<string>(type: "TEXT", nullable: false),
-                    PasswordHash = table.Column<byte[]>(type: "BLOB", nullable: false),
-                    PasswordSalt = table.Column<byte[]>(type: "BLOB", nullable: false),
-                    TipoUsuario = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    PasswordHash = table.Column<byte[]>(type: "bytea", nullable: false),
+                    PasswordSalt = table.Column<byte[]>(type: "bytea", nullable: false),
+                    TipoUsuario = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

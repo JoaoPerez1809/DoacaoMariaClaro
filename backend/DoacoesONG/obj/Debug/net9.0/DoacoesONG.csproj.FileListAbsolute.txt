@@ -194,3 +194,5 @@ C:\Users\ofici\Downloads\DoacaoMariaClaro\backend\doacoesong\obj\Debug\net9.0\re
 C:\Users\ofici\Downloads\DoacaoMariaClaro\backend\doacoesong\obj\Debug\net9.0\DoacoesONG.pdb
 C:\Users\ofici\Downloads\DoacaoMariaClaro\backend\doacoesong\obj\Debug\net9.0\DoacoesONG.genruntimeconfig.cache
 C:\Users\ofici\Downloads\DoacaoMariaClaro\backend\doacoesong\obj\Debug\net9.0\ref\DoacoesONG.dll
+C:\Users\ofici\Downloads\DoacaoMariaClaro\backend\doacoesong\bin\Debug\net9.0\Npgsql.dll
+C:\Users\ofici\Downloads\DoacaoMariaClaro\backend\doacoesong\bin\Debug\net9.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
