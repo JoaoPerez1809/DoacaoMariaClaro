@@ -1,0 +1,91 @@
+/* === ESTILOS PARA A PÁGINA DE LOGIN === */
+
+/* Contêiner principal para centralizar o card na tela */
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px; /* Espaçamento vertical e horizontal */
+}
+
+/* O card de login em si */
+.login-card {
+  background-color: #FFFFFF;
+  border: 4px solid #3b82f6; /* Borda azul clara */
+  border-radius: 20px; /* Bordas bem arredondadas */
+  padding: 40px;
+  width: 100%;
+  max-width: 400px; /* Largura máxima do card */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  text-align: center;
+}
+
+/* O título "Login" dentro do card */
+.card-title {
+  text-align: left;
+  font-size: 2.25rem; /* Tamanho grande */
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 30px;
+  color: #111827; /* Cor escura para o texto */
+}
+
+/* Contêiner para o input de senha e o ícone de olho */
+.input-wrapper {
+  position: relative; /* Necessário para posicionar o ícone dentro dele */
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Estilo dos campos de e-mail e senha */
+.login-input {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #D1D5DB; /* Borda cinza clara */
+  background-color: #F9FAFB; /* Fundo quase branco */
+  border-radius: 10px;
+  font-size: 1rem;
+  box-sizing: border-box; 
+}
+
+/* Posicionamento do ícone de olho */
+.password-icon {
+  position: absolute;
+  right: 15px; /* Posiciona o ícone à direita, dentro do input */
+  top: 18px; /* Ajuste vertical para centralizar com o texto */
+  cursor: pointer;
+  color: #6B7280; /* Cor cinza para o ícone */
+}
+
+/* Botão verde "Entrar" */
+.login-button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  background-color: #16a34a; /* Verde */
+  color: #FFFFFF;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s; /* Efeito suave ao passar o mouse */
+}
+
+.login-button:hover {
+  background-color: #15803d; /* Verde mais escuro */
+}
+
+/* Link "Esqueci minha senha" */
+.forgot-password-link {
+  display: block;
+  margin-top: 20px;
+  color: #3b82f6; /* Azul */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline; /* Sublinhado ao passar o mouse */
+}
