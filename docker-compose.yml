@@ -33,7 +33,7 @@ services:
   backend-api:
     container_name: doacao_backend_apiv1
     build:
-      context: ./backend/doacoesong
+      context: ./backend/DoacoesONG
     ports:
       - "5041:8080"
     depends_on:
