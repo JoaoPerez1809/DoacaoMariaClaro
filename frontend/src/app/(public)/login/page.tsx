@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import styles from './LoginPage.module.css'; 
-import '../../globals.css'; // 1. Importa o nosso novo arquivo CSS
+import '../../globals.css'; // 1. Importa o nosso novo arquivo CSS vai ter que mudar tudo
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importando os ícones de olho
 
 // --- 1. COMPONENTE DO CABEÇALHO (HEADER) ---
