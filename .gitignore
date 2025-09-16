@@ -61,8 +61,8 @@ Ficheiros de cache e outros
 Ficheiros Sensíveis
 ###########################
 IMPORTANTE: Ignora TODOS os ficheiros .env que contêm senhas e chaves de API
-.env
-.env.*
+!.env
+
 
 Exceção: O ficheiro de exemplo, que não tem segredos, PODE ir para o Git.
 !.env.example
