@@ -1,0 +1,59 @@
+# A propriedade "version" é obsoleta e foi removida para seguir as boas práticas.
+
+services:
+  # Serviço do Banco de Dados PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: doacao_postgres_dbv1
+    ports:
+      - "5432:5432"
+    environment:
+      # Lendo as credenciais do ficheiro .env
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # Serviço de Mensageria RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: doacao_rabbitmqv1
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      # Adicionando credenciais a partir do .env por boa prática
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    restart: unless-stopped
+
+  # Serviço do Backend .NET
+  backend-api:
+    container_name: doacao_backend_apiv1
+    build:
+      context: ./backend/DoacoesONG
+    ports:
+      - "5041:8080"
+    depends_on:
+      - postgres
+    environment:
+      # A string de conexão agora é construída com as variáveis do .env
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      # A chave do token também vem do .env
+      - AppSettings__Token=${JWT_SECRET_KEY}
+
+  # Serviço do Frontend Next.js
+  frontend-app:
+    container_name: doacao_frontend_appv1
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend-api
+
+volumes:
+  postgres_data:
+    driver: local

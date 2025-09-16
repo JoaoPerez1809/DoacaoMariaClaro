@@ -1,14 +1,20 @@
 namespace Domain.Entities
 {
+    public enum TipoUsuario
+    {
+        Doador,
+        Colaborador,
+        Administrador
+    }
+
     public class User
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Nome { get; set; }
         public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Address { get; set; }
-        public string Password { get; set; }
-        public string Photo { get; set; }
-        public string TipoUsuario { get; set; } // "Doador" ou "Colaborador"
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
+        public TipoUsuario TipoUsuario { get; set; } // "Doador" ou "Colaborador" ou "Administrador"
+
     }
 }

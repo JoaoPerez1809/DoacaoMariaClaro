@@ -1,0 +1,29 @@
+.topBar {
+    background-color: #f39c12; /* Cor laranja/dourada da imagem */
+    color: #333;
+    padding: 8px 40px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: right;
+}
+
+.contactInfo a,
+.contactInfo span {
+    margin-left: 20px;
+    color: #333;
+    text-decoration: none;
+}
+
+/* Ajustes para telemóvel */
+@media (max-width: 768px) {
+    .topBar {
+        padding: 8px 20px;
+        text-align: center;
+    }
+    .contactInfo a,
+    .contactInfo span {
+        display: block;
+        margin-left: 0;
+        margin-bottom: 4px;
+    }
+}

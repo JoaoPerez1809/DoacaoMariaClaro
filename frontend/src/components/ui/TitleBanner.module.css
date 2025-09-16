@@ -1,0 +1,21 @@
+/* src/components/ui/TitleBanner.module.css */
+
+.titleBanner {
+    background-color: var(--cor-fundo-banner); /* Usa a variável global */
+    color: var(--cor-texto-claro); /* Usa a variável global */
+    text-align: center;
+    padding: 20px 0;
+}
+
+.bannerTitle {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Ajustes para ecrãs maiores */
+@media (min-width: 768px) {
+    .bannerTitle {
+        font-size: 28px;
+    }
+}

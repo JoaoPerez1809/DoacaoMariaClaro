@@ -1,0 +1,33 @@
+
+:root {
+    --cor-fundo-pagina: #D9D9D9;
+    --cor-fundo-header: white;
+    --cor-fundo-banner: #1F3A93;
+    --cor-fundo-card: white;
+    --cor-fundo-input: #F0F0F0;
+    --cor-botao-entrar: #28A745;
+    --cor-link: #007BFF;
+    --cor-texto-principal: #333;
+    --cor-texto-claro: white;
+}
+
+body {
+    margin: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: var(--cor-fundo-pagina);
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+

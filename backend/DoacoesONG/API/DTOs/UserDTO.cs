@@ -1,13 +1,11 @@
 namespace API.DTOs
 {
-    public class UserDTO
+
+    public class UserDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Nome { get; set; }
         public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Password { get; set; }
-        public string ConfirmPassword { get; set; }
-        public string TypeUser { get; set; }
+        public string TipoUsuario { get; set; }
     }
 }

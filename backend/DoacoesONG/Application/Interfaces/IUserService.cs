@@ -1,11 +1,16 @@
-using API.DTOs;
+using API.DTOs; // Namespace onde seus DTOs estão
+using Domain.Entities; // Namespace onde a entidade User e o enum TipoUsuario estão
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-public interface IUserService
+namespace Application.Interfaces
 {
-    UserDTO RegisterUser(UserDTO userDto);
-    UserDTO? GetUserDetails(int id);
-    List<UserDTO> GetAllUsers();
-    UserDTO? UpdateUser(int id, UserDTO userDto);
-    bool DeleteUser(int id);
-    UserDTO? ValidateUser(string email, string password);
+    public interface IUserService
+    {
+        Task<UserDto> GetUserByIdAsync(int id);
+        Task<IEnumerable<UserDto>> GetAllUsersAsync();
+        Task<UserDto> UpdateUserAsync(int id, UserUpdateDto userDto);
+        Task<bool> DeleteUserAsync(int id);
+        Task<bool> UpdateUserRoleAsync(int userId, TipoUsuario novoTipo);
+    }
 }
