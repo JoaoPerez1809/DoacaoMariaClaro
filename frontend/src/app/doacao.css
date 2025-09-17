@@ -1,0 +1,260 @@
+.doacao-container {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: flex-start;
+
+  min-height: 100vh;
+
+  background-color: #ccc;
+
+  font-family: Arial, sans-serif;
+
+}
+ 
+.doacao-header {
+
+  width: 100%;
+
+  background-color: #1f3b88;
+
+  text-align: center;
+
+  padding: 10px 0;
+
+  color: white;
+
+  font-weight: bold;
+
+  font-size: 18px;
+
+}
+ 
+.doacao-content {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-top: 40px;
+
+  gap: 60px;
+
+}
+ 
+.qr-container {
+
+  background-color: #f1c40f;
+
+  padding: 20px;
+
+  border-radius: 12px;
+
+}
+ 
+.qr-image {
+
+  width: 200px;
+
+  height: 280px;
+
+  object-fit: contain;
+
+}
+ 
+.form-container {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 20px;
+
+}
+ 
+.valor-input {
+
+  text-align: center;
+
+  background-color: white;
+
+  border-radius: 10px;
+
+  padding: 12px 20px;
+
+  font-weight: bold;
+
+  color: #333;
+
+  border: 1px solid #ccc;
+
+  font-size: 18px;
+
+  width: 250px;
+
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+}
+ 
+.botoes-rapidos {
+
+  display: flex;
+
+  gap: 15px;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+}
+ 
+.botao-rapido {
+
+  background-color: #f1c40f;
+
+  color: black;
+
+  font-weight: bold;
+
+  padding: 12px 20px;
+
+  border-radius: 8px;
+
+  border: none;
+
+  cursor: pointer;
+
+  font-size: 16px;
+
+  transition: background-color 0.3s ease;
+
+}
+ 
+.botao-rapido:hover {
+
+  background-color: #d4ac0d;
+
+}
+ 
+.botao-doar {
+
+  background-color: #1f3b88;
+
+  color: white;
+
+  font-weight: bold;
+
+  padding: 14px;
+
+  border-radius: 8px;
+
+  border: none;
+
+  cursor: pointer;
+
+  font-size: 18px;
+
+  transition: background-color 0.3s ease;
+
+  width: 100%;
+
+  max-width: 280px;
+
+}
+ 
+.botao-doar:hover {
+
+  background-color: #163072;
+
+}
+ 
+/* 📱 Responsividade para telas menores */
+
+@media (max-width: 768px) {
+
+  .doacao-content {
+
+    flex-direction: column; /* QR em cima, form embaixo */
+
+    gap: 30px;
+
+  }
+ 
+  .qr-image {
+
+    width: 160px;
+
+    height: 220px;
+
+  }
+ 
+  .valor-input {
+
+    width: 200px;
+
+    font-size: 16px;
+
+  }
+ 
+  .botao-doar {
+
+    max-width: 220px;
+
+  }
+
+}
+
+/* 📱 Responsividade para telas ainda menores */
+
+@media (max-width: 480px) {
+  .doacao-header {
+    font-size: 1rem;
+    padding: 8px 0;
+  }
+
+  .doacao-content {
+    gap: 16px;
+    margin-top: 12px;
+    padding: 0 4px;
+  }
+
+  .qr-container {
+    padding: 8px;
+  }
+
+  .qr-image {
+    width: 100px;
+    height: 120px;
+  }
+
+  .form-container {
+    gap: 10px;
+    max-width: 100%;
+  }
+
+  .valor-input {
+    width: 100%;
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  .botao-doar {
+    font-size: 15px;
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .botao-rapido {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+
