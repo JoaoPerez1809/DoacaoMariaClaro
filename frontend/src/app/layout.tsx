@@ -1,5 +1,7 @@
 import { AuthProvider } from '@/contexts/AuthContext'; // Importe o seu provider
 import './globals.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 export default function RootLayout({
   children,
