@@ -1,6 +1,6 @@
 import React from "react";
 
-import "./Perfil.css";
+import "./Profile.css";
 
 interface Doacao {
 
@@ -20,7 +20,7 @@ const doacoes: Doacao[] = [
 
 ];
 
-const Perfil: React.FC = () => {
+const Profile: React.FC = () => {
 
   const nome = "Vanessa";
 
@@ -58,4 +58,4 @@ const Perfil: React.FC = () => {
 
 };
 
-export default Perfil;
+export default Profile;
