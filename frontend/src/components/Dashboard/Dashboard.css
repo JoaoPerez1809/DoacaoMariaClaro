@@ -10,7 +10,7 @@
 /* MENU LATERAL AMARELO */
 /* ==================== */
 .sidebar {
-  background-color: #f4c542; /* amarelo */
+  background-color: #f39c12; 
   width: 60px;
   display: flex;
   flex-direction: column;

@@ -23,7 +23,7 @@ body {
   font-size: 20px;
   font-weight: bold;
   padding: 12px 0;
-  width: 100vw !important; /* Largura total da tela */
+  width: 1521px !important; /* Largura total da tela */
   margin: 0 !important; /* Remove qualquer margem */
   position: relative; /* Garante posicionamento correto */
   left: 0; /* Alinha à esquerda */
