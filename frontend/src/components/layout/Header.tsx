@@ -1,5 +1,6 @@
 import { TopBar } from './TopBar';
-import { Navbar } from './Navbar';
+// Correção: Importe 'Navbar' sem as chaves {}
+import Navbar from './Navbar';
 
 export function Header() {
   return (

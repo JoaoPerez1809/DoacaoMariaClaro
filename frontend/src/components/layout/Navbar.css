@@ -1,0 +1,239 @@
+/* --- Navbar Container --- */
+.navbar-container {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px 5%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.navbar-logo img {
+  vertical-align: middle;
+}
+
+/* --- Main Nav --- */
+.navbar-main-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 30px;
+}
+
+/* Links da navbar */
+.navbar-main-nav a,
+.nav-dropdown > button,
+.nav-dropdown > .dropdown-trigger {
+  position: relative; /* necessário para o ::after */
+  text-decoration: none;
+  color: #1A4D85;
+  font-weight: 400;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+/* Linha amarela escondida inicialmente */
+.navbar-main-nav a::after,
+.nav-dropdown > button::after,
+.nav-dropdown > .dropdown-trigger::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 0;
+  height: 3px;
+  background-color: #F9A70A; /* amarelo */
+  /* transition: width 0.3s ease; */
+}
+
+/* Hover: linha aparece */
+.navbar-main-nav a:hover::after,
+.nav-dropdown > button:hover::after,
+.nav-dropdown > .dropdown-trigger:hover::after {
+  width: 100%;
+}
+
+/* Hover também muda a cor do texto */
+.navbar-main-nav a:hover,
+.nav-dropdown > button:hover,
+.nav-dropdown > .dropdown-trigger:hover {
+  color: #0056b3;
+}
+
+/* --- Dropdown Menu --- */
+.nav-dropdown {
+  position: relative;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.nav-dropdown > button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+  color: #1A4D85;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 122%;
+  left: 0;
+  background-color: #1A4D85; /* fundo azul */
+  list-style: none;
+  padding: 10px 0;
+  margin-top: 15px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 180px;
+  flex-direction: column;
+  gap: 0 !important;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.dropdown-menu.active {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.dropdown-menu li {
+  width: 100%;
+}
+
+.dropdown-menu a {
+  display: block;      /* faz o <a> ocupar toda a largura do li */
+  padding: 10px 25px;  /* move o padding do li para o a */
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  text-align: left;    /* evita que o texto ultrapasse */
+  white-space: nowrap; /* impede quebra de linha se quiser em uma linha só */
+  overflow: hidden;    /* esconde overflow */
+  text-overflow: ellipsis; /* opcional: adiciona "..." se ultrapassar */
+}
+
+.dropdown-menu a:hover {
+  background-color: #0056b3; /* azul mais escuro no hover */
+  color: #fff;
+}
+.sub-arrow {
+  transition: transform 0.3s ease;
+}
+
+/* Quando o dropdown estiver aberto, gira a seta */
+.nav-dropdown:hover .sub-arrow {
+  transform: rotate(180deg);
+}
+
+
+/* --- Ações e Ícones Sociais --- */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.social-icons a {
+  color: #333;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #0056b3;
+}
+
+.donate-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.donate-button:hover {
+  background-color: #45a049;
+}
+
+/* --- Mobile --- */
+.mobile-menu-icon {
+  display: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+.navbar-mobile-nav {
+  display: none;
+}
+
+@media (max-width: 992px) {
+  .navbar-main-nav,
+  .navbar-actions {
+    display: none;
+  }
+
+  .mobile-menu-icon {
+    display: block;
+  }
+
+  .navbar-mobile-nav {
+    display: block;
+    background-color: white;
+    padding: 20px;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+  }
+
+  .navbar-mobile-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+  
+  .navbar-mobile-nav a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+
+  .mobile-donate-button-container {
+    margin-top: 15px;
+  }
+  
+}
