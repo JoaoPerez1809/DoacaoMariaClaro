@@ -1,11 +1,22 @@
 // frontend/src/types/user.ts
 
-// A palavra "export" na frente do "type" transforma este arquivo em um módulo
-// e permite que este tipo seja importado em outros lugares.
+// 1. Definindo os possíveis papéis de usuário, exatamente como no backend (Enum TipoUsuario)
+export type UserRole = 'Doador' | 'Colaborador' | 'Administrador';
 
 /**
- * Tipo de dados para o registo de um novo utilizador.
- * Corresponde ao `UserRegisterDto.cs` no backend.
+ * DTO principal do usuário, usado para exibir dados.
+ * Corresponde ao `UserDTO.cs` no backend.
+ */
+export type UserDto = {
+  id: number;
+  nome: string;
+  email: string;
+  tipoUsuario: UserRole;
+};
+
+/**
+ * DTO para o registro de um novo usuário.
+ * Corresponde ao `UserRegisterDTO.cs` no backend.
  */
 export type UserRegisterDto = {
   nome: string;
@@ -14,20 +25,38 @@ export type UserRegisterDto = {
 };
 
 /**
- * Tipo de dados para o login de um utilizador.
- * Corresponde ao `UserLoginDto.cs` no backend.
+ * DTO para o login de um usuário.
+ * Corresponde ao `UserLoginDTO.cs` no backend.
  */
 export type UserLoginDto = {
   email: string;
   senha: string;
 };
 
-// Você pode adicionar outros tipos relacionados ao usuário aqui no futuro.
-// Por exemplo, os dados do usuário que vêm do token decodificado:
+/**
+ * DTO para a atualização dos dados de um usuário.
+ * Corresponde ao `UserUpdateDTO.cs` no backend.
+ */
+export type UserUpdateDto = {
+  nome: string;
+  email: string;
+};
+
+/**
+ * DTO para a atualização do papel (role) de um usuário.
+ * Corresponde ao `UpdateUserRoleDTO.cs` no backend.
+ */
+export type UpdateUserRoleDto = {
+  tipoUsuario: UserRole;
+};
+
+/**
+ * Representa os dados decodificados do token JWT.
+ */
 export type DecodedToken = {
   nameid: string; // ID do usuário
   name: string;   // Nome do usuário
-  role: 'Doador' | 'Admin'; // Papel do usuário
+  role: UserRole; // CORRIGIDO: Agora usa o tipo UserRole com todas as opções
   exp: number;
   iat: number;
 };

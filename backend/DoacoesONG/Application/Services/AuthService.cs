@@ -1,5 +1,5 @@
 using Domain.Entities;
-using API.DTOs;
+using API.DTOs.UserRep;
 using Domain.Interfaces; // Onde IAuthRepository está
 using Application.Interfaces; // Onde IAuthService está
 using System.Threading.Tasks;

@@ -5,10 +5,10 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Entities;
-using API.DTOs;
+using API.DTOs.UserRep;
 using Domain.Interfaces; // Ajuste para o seu namespace
 
-namespace API.Controllers // Ajuste para o seu namespace
+namespace API.Controllers.Auth // Ajuste para o seu namespace
 {
     [ApiController]
     [Route("api/[controller]")]

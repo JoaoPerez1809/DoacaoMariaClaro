@@ -1,5 +1,5 @@
 using Domain.Entities;
-using API.DTOs;
+using API.DTOs.UserRep;
 using Application.Interfaces;
 using Domain.Interfaces;
 using System.Collections.Generic;
