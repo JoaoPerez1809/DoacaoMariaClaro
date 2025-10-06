@@ -149,6 +149,40 @@
   transform: rotate(180deg);
 }
 
+.login-button {
+  background-color: #25d451; /* Cor vermelha para indicar saída/perigo */
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.login-button:hover {
+  background-color: #0d8919;
+}
+
+.logout-button {
+  background-color: #dc3545; /* Cor vermelha para indicar saída/perigo */
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.logout-button:hover {
+  background-color: #c82333;
+}
+
 
 /* --- Ações e Ícones Sociais --- */
 .navbar-actions {
