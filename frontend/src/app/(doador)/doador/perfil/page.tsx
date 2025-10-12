@@ -1,14 +1,18 @@
-import React from "react";
-import { Header } from "@/components/layout/Header";
-import "@/app/globals.css"; // Certifique-se de que o caminho está correto
-import Profile from "@/components/Perfil/Profile";
+"use client";
 
-export default function ProfilePage() {
+import React from 'react';
+import { Header } from '@/components/layout/Header';
+import Profile from '@/components/Perfil/Profile'; // Importe o componente de Perfil
+import "@/app/globals.css";
+
+const PerfilPage: React.FC = () => {
   return (
     <>
-      <Header />
+      {/* O Header pode ser adicionado aqui se for necessário no layout da página de perfil */}
+      <Header /> 
       <Profile />
-      
     </>
   );
-}
+};
+
+export default PerfilPage;

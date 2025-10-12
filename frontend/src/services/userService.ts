@@ -16,7 +16,7 @@ export const getUserByIdRequest = async (id: number) => {
 
 export const getMyProfile = async (): Promise<UserDto> => {
   // Faz uma requisição GET para o endpoint '.../api/user/me'
-  const response = await api.get<UserDto>('/user/me');
+   const response = await api.get<UserDto>('/Users/me');
   return response.data;
 };
 

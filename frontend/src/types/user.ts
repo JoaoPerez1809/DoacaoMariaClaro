@@ -3,6 +3,15 @@
 // 1. Definindo os possíveis papéis de usuário, exatamente como no backend (Enum TipoUsuario)
 export type UserRole = 'Doador' | 'Colaborador' | 'Administrador';
 
+
+// 1. TIPO ADICIONADO AQUI - Representa o usuário logado no estado da aplicação
+export type User = {
+  id: string;   // Vem do 'nameid' do token
+  name: string; // Vem do 'name' do token
+  role: UserRole; // Vem do 'role' do token
+};
+
+
 /**
  * DTO principal do usuário, usado para exibir dados.
  * Corresponde ao `UserDTO.cs` no backend.

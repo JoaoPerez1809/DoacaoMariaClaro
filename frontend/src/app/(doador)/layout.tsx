@@ -4,27 +4,27 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, ReactNode } from "react";
 
-// Este é o layout que vai proteger todas as rotas de "Doador"
 export default function DoadorLayout({ children }: { children: ReactNode }) {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    // Se o estado de autenticação já foi carregado e o usuário não está logado...
-    if (user === null && !isAuthenticated) {
-      // ...redireciona para a página de login.
+    // Só toma a decisão DEPOIS que o loading do contexto terminar
+    if (!loading && !isAuthenticated) {
       router.push("/login");
     }
-  }, [isAuthenticated, user, router]);
+  }, [isAuthenticated, loading, router]);
 
-  // Enquanto a autenticação está sendo verificada, pode ser útil mostrar um loader
-  // ou simplesmente não renderizar nada para evitar um "flash" de conteúdo.
-  // Se o usuário estiver autenticado, 'isAuthenticated' será true e o conteúdo será renderizado.
-  if (!isAuthenticated) {
-    // Você pode colocar um componente de "Carregando..." aqui se quiser
-    return <p>Verificando acesso...</p>; 
+  // Se estiver carregando, mostra uma mensagem
+  if (loading) {
+    return <div style={{ textAlign: 'center', padding: '50px' }}>Verificando autenticação...</div>;
   }
 
-  // Se o usuário está autenticado, renderiza a página filha (ex: a página de perfil)
-  return <>{children}</>;
+  // Se estiver autenticado, finalmente mostra a página
+  if (isAuthenticated) {
+    return <>{children}</>;
+  }
+
+  // Se não, não renderiza nada enquanto redireciona
+  return null;
 }

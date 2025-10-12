@@ -23,12 +23,12 @@ body {
   font-size: 20px;
   font-weight: bold;
   padding: 12px 0;
-  width: 1521px !important; /* Largura total da tela */
-  margin: 0 !important; /* Remove qualquer margem */
-  position: relative; /* Garante posicionamento correto */
-  left: 0; /* Alinha à esquerda */
+  width: 100% !important; /* CORRIGIDO */
+  margin: 0 !important;
+  position: relative;
+  left: 0;
   display: block !important;
-  z-index: 10; /* Garante que fica acima de outros elementos */
+  z-index: 10;
 }
 
 /* Ajusta o container principal */
@@ -92,4 +92,57 @@ body {
 
 .tabela-doacoes td {
   color: #000;
+}
+/* Estilos para a nova seção de informações */
+.info-grid {
+  display: grid;
+  gap: 15px;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.info-item strong {
+  color: #333;
+}
+
+.info-item span {
+  color: #555;
+}
+
+/* Contêiner para os botões de ação */
+.actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  justify-content: flex-end; /* Alinha os botões à direita */
+}
+
+.actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.actions button:hover {
+    transform: translateY(-2px);
+}
+
+.edit-button {
+  background-color: #3b82f6; /* Azul */
+  color: white;
+}
+
+.delete-button {
+  background-color: #ef4444; /* Vermelho */
+  color: white;
 }

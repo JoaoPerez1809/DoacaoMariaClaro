@@ -28,6 +28,7 @@
   padding: 0;
   display: flex;
   gap: 30px;
+  align-items: center;
 }
 
 /* Links da navbar */
@@ -40,6 +41,9 @@
   font-weight: 400;
   font-size: 1rem;
   transition: color 0.3s ease;
+  display: flex;         /* ADICIONADO: Permite alinhar o ícone da seta */
+  align-items: center;   /* ADICIONADO: Alinha o ícone da seta com o texto */
+  gap: 8px; 
 }
 
 /* Linha amarela escondida inicialmente */
