@@ -14,6 +14,12 @@ export const getUserByIdRequest = async (id: number) => {
   return response.data;
 };
 
+export const getMyProfile = async (): Promise<UserDto> => {
+  // Faz uma requisição GET para o endpoint '.../api/user/me'
+   const response = await api.get<UserDto>('/Users/me');
+  return response.data;
+};
+
 // Função para atualizar um usuário
 export const updateUserRequest = async (id: number, data: UserUpdateDto) => {
   const response = await api.put<UserDto>(userAPI.update(id), data);

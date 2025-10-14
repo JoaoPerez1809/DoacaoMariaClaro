@@ -112,6 +112,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
 var app = builder.Build();
 
 // --- Configuração do pipeline de requisições HTTP ---

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { AxiosError } from "axios";
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importando os ícones de olho
 
+import { useAuth } from "@/contexts/AuthContext";
 import { loginRequest } from "@/services/authService";
 import type { UserLoginDto } from "@/types/user";
 
@@ -20,6 +21,8 @@ const LoginForm: React.FC = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false); // Estado para o ícone do olho
   const router = useRouter();
 
+  const { signIn } = useAuth();
+
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
@@ -32,18 +35,12 @@ const LoginForm: React.FC = () => {
     const loginData: UserLoginDto = { email, senha };
 
     try {
-      const { token } = await loginRequest(loginData);
-      // Aqui você integraria com seu AuthContext para salvar o token
-      alert("Login realizado com sucesso!");
-      router.push('/doador/perfil');
-
+      // 3. Chame a função signIn do contexto
+      await signIn({ email, senha });
+      // O redirecionamento e o salvamento do token agora são feitos pelo AuthContext
     } catch (err) {
-      if (err instanceof AxiosError && err.response) {
-        setError(err.response.data || "Credenciais inválidas.");
-      } else {
-        setError("Não foi possível conectar ao servidor.");
-        console.error(err);
-      }
+      setError("Credenciais inválidas. Verifique seu e-mail e senha.");
+      console.error(err);
     } finally {
       setIsLoading(false);
     }

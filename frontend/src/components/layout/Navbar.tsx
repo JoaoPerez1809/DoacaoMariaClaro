@@ -6,12 +6,16 @@ import Link from 'next/link';
 import { FaFacebookF, FaInstagram, FaBars, FaTimes, FaInfo, FaWhatsapp, FaChevronDown } from 'react-icons/fa';
 import './Navbar.css';
 
+import { useAuth } from '@/contexts/AuthContext';
+
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   // 2. Estado para controlar qual dropdown está aberto ('entidade', 'fazemos', ou null)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const dropdownRef = useRef<HTMLLIElement>(null);
+
+   const { isAuthenticated, signOut } = useAuth();
 
   // 3. Função para abrir/fechar o dropdown ao clicar
   const handleDropdownClick = (dropdownName: string) => {
@@ -89,7 +93,7 @@ const Navbar: React.FC = () => {
             <li><Link href="https://mariaclaro.org.br/contato">Contato</Link></li>
           </ul>
         </nav>
-
+        
         <div className="navbar-actions">
           <div className="social-icons">
             <a href="https://www.facebook.com/institutomariaclaro" target="_blank" rel="noopener noreferrer"><FaFacebookF /></a>
@@ -98,6 +102,13 @@ const Navbar: React.FC = () => {
             <a href="https://portaldatransparencia.gov.br/busca/pessoa-juridica/71868962000105-lar-espirita-ivan-santos-de-albuquerque" target="_blank" rel="noopener noreferrer"><FaInfo /></a>
           </div>
           <Link href="/doar" className="donate-button">DOAR</Link>
+          {isAuthenticated ? (
+            
+            <button onClick={signOut} className="logout-button">SAIR</button>
+            
+          ) : (
+            <Link href="/login" className="login-button">LOGIN</Link>
+          )}
         </div>
         
         <div className="mobile-menu-icon" onClick={toggleMobileMenu}>
@@ -115,6 +126,14 @@ const Navbar: React.FC = () => {
             <li><Link href="/contato">Contato</Link></li>
             <li className="mobile-donate-button-container">
                 <Link href="/doar" className="donate-button">DOAR</Link>
+                {/* 3. Lógica condicional para os botões */}
+          {isAuthenticated ? (
+            
+            <button onClick={signOut} className="logout-button">SAIR</button>
+            
+          ) : (
+            <Link href="/login" className="login-button">LOGIN</Link>
+          )}
             </li>
           </ul>
         </nav>

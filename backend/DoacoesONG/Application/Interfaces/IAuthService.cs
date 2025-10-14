@@ -1,4 +1,4 @@
-using API.DTOs; // Namespace onde seus DTOs estão
+using API.DTOs.UserRep; // Namespace onde seus DTOs estão
 using Domain.Entities; // Namespace onde a entidade User está
 using System.Threading.Tasks;
 

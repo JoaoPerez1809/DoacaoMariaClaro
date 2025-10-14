@@ -1,90 +1,66 @@
-'use client';
+"use client";
 
-import { createContext, useState, useEffect } from 'react';
-import { setCookie, parseCookies, destroyCookie } from 'nookies';
-import { api } from '../services/api';
-import { loginRequest } from '../services/authService';
-import { jwtDecode } from 'jwt-decode';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-
-// Tipos para o utilizador e o contexto
-type User = {
-  id: string;
-  name: string;
-  role: 'Doador' | 'Colaborador' | 'Administrador';
-};
-
-type SignInCredentials = {
-  email: string;
-  senha: string;
-};
+import { setCookie, parseCookies, destroyCookie } from 'nookies';
+import { loginRequest } from '@/services/authService';
+import { api } from '@/services/api';
+import type { UserLoginDto, DecodedToken, User } from '@/types/user';
+import { jwtDecode } from 'jwt-decode';
 
 type AuthContextType = {
   isAuthenticated: boolean;
   user: User | null;
-  signIn: (data: SignInCredentials) => Promise<void>;
+  loading: boolean; // Estado para saber se a verificação inicial já terminou
+  signIn: (data: UserLoginDto) => Promise<void>;
   signOut: () => void;
 };
 
-export const AuthContext = createContext({} as AuthContextType);
+const AuthContext = createContext({} as AuthContextType);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true); // Começa 'true'
   const router = useRouter();
-  const isAuthenticated = !!user;
 
   useEffect(() => {
-    // Quando a aplicação carrega, verifica se existe um token nos cookies
     const { 'doacao.token': token } = parseCookies();
     if (token) {
       try {
-        const decodedToken: any = jwtDecode(token);
-        setUser({
-          id: decodedToken.nameid,
-          name: decodedToken.unique_name,
-          role: decodedToken.role,
-        });
+        const decodedToken: DecodedToken = jwtDecode(token);
+        setUser({ id: decodedToken.nameid, name: decodedToken.name, role: decodedToken.role });
+        api.defaults.headers['Authorization'] = `Bearer ${token}`;
       } catch (error) {
-        console.error("Token inválido:", error);
-        signOut();
+        destroyCookie(undefined, 'doacao.token');
       }
     }
+    // Informa que a verificação inicial terminou
+    setLoading(false); 
   }, []);
 
-  async function signIn({ email, senha }: SignInCredentials) {
-    // Chama a função do nosso serviço de autenticação
-    const { token } = await loginRequest({ email, senha });
-
-    // Guarda o token nos cookies do navegador por 30 dias
-    setCookie(undefined, 'doacao.token', token, {
-      maxAge: 60 * 60 * 24 * 30, // 30 dias
-      path: '/',
-    });
-
-    // Descodifica o token para obter os dados do utilizador
-    const decodedToken: any = jwtDecode(token);
-    setUser({
-      id: decodedToken.nameid,
-      name: decodedToken.unique_name,
-      role: decodedToken.role,
-    });
-    
-    // Define o token como padrão para futuras requisições do Axios
+  async function signIn(data: UserLoginDto) {
+    const { token } = await loginRequest(data);
+    setCookie(undefined, 'doacao.token', token, { maxAge: 60 * 60 * 24, path: '/' });
     api.defaults.headers['Authorization'] = `Bearer ${token}`;
-
-    // Redireciona o utilizador para a sua página de perfil
+    const decodedToken: DecodedToken = jwtDecode(token);
+    setUser({ id: decodedToken.nameid, name: decodedToken.name, role: decodedToken.role });
     router.push('/doador/perfil');
   }
 
   function signOut() {
     destroyCookie(undefined, 'doacao.token');
+    delete api.defaults.headers['Authorization'];
     setUser(null);
     router.push('/login');
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, signIn, signOut }}>
+    <AuthContext.Provider value={{ isAuthenticated: !!user, user, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
 }
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
