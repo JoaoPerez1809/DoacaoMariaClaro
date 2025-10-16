@@ -1,15 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <!-- MUDANÇA PRINCIPAL: Alvo alterado de net9.0 para net8.0 (LTS) -->
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>b27e5a14-8a50-47d8-8311-640d67d16ac4</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <!-- Este pacote é compatível e pode ser mantido -->
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="mercadopago-sdk" Version="2.10.0" />
     
     <!-- VERSÕES ATUALIZADAS PARA SEREM COMPATÍVEIS COM O .NET 8.0 -->
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
