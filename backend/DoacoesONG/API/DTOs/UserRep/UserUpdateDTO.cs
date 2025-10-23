@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations; // Adicione este using
+using Domain.Entities;
 
 namespace API.DTOs.UserRep
 {
@@ -15,5 +16,9 @@ namespace API.DTOs.UserRep
         [Required(ErrorMessage = "O e-mail é obrigatório.")]
         [EmailAddress(ErrorMessage = "O formato do e-mail é inválido.")]
         public string Email { get; set; }
+        [EnumDataType(typeof(TipoPessoa), ErrorMessage = "Tipo de pessoa inválido.")]
+        public TipoPessoa? TipoPessoa { get; set; } // Nullable
+
+        public string? Documento { get; set; }
     }
 }

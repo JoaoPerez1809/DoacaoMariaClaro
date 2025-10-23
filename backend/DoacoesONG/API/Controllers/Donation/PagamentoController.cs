@@ -9,6 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Infrastructure.Data;
 using System.Text.Json.Serialization;
+using System.Linq;
+using System;
+// 1. Adicionar using para Claims
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization; // Para [Authorize]
 
 [ApiController]
 [Route("api/[controller]")]
@@ -21,21 +26,29 @@ public class PagamentoController : ControllerBase
     {
         _config = config;
         _context = context;
-        // Configura o Access Token em um lugar central
         MercadoPagoConfig.AccessToken = _config.GetValue<string>("MercadoPago:AccessToken");
     }
 
+    // 2. Adicionar [Authorize] para garantir que apenas usuários logados chamem este método
+    [Authorize]
     [HttpPost("criar-preferencia")]
     public async Task<IActionResult> CriarPreferencia([FromBody] DoacaoRequestDto request)
     {
         try
         {
-            // --- ALTERAÇÃO 1: Gerar um ID único para nossa referência ---
+            // --- 3. Obter o ID do usuário logado a partir do token JWT ---
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var doadorId))
+            {
+                // Se não conseguir obter o ID do token (inesperado se [Authorize] estiver ativo)
+                return Unauthorized("Não foi possível identificar o usuário logado.");
+            }
+            // --- Fim da obtenção do ID ---
+
             var externalReference = Guid.NewGuid().ToString();
 
             var preferenceRequest = new PreferenceRequest
             {
-                // --- ALTERAÇÃO 2: Enviar nossa referência para o Mercado Pago ---
                 ExternalReference = externalReference,
                 Items = new List<PreferenceItemRequest>
                 {
@@ -48,12 +61,19 @@ public class PagamentoController : ControllerBase
                         UnitPrice = request.Valor,
                     }
                 },
+                Payer = new PreferencePayerRequest // Opcional: Pré-preencher dados do pagador
+                {
+                    // Você pode buscar o email/nome/documento do usuário 'doadorId' no banco
+                    // e pré-preenchê-los aqui, se desejar. Ex:
+                    // Email = User.FindFirst(ClaimTypes.Email)?.Value, // Se o email estiver no token
+                    // Name = User.FindFirst(ClaimTypes.Name)?.Value, // Se o nome estiver no token
+                },
                 BackUrls = new PreferenceBackUrlsRequest
                 {
-                    Success = "http://localhost:3000/doacao/sucesso",
-                    Failure = "http://localhost:3000/doacao/falha",
+                    Success = "http://localhost:3000/doacao/sucesso", // Lembre-se do ngrok para testes
+                    Failure = "http://localhost:3000/doacao/falha",   // Lembre-se do ngrok para testes
                 },
-                NotificationUrl = _config.GetValue<string>("MercadoPago:WebhookUrl"),
+                NotificationUrl = _config.GetValue<string>("MercadoPago:WebhookUrl"), // URL pública
             };
 
             var client = new PreferenceClient();
@@ -65,8 +85,10 @@ public class PagamentoController : ControllerBase
                 Status = "PENDING",
                 MercadoPagoPreferenceId = preference.Id,
                 DataCriacao = DateTime.UtcNow,
-                // --- ALTERAÇÃO 3: Salvar nossa referência no banco de dados ---
-                ExternalReference = externalReference
+                ExternalReference = externalReference,
+                // --- 4. Associar o ID do doador ao pagamento ---
+                DoadorId = doadorId
+                // --- Fim da associação ---
             };
             _context.Pagamentos.Add(novoPagamento);
             await _context.SaveChangesAsync();
@@ -75,6 +97,7 @@ public class PagamentoController : ControllerBase
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"Erro em CriarPreferencia: {ex.Message}");
             return StatusCode(500, new { message = "Erro ao criar preferência de pagamento.", error = ex.Message });
         }
     }
@@ -82,29 +105,49 @@ public class PagamentoController : ControllerBase
     [HttpPost("webhook")]
     public async Task<IActionResult> Webhook([FromBody] MercadoPagoNotification notification)
     {
-        if (notification?.Action == "payment.updated")
+        // ... (lógica do webhook permanece a mesma) ...
+        // Agora, quando o webhook for executado, o 'pagamentoEmNossoDB'
+        // já terá o DoadorId correto preenchido desde a criação.
+        if (notification?.Topic == "payment" && !string.IsNullOrEmpty(notification.ResourceUrl))
         {
             try
             {
-                var client = new PaymentClient();
-                Payment payment = await client.GetAsync(long.Parse(notification.Data.Id));
-
-                // --- CORREÇÃO PRINCIPAL: Buscar usando a ExternalReference ---
-                var pagamentoEmNossoDB = await _context.Pagamentos
-                    .FirstOrDefaultAsync(p => p.ExternalReference == payment.ExternalReference);
-
-                if (pagamentoEmNossoDB != null && pagamentoEmNossoDB.Status != "approved")
+                var paymentIdString = notification.ResourceUrl.Split('/').LastOrDefault();
+                if (long.TryParse(paymentIdString, out long paymentId))
                 {
-                    pagamentoEmNossoDB.Status = payment.Status;
-                    pagamentoEmNossoDB.MercadoPagoPaymentId = payment.Id;
-                    pagamentoEmNossoDB.DataAtualizacao = DateTime.UtcNow;
+                    var client = new PaymentClient();
+                    Payment payment = await client.GetAsync(paymentId);
 
-                    await _context.SaveChangesAsync();
+                    var pagamentoEmNossoDB = await _context.Pagamentos
+                        .FirstOrDefaultAsync(p => p.ExternalReference == payment.ExternalReference);
+
+                    if (pagamentoEmNossoDB != null)
+                    {
+                        pagamentoEmNossoDB.Status = payment.Status;
+                        pagamentoEmNossoDB.MercadoPagoPaymentId = payment.Id;
+                        pagamentoEmNossoDB.DataAtualizacao = DateTime.UtcNow;
+
+                        if (payment.Payer?.Identification != null)
+                        {
+                            pagamentoEmNossoDB.PayerIdentificationType = payment.Payer.Identification.Type;
+                            pagamentoEmNossoDB.PayerIdentificationNumber = payment.Payer.Identification.Number?.Replace(".", "").Replace("-", "");
+                        }
+
+                        await _context.SaveChangesAsync();
+
+                        // A lógica opcional de atualizar User agora funcionará, pois DoadorId estará presente
+                        // if (pagamentoEmNossoDB.Status == "approved" && pagamentoEmNossoDB.DoadorId.HasValue && ...) { ... }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Erro em Webhook: URL de recurso inválida - {notification.ResourceUrl}");
+                    return BadRequest("Formato inválido da URL do recurso.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro ao processar webhook: {ex.Message}");
+                Console.WriteLine($"Erro em Webhook: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 return BadRequest();
             }
         }
@@ -112,13 +155,14 @@ public class PagamentoController : ControllerBase
     }
 }
 
-// DTOs (podem ficar no mesmo arquivo ou separados)
+// DTOs
 public class DoacaoRequestDto { public decimal Valor { get; set; } }
 
 public class MercadoPagoNotification
 {
-    [JsonPropertyName("action")] public string Action { get; set; }
-    [JsonPropertyName("data")] public NotificationData Data { get; set; }
-}
+    [JsonPropertyName("resource")]
+    public string? ResourceUrl { get; set; }
 
-public class NotificationData { [JsonPropertyName("id")] public string Id { get; set; } }
+    [JsonPropertyName("topic")]
+    public string? Topic { get; set; }
+}

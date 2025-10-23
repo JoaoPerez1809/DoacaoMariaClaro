@@ -1,28 +1,53 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from 'next/navigation'; // 1. Importar o useRouter para redirecionamento
-import { registerRequest } from "@/services/authService"; // 2. Importar a função de registro
-import type { UserRegisterDto } from "@/types/user"; // Importar o tipo para garantir a consistência
+import { useRouter } from 'next/navigation';
+import { registerRequest } from "@/services/authService";
+import type { UserRegisterDto, TipoPessoa } from "@/types/user";
 import "./RegisterForm.css";
 import { AxiosError } from "axios";
+// 1. Importe a função de validação
+import { isValidCPF, isValidCNPJ } from "@/utils/validators";
+
+// ... (restante do código do componente) ...
 
 const RegisterForm: React.FC = () => {
+  // ... (seus estados: nome, email, senha, tipoPessoa, documento, error, isLoading) ...
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
-  const [error, setError] = useState<string | null>(null); // Estado para mensagens de erro
-  const [isLoading, setIsLoading] = useState(false); // Estado para feedback de carregamento
-  const router = useRouter(); // Hook para navegação
+  const [tipoPessoa, setTipoPessoa] = useState<TipoPessoa>('Fisica');
+  const [documento, setDocumento] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  // Função para limpar o documento (remover não-dígitos) - Opcional, mas útil
+  const limparDocumento = (doc: string): string => {
+    return doc.replace(/[^\d]/g, "");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); // Limpa erros anteriores
+    setError(null);
 
     if (senha !== confirmarSenha) {
       setError("As senhas não coincidem!");
       return;
     }
+
+    const documentoLimpo = limparDocumento(documento);
+
+    // --- VALIDAÇÃO USANDO A FUNÇÃO IMPORTADA ---
+    if (tipoPessoa === 'Fisica' && !isValidCPF(documentoLimpo)) {
+      setError("CPF inválido. Verifique os dígitos.");
+      return;
+    }
+    if (tipoPessoa === 'Juridica' && !isValidCNPJ(documentoLimpo)) { // Use a validação de CNPJ
+      setError("CNPJ inválido. Verifique os dígitos.");
+      return;
+    }
+    // --- FIM DA VALIDAÇÃO ---
 
     setIsLoading(true);
 
@@ -30,70 +55,67 @@ const RegisterForm: React.FC = () => {
       nome,
       email,
       senha,
+      tipoPessoa,
+      documento: documentoLimpo // Envia o documento limpo
     };
 
     try {
-      // 3. Chamar a função do serviço que se conecta ao backend
-      const responseMessage = await registerRequest(userData);
-
-      alert(responseMessage || "Usuário cadastrado com sucesso!"); // Usa a mensagem da API ou uma padrão
-      router.push('/login'); // 4. Redireciona para o login após sucesso
+      // ... (chamada para registerRequest) ...
+       const responseMessage = await registerRequest(userData);
+       alert(responseMessage || "Usuário cadastrado com sucesso!");
+       router.push('/login');
 
     } catch (err) {
-      // 5. Trata os erros que vêm do backend
-      if (err instanceof AxiosError && err.response) {
-        // Se for um erro do Axios, a mensagem do backend provavelmente está em err.response.data
-        setError(err.response.data || "Ocorreu um erro ao tentar cadastrar.");
+      // ... (tratamento de erro) ...
+       if (err instanceof AxiosError && err.response?.data) {
+        const apiError = err.response.data;
+        if (typeof apiError === 'string') { setError(apiError); }
+        else if (apiError.message) { setError(apiError.message); }
+        else { setError("Ocorreu um erro ao tentar cadastrar."); }
       } else {
-        setError("Não foi possível conectar ao servidor. Tente novamente mais tarde.");
+        setError("Não foi possível conectar ao servidor.");
         console.error(err);
       }
     } finally {
-      setIsLoading(false); // Para o indicador de carregamento
+      setIsLoading(false);
     }
   };
 
-  return (
+  // ... (restante do JSX do formulário, incluindo os campos tipoPessoa e documento) ...
+    return (
     <div className="cadastro-container">
-      <header className="topbar">Doação</header>
+      <header className="topbar">Cadastro</header>
       <div className="form-box">
         <h2>Cadastro</h2>
         <form onSubmit={handleSubmit}>
+          {/* Inputs para nome, email, senha, confirmarSenha */}
+           <input type="text" placeholder="Nome Completo ou Razão Social" value={nome} onChange={(e) => setNome(e.target.value)} required disabled={isLoading} />
+           <input type="email" placeholder="Insira seu e-mail" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={isLoading} />
+           <input type="password" placeholder="Insira sua senha" value={senha} onChange={(e) => setSenha(e.target.value)} required disabled={isLoading} />
+           <input type="password" placeholder="Confirme sua senha" value={confirmarSenha} onChange={(e) => setConfirmarSenha(e.target.value)} required disabled={isLoading} />
+
+          {/* Seleção de Tipo de Pessoa */}
+          <div className="tipo-pessoa-group" style={{ marginBottom: '15px', textAlign: 'left' }}>
+            <label style={{ marginRight: '15px' }}>
+              <input type="radio" name="tipoPessoa" value="Fisica" checked={tipoPessoa === 'Fisica'} onChange={() => setTipoPessoa('Fisica')} disabled={isLoading} /> Pessoa Física
+            </label>
+            <label>
+              <input type="radio" name="tipoPessoa" value="Juridica" checked={tipoPessoa === 'Juridica'} onChange={() => setTipoPessoa('Juridica')} disabled={isLoading} /> Pessoa Jurídica
+            </label>
+          </div>
+
+          {/* Input Documento */}
           <input
-            type="text"
-            placeholder="Insira seu nome"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
+            type="text" // Use text para permitir máscara no futuro se quiser
+            placeholder={tipoPessoa === 'Fisica' ? "CPF (somente números)" : "CNPJ (somente números)"}
+            value={documento}
+            onChange={(e) => setDocumento(e.target.value)} // Você pode limpar aqui ou antes de validar/enviar
             required
             disabled={isLoading}
-          />
-          <input
-            type="email"
-            placeholder="Insira seu e-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={isLoading}
-          />
-          <input
-            type="password"
-            placeholder="Insira sua senha"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-            required
-            disabled={isLoading}
-          />
-          <input
-            type="password"
-            placeholder="Confirme sua senha"
-            value={confirmarSenha}
-            onChange={(e) => setConfirmarSenha(e.target.value)}
-            required
-            disabled={isLoading}
+            maxLength={tipoPessoa === 'Fisica' ? 14 : 18} // Aumenta para acomodar máscara (opcional)
           />
 
-          {/* Exibe a mensagem de erro, se houver */}
-          {error && <p className="error-message">{error}</p>}
+          {error && <p className="error-message" style={{color: 'red', marginBottom: '10px'}}>{error}</p>}
 
           <button type="submit" disabled={isLoading}>
             {isLoading ? 'Cadastrando...' : 'Cadastrar'}
@@ -103,5 +125,4 @@ const RegisterForm: React.FC = () => {
     </div>
   );
 };
-
 export default RegisterForm;

@@ -3,6 +3,9 @@
 // 1. Definindo os possíveis papéis de usuário, exatamente como no backend (Enum TipoUsuario)
 export type UserRole = 'Doador' | 'Colaborador' | 'Administrador';
 
+// --- NOVO TIPO ADICIONADO ---
+// Representa o Enum TipoPessoa do backend
+export type TipoPessoa = 'Fisica' | 'Juridica';
 
 // 1. TIPO ADICIONADO AQUI - Representa o usuário logado no estado da aplicação
 export type User = {
@@ -21,6 +24,9 @@ export type UserDto = {
   nome: string;
   email: string;
   tipoUsuario: UserRole;
+  // --- CAMPOS ADICIONADOS ---
+  tipoPessoa?: TipoPessoa; // Pode ser nulo se não preenchido
+  documento?: string;    // Pode ser nulo se não preenchido
 };
 
 /**
@@ -31,6 +37,9 @@ export type UserRegisterDto = {
   nome: string;
   email: string;
   senha: string;
+  // --- CAMPOS ADICIONADOS ---
+  tipoPessoa: TipoPessoa;
+  documento: string;
 };
 
 /**
@@ -49,6 +58,9 @@ export type UserLoginDto = {
 export type UserUpdateDto = {
   nome: string;
   email: string;
+  // --- CAMPOS ADICIONADOS (OPCIONAIS) ---
+  tipoPessoa?: TipoPessoa;
+  documento?: string;
 };
 
 /**
@@ -56,7 +68,8 @@ export type UserUpdateDto = {
  * Corresponde ao `UpdateUserRoleDTO.cs` no backend.
  */
 export type UpdateUserRoleDto = {
-  tipoUsuario: UserRole;
+  // ATENÇÃO: Corrigido para corresponder ao backend DTO
+  novoTipoUsuario: UserRole;
 };
 
 /**
@@ -65,7 +78,7 @@ export type UpdateUserRoleDto = {
 export type DecodedToken = {
   nameid: string; // ID do usuário
   name: string;   // Nome do usuário
-  role: UserRole; // CORRIGIDO: Agora usa o tipo UserRole com todas as opções
+  role: UserRole; // Papel do usuário
   exp: number;
   iat: number;
 };

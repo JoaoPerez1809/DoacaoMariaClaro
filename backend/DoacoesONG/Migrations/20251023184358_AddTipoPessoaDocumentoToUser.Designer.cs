@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DoacoesONG.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251023184358_AddTipoPessoaDocumentoToUser")]
+    partial class AddTipoPessoaDocumentoToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -39,12 +42,6 @@ namespace DoacoesONG.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("MercadoPagoPreferenceId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PayerIdentificationNumber")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PayerIdentificationType")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Status")

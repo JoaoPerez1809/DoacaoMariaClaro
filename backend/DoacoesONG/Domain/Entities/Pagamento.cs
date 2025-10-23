@@ -22,5 +22,9 @@ namespace Domain.Entities
         // --- Relacionamento com o Doador (opcional) ---
         public int? DoadorId { get; set; }
         public User? Doador { get; set; }
+
+        // --- NOVOS CAMPOS ADICIONADOS ---
+        public string? PayerIdentificationType { get; set; } // Tipo de documento (CPF, CNPJ)
+        public string? PayerIdentificationNumber { get; set; } // Número do documento (apenas números)
     }
 }
