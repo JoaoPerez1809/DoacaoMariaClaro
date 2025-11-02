@@ -5,25 +5,30 @@ using Domain.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions; // ADICIONE ESTE USING
+using System.Text.RegularExpressions; 
 
 namespace Application.Services
 {
     public class UserService : IUserService
     {
-        private readonly IAuthRepository _authRepo; // Note: Usando IAuthRepository aqui
+        // NOTA: Você está injetando IAuthRepository aqui. Isso funciona, mas idealmente
+        // você criaria um IUserRepository para separar as responsabilidades de
+        // autenticação (login/register) das de CRUD (get/update/delete).
+        // Por enquanto, manteremos o IAuthRepository.
+        private readonly IAuthRepository _authRepo; 
 
-        public UserService(IAuthRepository authRepo) // Ajuste a injeção se necessário
+        public UserService(IAuthRepository authRepo) 
         {
             _authRepo = authRepo;
         }
 
+        // Mapeamento completo para GetUserByIdAsync
         public async Task<UserDto?> GetUserByIdAsync(int id)
         {
             var user = await _authRepo.GetUserById(id);
             if (user == null) return null;
 
-            // --- ATUALIZAÇÃO DO MAPEAMENTO ---
+            // Mapeia TODOS os campos da Entidade para o DTO
             return new UserDto
             {
                 Id = user.Id,
@@ -31,15 +36,28 @@ namespace Application.Services
                 Email = user.Email,
                 TipoUsuario = user.TipoUsuario.ToString(),
                 TipoPessoa = user.TipoPessoa?.ToString(),
-                Documento = user.Documento
+                Documento = user.Documento,
+                
+                // Mapeamento dos novos campos
+                Telefone = user.Telefone,
+                Cep = user.Cep,
+                Endereco = user.Endereco,
+                Bairro = user.Bairro,
+                Cidade = user.Cidade,
+                Estado = user.Estado,
+                Genero = user.Genero,
+                ComercioEndereco = user.ComercioEndereco,
+                DataNascimento = user.DataNascimento,
+                DataCadastro = user.DataCadastro
             };
-            // --- FIM DA ATUALIZAÇÃO ---
         }
 
+        // Mapeamento completo para GetAllUsersAsync
+        // NOTA: O seu UserController não usa este método, ele consulta o _context diretamente.
+        // Mas se usasse, este seria o mapeamento correto.
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
             var users = await _authRepo.GetAllAsync();
-            // --- ATUALIZAÇÃO DO MAPEAMENTO ---
             return users.Select(user => new UserDto
             {
                 Id = user.Id,
@@ -47,30 +65,43 @@ namespace Application.Services
                 Email = user.Email,
                 TipoUsuario = user.TipoUsuario.ToString(),
                 TipoPessoa = user.TipoPessoa?.ToString(),
-                Documento = user.Documento
+                Documento = user.Documento,
+                
+                // Mapeamento dos novos campos
+                Telefone = user.Telefone,
+                Cep = user.Cep,
+                Endereco = user.Endereco,
+                Bairro = user.Bairro,
+                Cidade = user.Cidade,
+                Estado = user.Estado,
+                Genero = user.Genero,
+                ComercioEndereco = user.ComercioEndereco,
+                DataNascimento = user.DataNascimento,
+                DataCadastro = user.DataCadastro
             }).ToList();
-            // --- FIM DA ATUALIZAÇÃO ---
         }
 
+        // Mapeamento completo para UpdateUserAsync
         public async Task<UserDto?> UpdateUserAsync(int id, UserUpdateDto userDto)
         {
             var user = await _authRepo.GetUserById(id);
             if (user == null) return null;
 
+            // Campos principais
             user.Nome = userDto.Nome;
             user.Email = userDto.Email;
-
-            // --- LÓGICA PARA ATUALIZAR TIPO E DOCUMENTO (SE FORNECIDOS) ---
+            
+            // Lógica do Documento (existente)
             bool documentoAlterado = false;
             if (userDto.TipoPessoa.HasValue)
             {
                 user.TipoPessoa = userDto.TipoPessoa.Value;
-                documentoAlterado = true; // Se mudou o tipo, revalidar/limpar documento é bom
+                documentoAlterado = true;
             }
 
             if (!string.IsNullOrWhiteSpace(userDto.Documento))
             {
-                user.Documento = Regex.Replace(userDto.Documento, @"[^\d]", ""); // Limpa
+                user.Documento = Regex.Replace(userDto.Documento, @"[^\d]", "");
                 documentoAlterado = true;
             }
             else if (userDto.Documento == "") // Permite limpar o documento
@@ -79,7 +110,7 @@ namespace Application.Services
                 documentoAlterado = true;
             }
 
-            // Revalida se o documento foi alterado ou se o tipo foi alterado
+            // Revalida se o documento foi alterado
             if (documentoAlterado && user.TipoPessoa.HasValue && !string.IsNullOrEmpty(user.Documento))
             {
                  if (user.TipoPessoa == TipoPessoa.Fisica && user.Documento.Length != 11)
@@ -91,13 +122,25 @@ namespace Application.Services
                      throw new System.Exception("CNPJ inválido para atualização. Deve conter 14 dígitos numéricos.");
                  }
             }
-            // --- FIM DA LÓGICA DE ATUALIZAÇÃO ---
+            
+            // --- CORREÇÃO: ATUALIZAÇÃO DOS NOVOS CAMPOS ---
+            // Atribui os valores do DTO para a entidade
+            user.Telefone = userDto.Telefone;
+            user.Cep = userDto.Cep;
+            user.Endereco = userDto.Endereco;
+            user.Bairro = userDto.Bairro;
+            user.Cidade = userDto.Cidade;
+            user.Estado = userDto.Estado;
+            user.Genero = userDto.Genero;
+            user.ComercioEndereco = userDto.ComercioEndereco;
+            user.DataNascimento = userDto.DataNascimento;
+            // DataCadastro não é atualizada aqui
+            // --- FIM DA CORREÇÃO ---
 
             await _authRepo.UpdateUser(user);
             return await GetUserByIdAsync(id); // Retorna DTO atualizado
         }
-
-        // DeleteUserAsync e UpdateUserRoleAsync não precisam de alteração direta aqui
+        
         public async Task<bool> DeleteUserAsync(int id)
         {
             var user = await _authRepo.GetUserById(id);

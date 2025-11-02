@@ -2,7 +2,7 @@ using MercadoPago.Config;
 using MercadoPago.Client.Common;
 using MercadoPago.Client.Payment;
 using MercadoPago.Client.Preference;
-using MercadoPago.Resource.Payment;
+using MercadoPago.Resource.Payment; // Importante ter este
 using MercadoPago.Resource.Preference;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,9 +11,9 @@ using Infrastructure.Data;
 using System.Text.Json.Serialization;
 using System.Linq;
 using System;
-// 1. Adicionar using para Claims
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization; // Para [Authorize]
+using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic; // Para List
 
 [ApiController]
 [Route("api/[controller]")]
@@ -29,22 +29,18 @@ public class PagamentoController : ControllerBase
         MercadoPagoConfig.AccessToken = _config.GetValue<string>("MercadoPago:AccessToken");
     }
 
-    // 2. Adicionar [Authorize] para garantir que apenas usuários logados chamem este método
     [Authorize]
     [HttpPost("criar-preferencia")]
     public async Task<IActionResult> CriarPreferencia([FromBody] DoacaoRequestDto request)
     {
         try
         {
-            // --- 3. Obter o ID do usuário logado a partir do token JWT ---
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var doadorId))
             {
-                // Se não conseguir obter o ID do token (inesperado se [Authorize] estiver ativo)
                 return Unauthorized("Não foi possível identificar o usuário logado.");
             }
-            // --- Fim da obtenção do ID ---
-
+            
             var externalReference = Guid.NewGuid().ToString();
 
             var preferenceRequest = new PreferenceRequest
@@ -61,19 +57,22 @@ public class PagamentoController : ControllerBase
                         UnitPrice = request.Valor,
                     }
                 },
-                Payer = new PreferencePayerRequest // Opcional: Pré-preencher dados do pagador
+                
+                // --- BLOCO 'PaymentMethods' REMOVIDO DAQUI ---
+                // Por padrão, o Mercado Pago incluirá todos os meios de
+                // pagamento ativos na sua conta, incluindo PIX.
+
+                Payer = new PreferencePayerRequest 
                 {
-                    // Você pode buscar o email/nome/documento do usuário 'doadorId' no banco
-                    // e pré-preenchê-los aqui, se desejar. Ex:
-                    // Email = User.FindFirst(ClaimTypes.Email)?.Value, // Se o email estiver no token
-                    // Name = User.FindFirst(ClaimTypes.Name)?.Value, // Se o nome estiver no token
+                    // Email = User.FindFirst(ClaimTypes.Email)?.Value,
+                    // Name = User.FindFirst(ClaimTypes.Name)?.Value,
                 },
                 BackUrls = new PreferenceBackUrlsRequest
                 {
-                    Success = "http://localhost:3000/doacao/sucesso", // Lembre-se do ngrok para testes
-                    Failure = "http://localhost:3000/doacao/falha",   // Lembre-se do ngrok para testes
+                    Success = "http://localhost:3000/doacao/sucesso",
+                    Failure = "http://localhost:3000/doacao/falha",
                 },
-                NotificationUrl = _config.GetValue<string>("MercadoPago:WebhookUrl"), // URL pública
+                NotificationUrl = _config.GetValue<string>("MercadoPago:WebhookUrl"),
             };
 
             var client = new PreferenceClient();
@@ -86,9 +85,8 @@ public class PagamentoController : ControllerBase
                 MercadoPagoPreferenceId = preference.Id,
                 DataCriacao = DateTime.UtcNow,
                 ExternalReference = externalReference,
-                // --- 4. Associar o ID do doador ao pagamento ---
                 DoadorId = doadorId
-                // --- Fim da associação ---
+                // ValorLiquido e TipoPagamento serão preenchidos pelo Webhook
             };
             _context.Pagamentos.Add(novoPagamento);
             await _context.SaveChangesAsync();
@@ -105,9 +103,6 @@ public class PagamentoController : ControllerBase
     [HttpPost("webhook")]
     public async Task<IActionResult> Webhook([FromBody] MercadoPagoNotification notification)
     {
-        // ... (lógica do webhook permanece a mesma) ...
-        // Agora, quando o webhook for executado, o 'pagamentoEmNossoDB'
-        // já terá o DoadorId correto preenchido desde a criação.
         if (notification?.Topic == "payment" && !string.IsNullOrEmpty(notification.ResourceUrl))
         {
             try
@@ -116,7 +111,7 @@ public class PagamentoController : ControllerBase
                 if (long.TryParse(paymentIdString, out long paymentId))
                 {
                     var client = new PaymentClient();
-                    Payment payment = await client.GetAsync(paymentId);
+                    Payment payment = await client.GetAsync(paymentId); // Busca o pagamento completo
 
                     var pagamentoEmNossoDB = await _context.Pagamentos
                         .FirstOrDefaultAsync(p => p.ExternalReference == payment.ExternalReference);
@@ -133,10 +128,19 @@ public class PagamentoController : ControllerBase
                             pagamentoEmNossoDB.PayerIdentificationNumber = payment.Payer.Identification.Number?.Replace(".", "").Replace("-", "");
                         }
 
-                        await _context.SaveChangesAsync();
+                        // --- Esta lógica está correta e vai funcionar ---
+                        
+                        // Captura o tipo de pagamento (ex: "pix", "credit_card", "ticket")
+                        pagamentoEmNossoDB.TipoPagamento = payment.PaymentTypeId;
 
-                        // A lógica opcional de atualizar User agora funcionará, pois DoadorId estará presente
-                        // if (pagamentoEmNossoDB.Status == "approved" && pagamentoEmNossoDB.DoadorId.HasValue && ...) { ... }
+                        // Captura o valor líquido (quanto a ONG realmente recebeu)
+                        if (payment.TransactionDetails != null)
+                        {
+                            pagamentoEmNossoDB.ValorLiquido = payment.TransactionDetails.NetReceivedAmount;
+                        }
+                        // --- Fim da lógica ---
+
+                        await _context.SaveChangesAsync();
                     }
                 }
                 else

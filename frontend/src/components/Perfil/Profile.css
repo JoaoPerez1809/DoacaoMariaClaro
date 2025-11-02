@@ -59,7 +59,8 @@ body {
   padding: 25px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   width: 100%;
-  max-width: 400px;
+  max-width: 400px; /* Ajustei para 500px para mais espaço */
+  max-width: 500px;
   text-align: center;
 }
 
@@ -163,7 +164,9 @@ body {
 }
 
 .form-group input[type="text"],
-.form-group input[type="email"] {
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="date"] {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -224,4 +227,16 @@ body {
 .save-button:disabled {
   background-color: #9fdfaf;
   cursor: not-allowed;
+}
+
+/* --- NOVO ESTILO PARA SUBTÍTULOS --- */
+.card-subtitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #555;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
 }

@@ -1,50 +1,51 @@
 // frontend/src/types/user.ts
 
-// 1. Definindo os possíveis papéis de usuário, exatamente como no backend (Enum TipoUsuario)
 export type UserRole = 'Doador' | 'Colaborador' | 'Administrador';
-
-// --- NOVO TIPO ADICIONADO ---
-// Representa o Enum TipoPessoa do backend
 export type TipoPessoa = 'Fisica' | 'Juridica';
 
-// 1. TIPO ADICIONADO AQUI - Representa o usuário logado no estado da aplicação
 export type User = {
-  id: string;   // Vem do 'nameid' do token
-  name: string; // Vem do 'name' do token
-  role: UserRole; // Vem do 'role' do token
+  id: string;
+  name: string;
+  role: UserRole;
 };
 
-
 /**
- * DTO principal do usuário, usado para exibir dados.
- * Corresponde ao `UserDTO.cs` no backend.
+ * DTO principal do usuário (UserDTO.cs)
  */
 export type UserDto = {
   id: number;
   nome: string;
   email: string;
   tipoUsuario: UserRole;
-  // --- CAMPOS ADICIONADOS ---
-  tipoPessoa?: TipoPessoa; // Pode ser nulo se não preenchido
-  documento?: string;    // Pode ser nulo se não preenchido
+  tipoPessoa?: TipoPessoa;
+  documento?: string;
+  
+  // --- NOVOS CAMPOS ADICIONADOS ---
+  telefone?: string;
+  cep?: string;
+  endereco?: string;
+  bairro?: string;
+  cidade?: string;
+  estado?: string;
+  genero?: string;
+  comercioEndereco?: string;
+  dataNascimento?: string; // Vem como string ISO da API (ou null)
+  dataCadastro: string; // Vem como string ISO da API
 };
 
 /**
- * DTO para o registro de um novo usuário.
- * Corresponde ao `UserRegisterDTO.cs` no backend.
+ * DTO para registro de usuário (UserRegisterDTO.cs)
  */
 export type UserRegisterDto = {
   nome: string;
   email: string;
   senha: string;
-  // --- CAMPOS ADICIONADOS ---
   tipoPessoa: TipoPessoa;
   documento: string;
 };
 
 /**
- * DTO para o login de um usuário.
- * Corresponde ao `UserLoginDTO.cs` no backend.
+ * DTO para login (UserLoginDTO.cs)
  */
 export type UserLoginDto = {
   email: string;
@@ -52,33 +53,40 @@ export type UserLoginDto = {
 };
 
 /**
- * DTO para a atualização dos dados de um usuário.
- * Corresponde ao `UserUpdateDTO.cs` no backend.
+ * DTO para atualização de usuário (UserUpdateDTO.cs)
  */
 export type UserUpdateDto = {
   nome: string;
   email: string;
-  // --- CAMPOS ADICIONADOS (OPCIONAIS) ---
   tipoPessoa?: TipoPessoa;
   documento?: string;
+  
+  // --- NOVOS CAMPOS ADICIONADOS ---
+  telefone?: string;
+  cep?: string;
+  endereco?: string;
+  bairro?: string;
+  cidade?: string;
+  estado?: string;
+  genero?: string;
+  comercioEndereco?: string;
+  dataNascimento?: string; // Envia como string YYYY-MM-DD
 };
 
 /**
- * DTO para a atualização do papel (role) de um usuário.
- * Corresponde ao `UpdateUserRoleDTO.cs` no backend.
+ * DTO para atualização de papel (UpdateUserRoleDTO.cs)
  */
 export type UpdateUserRoleDto = {
-  // ATENÇÃO: Corrigido para corresponder ao backend DTO
   novoTipoUsuario: UserRole;
 };
 
 /**
- * Representa os dados decodificados do token JWT.
+ * Token JWT decodificado
  */
 export type DecodedToken = {
-  nameid: string; // ID do usuário
-  name: string;   // Nome do usuário
-  role: UserRole; // Papel do usuário
+  nameid: string;
+  name: string;
+  role: UserRole;
   exp: number;
   iat: number;
 };
