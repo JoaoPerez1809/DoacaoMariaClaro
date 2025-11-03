@@ -23,7 +23,7 @@ body {
   font-size: 20px;
   font-weight: bold;
   padding: 12px 0;
-  width: 100% !important; /* CORRIGIDO */
+  width: 100% !important;
   margin: 0 !important;
   position: relative;
   left: 0;
@@ -33,14 +33,15 @@ body {
 
 /* Ajusta o container principal */
 .perfil-container {
-  background-color: #f5f5f5; /* Cor de fundo mais clara, similar à imagem */
-  min-height: 100vh; /* Garante altura total da tela */
+  background-color: #f5f5f5;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px; /* Reduz o padding superior */
-  margin: 0; /* Remove qualquer margem */
+  padding: 25px 20px; /* Padding ajustado */
+  margin: 0;
   width: 100%;
+  gap: 25px; /* Espaço entre os cards */
 }
 
 /* Nome */
@@ -48,8 +49,8 @@ body {
   font-size: 28px;
   color: #1a3a7c;
   font-weight: bold;
-  margin-bottom: 25px;
-  margin-top: 10px; /* Adiciona um pequeno espaço após a faixa azul */
+  margin-bottom: 0; 
+  margin-top: 10px;
 }
 
 /* Card */
@@ -59,16 +60,16 @@ body {
   padding: 25px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   width: 100%;
-  max-width: 400px; /* Ajustei para 500px para mais espaço */
-  max-width: 500px;
-  text-align: center;
+  max-width: 600px; 
+  text-align: left; /* Alinha o texto à esquerda por padrão */
 }
 
 .card-title {
   font-size: 20px;
   font-weight: bold;
   color: #1a3a7c;
-  margin-bottom: 15px;
+  margin-bottom: 25px; /* Aumentado espaço */
+  text-align: center; /* Título do card centralizado */
 }
 
 /* Tabela */
@@ -107,22 +108,37 @@ body {
   justify-content: space-between;
   padding: 10px 0;
   border-bottom: 1px solid #eee;
+  /* Adicionado para garantir que o flexbox lide bem com a quebra */
+  gap: 15px; 
 }
 
+/* --- CORREÇÃO APLICADA AQUI (Item 1) --- */
 .info-item strong {
   color: #333;
+  /* Garante que o label não seja "esmagado" pelo texto longo */
+  flex-shrink: 0; 
 }
 
+/* --- CORREÇÃO APLICADA AQUI (Item 2) --- */
 .info-item span {
   color: #555;
+  text-align: right; /* Alinha o texto à direita (como na imagem) */
+  
+  /* Permite que palavras longas quebrem para a próxima linha */
+  overflow-wrap: break-word;
+  word-break: break-word; /* Garante a quebra em todos os navegadores */
+  
+  /* Garante que o span não "empurre" o label em um flex container */
+  min-width: 0;
 }
+
 
 /* Contêiner para os botões de ação */
 .actions {
   display: flex;
   gap: 15px;
   margin-top: 20px;
-  justify-content: center; /* Alinha os botões à direita */
+  justify-content: flex-end; /* Alinha botões à direita */
 }
 
 .actions button {
@@ -229,7 +245,7 @@ body {
   cursor: not-allowed;
 }
 
-/* --- NOVO ESTILO PARA SUBTÍTULOS --- */
+/* --- ESTILO PARA SUBTÍTULOS DENTRO DO CARD --- */
 .card-subtitle {
   font-size: 18px;
   font-weight: 600;

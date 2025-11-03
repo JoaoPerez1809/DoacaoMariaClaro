@@ -47,7 +47,6 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // --- ESTADOS DE EDIÇÃO PARA OS NOVOS CAMPOS ---
   const [isEditing, setIsEditing] = useState(false);
   const [editError, setEditError] = useState<string | null>(null); 
   const [isUpdating, setIsUpdating] = useState(false); 
@@ -65,9 +64,8 @@ const Profile: React.FC = () => {
   const [editEstado, setEditEstado] = useState("");
   const [editGenero, setEditGenero] = useState("");
   const [editComercioEndereco, setEditComercioEndereco] = useState("");
-  const [editDataNascimento, setEditDataNascimento] = useState(""); // String (YYYY-MM-DD)
+  const [editDataNascimento, setEditDataNascimento] = useState(""); 
 
-  // Função para preencher os estados de edição com dados do usuário
   const preencherFormEdicao = (data: UserDto) => {
     setEditNome(data.nome);
     setEditEmail(data.email);
@@ -81,7 +79,7 @@ const Profile: React.FC = () => {
     setEditEstado(data.estado || "");
     setEditGenero(data.genero || "");
     setEditComercioEndereco(data.comercioEndereco || "");
-    setEditDataNascimento(formatDataParaInput(data.dataNascimento)); // Formata para o input
+    setEditDataNascimento(formatDataParaInput(data.dataNascimento)); 
   };
 
   const fetchProfile = async () => {
@@ -90,7 +88,7 @@ const Profile: React.FC = () => {
       setError(null);
       const data = await getMyProfile();
       setUser(data);
-      preencherFormEdicao(data); // Preenche o form de edição
+      preencherFormEdicao(data);
     } catch (err) {
       console.error("Falha ao buscar dados do perfil:", err);
       setError("Não foi possível carregar seu perfil. Tente novamente mais tarde.");
@@ -114,6 +112,7 @@ const Profile: React.FC = () => {
 
       const documentoLimpo = limparDocumento(editDocumento);
 
+      // Validação do Documento (Frontend)
       if (documentoLimpo.length > 0) {
           if (editTipoPessoa === 'Fisica' && !isValidCPF(documentoLimpo)) {
               setEditError("CPF inválido. Verifique os dígitos.");
@@ -130,7 +129,13 @@ const Profile: React.FC = () => {
              setIsUpdating(false);
              return;
            }
+      } else if (editTipoPessoa) {
+           // Se o tipo foi selecionado, mas o documento está vazio (após a limpeza)
+           setEditError("CPF/CNPJ é obrigatório ao selecionar um Tipo de Pessoa.");
+           setIsUpdating(false);
+           return;
       }
+
 
       if (!user) return; 
 
@@ -197,13 +202,14 @@ const Profile: React.FC = () => {
       <div className="perfil-container">
         <h1 className="perfil-nome">{isEditing ? 'Editar Perfil' : user.nome}</h1>
 
-        <div className="card">
-          <h2 className="card-title">Meus Dados</h2>
-
-          {isEditing ? (
-            // --- MODO DE EDIÇÃO ---
-            <form onSubmit={handleUpdate} className='edit-form'>
-              {/* --- Seção de Dados Obrigatórios --- */}
+        {isEditing ? (
+          // --- MODO DE EDIÇÃO ---
+          <form onSubmit={handleUpdate} className='edit-form' style={{width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '25px'}}>
+            
+            {/* Card 1: Dados Obrigatórios e Documentos */}
+            <div className="card">
+              <h2 className="card-title">Dados Obrigatórios</h2>
+              
               <div className="form-group">
                 <label htmlFor="nome">Nome / Razão Social:</label>
                 <input type="text" id="nome" value={editNome} onChange={(e) => setEditNome(e.target.value)} required disabled={isUpdating} />
@@ -213,7 +219,6 @@ const Profile: React.FC = () => {
                  <input type="email" id="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} required disabled={isUpdating} />
               </div>
               
-              {/* --- Seção Documentos --- */}
               <h3 className="card-subtitle">Documentos</h3>
               <div className="form-group tipo-pessoa-edit">
                  <label>Tipo de Pessoa:</label>
@@ -238,75 +243,87 @@ const Profile: React.FC = () => {
                      maxLength={editTipoPessoa === 'Fisica' ? 11 : 14}
                   />
                </div>
+            </div>
 
-              {/* --- Seção de Dados Extras --- */}
-              <h3 className="card-subtitle">Dados Extras (Não Obrigatório)</h3>
-              <div className="form-group">
-                 <label htmlFor="genero">Gênero:</label>
-                 <input type="text" id="genero" placeholder="Masculino, Feminino, Outro, etc." value={editGenero} onChange={(e) => setEditGenero(e.target.value)} disabled={isUpdating} />
-              </div>
-              <div className="form-group">
-                 <label htmlFor="dataNascimento">Data de Nascimento:</label>
-                 <input type="date" id="dataNascimento" value={editDataNascimento} onChange={(e) => setEditDataNascimento(e.target.value)} disabled={isUpdating} />
-              </div>
-              <div className="form-group">
-                 <label htmlFor="telefone">Telefone / Celular:</label>
-                 <input type="tel" id="telefone" placeholder="(XX) XXXXX-XXXX" value={editTelefone} onChange={(e) => setEditTelefone(e.target.value)} disabled={isUpdating} />
-              </div>
-              <div className="form-group">
-                 <label htmlFor="cep">CEP:</label>
-                 <input type="text" id="cep" placeholder="XXXXX-XXX" value={editCep} onChange={(e) => setEditCep(e.target.value)} disabled={isUpdating} />
-              </div>
-              <div className="form-group">
-                 <label htmlFor="endereco">Endereço (Rua, N°, Compl.):</label>
-                 <input type="text" id="endereco" value={editEndereco} onChange={(e) => setEditEndereco(e.target.value)} disabled={isUpdating} />
-              </div>
-              <div className="form-group">
-                 <label htmlFor="bairro">Bairro:</label>
-                 <input type="text" id="bairro" value={editBairro} onChange={(e) => setEditBairro(e.target.value)} disabled={isUpdating} />
-              </div>
-              <div className="form-group">
-                 <label htmlFor="cidade">Cidade:</label>
-                 <input type="text" id="cidade" value={editCidade} onChange={(e) => setEditCidade(e.target.value)} disabled={isUpdating} />
-              </div>
-              <div className="form-group">
-                 <label htmlFor="estado">Estado (Ex: SP):</label>
-                 <input type="text" id="estado" value={editEstado} onChange={(e) => setEditEstado(e.target.value)} disabled={isUpdating} maxLength={2} />
-              </div>
-              <div className="form-group">
-                 <label htmlFor="comercioEndereco">Endereço Comercial:</label>
-                 <input type="text" id="comercioEndereco" value={editComercioEndereco} onChange={(e) => setEditComercioEndereco(e.target.value)} disabled={isUpdating} />
-              </div>
+            {/* Card 2: Dados Extras */}
+            <div className="card">
+                <h2 className="card-title">Dados Extras (Não Obrigatório)</h2>
 
+                <div className="form-group">
+                   <label htmlFor="genero">Gênero:</label>
+                   <input type="text" id="genero" placeholder="Masculino, Feminino, Outro, etc." value={editGenero} onChange={(e) => setEditGenero(e.target.value)} disabled={isUpdating} />
+                </div>
+                <div className="form-group">
+                   <label htmlFor="dataNascimento">Data de Nascimento:</label>
+                   <input type="date" id="dataNascimento" value={editDataNascimento} onChange={(e) => setEditDataNascimento(e.target.value)} disabled={isUpdating} />
+                </div>
+                <div className="form-group">
+                   <label htmlFor="telefone">Telefone / Celular:</label>
+                   <input type="tel" id="telefone" placeholder="(XX) XXXXX-XXXX" value={editTelefone} onChange={(e) => setEditTelefone(e.target.value)} disabled={isUpdating} />
+                </div>
+                <div className="form-group">
+                   <label htmlFor="cep">CEP:</label>
+                   <input type="text" id="cep" placeholder="XXXXX-XXX" value={editCep} onChange={(e) => setEditCep(e.target.value)} disabled={isUpdating} />
+                </div>
+                <div className="form-group">
+                   <label htmlFor="endereco">Endereço (Rua, N°, Compl.):</label>
+                   <input type="text" id="endereco" value={editEndereco} onChange={(e) => setEditEndereco(e.target.value)} disabled={isUpdating} />
+                </div>
+                <div className="form-group">
+                   <label htmlFor="bairro">Bairro:</label>
+                   <input type="text" id="bairro" value={editBairro} onChange={(e) => setEditBairro(e.target.value)} disabled={isUpdating} />
+                </div>
+                <div className="form-group">
+                   <label htmlFor="cidade">Cidade:</label>
+                   <input type="text" id="cidade" value={editCidade} onChange={(e) => setEditCidade(e.target.value)} disabled={isUpdating} />
+                </div>
+                <div className="form-group">
+                   <label htmlFor="estado">Estado (Ex: SP):</label>
+                   <input type="text" id="estado" value={editEstado} onChange={(e) => setEditEstado(e.target.value)} disabled={isUpdating} maxLength={2} />
+                </div>
+                <div className="form-group">
+                   <label htmlFor="comercioEndereco">Endereço Comercial:</label>
+                   <input type="text" id="comercioEndereco" value={editComercioEndereco} onChange={(e) => setEditComercioEndereco(e.target.value)} disabled={isUpdating} />
+                </div>
 
-               {editError && <p className="error-message" style={{ color: 'red', marginTop: '10px', textAlign: 'center' }}>{editError}</p>}
+                 {editError && <p className="error-message" style={{ color: 'red', marginTop: '10px', textAlign: 'center' }}>{editError}</p>}
 
-               <div className="edit-actions">
-                   <button type="button" onClick={() => { setIsEditing(false); setEditError(null); user && preencherFormEdicao(user); }} disabled={isUpdating} className='cancel-button'>Cancelar</button>
-                   <button type="submit" disabled={isUpdating} className='save-button'>
-                      {isUpdating ? 'Salvando...' : 'Salvar Alterações'}
-                   </button>
-               </div>
-            </form>
-          ) : (
-            // --- MODO DE VISUALIZAÇÃO ---
-            <>
-              {/* Seção Dados Obrigatórios */}
+                 <div className="edit-actions">
+                     <button type="button" onClick={() => { setIsEditing(false); setEditError(null); user && preencherFormEdicao(user); }} disabled={isUpdating} className='cancel-button'>Cancelar</button>
+                     <button type="submit" disabled={isUpdating} className='save-button'>
+                        {isUpdating ? 'Salvando...' : 'Salvar Alterações'}
+                     </button>
+                 </div>
+            </div>
+            
+          </form>
+        ) : (
+          // --- MODO DE VISUALIZAÇÃO ---
+          <>
+            {/* Card 1: Dados Principais */}
+            <div className="card">
+              <h2 className="card-title">Meus Dados</h2>
               <div className="info-grid">
+                <div className="info-item"><strong>Nome:</strong> <span>{user.nome}</span></div>
                 <div className="info-item"><strong>Email:</strong> <span>{user.email}</span></div>
                 <div className="info-item"><strong>Tipo de Conta:</strong> <span>{user.tipoUsuario}</span></div>
                 <div className="info-item"><strong>Membro desde:</strong> <span>{formatDataExibicao(user.dataCadastro)}</span></div>
               </div>
               
-              {/* Seção Documentos */}
               <h3 className="card-subtitle">Documentos</h3>
               <div className="info-grid">
                 <div className="info-item"><strong>Tipo de Pessoa:</strong> <span>{user.tipoPessoa || 'Não informado'}</span></div>
                 <div className="info-item"><strong>CPF/CNPJ:</strong> <span>{user.documento || 'Não informado'}</span></div>
               </div>
 
-              {/* Seção Dados Extras */}
-              <h3 className="card-subtitle">Dados Extras (Não Obrigatório)</h3>
+               <div className="actions">
+                  <button className="edit-button" onClick={() => setIsEditing(true)}>Editar Perfil</button>
+               </div>
+            </div>
+
+            {/* Card 2: Dados Extras */}
+            <div className="card">
+              <h2 className="card-title">Dados Extras (Não Obrigatório)</h2>
               <div className="info-grid">
                 <div className="info-item"><strong>Telefone:</strong> <span>{user.telefone || 'Não informado'}</span></div>
                 <div className="info-item"><strong>Gênero:</strong> <span>{user.genero || 'Não informado'}</span></div>
@@ -318,16 +335,11 @@ const Profile: React.FC = () => {
                 <div className="info-item"><strong>Estado:</strong> <span>{user.estado || 'Não informado'}</span></div>
                 <div className="info-item"><strong>End. Comercial:</strong> <span>{user.comercioEndereco || 'Não informado'}</span></div>
               </div>
+            </div>
+          </>
+        )}
 
-               <div className="actions">
-                  <button className="edit-button" onClick={() => setIsEditing(true)}>Editar Perfil</button>
-               </div>
-            </>
-          )}
-        </div>
-
-        {/* Card de Histórico de Doações (Ainda sem dados) */}
-        <br />
+        {/* Card 3: Histórico de Doações */}
         <div className="card">
           <h2 className="card-title">Histórico de Doações</h2>
           <table className="tabela-doacoes">

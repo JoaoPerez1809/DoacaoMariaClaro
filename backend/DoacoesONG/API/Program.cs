@@ -36,6 +36,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 // Adicione o IUserRepository se ainda não estiver aqui (necessário pelo UserService)
 builder.Services.AddScoped<IUserRepository, UserRepository>(); 
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // 3. Configuração do CORS
 builder.Services.AddCors(options =>

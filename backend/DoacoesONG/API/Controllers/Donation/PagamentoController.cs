@@ -14,6 +14,7 @@ using System;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic; // Para List
+using Application.Interfaces; // --- 1. ADICIONE O USING DO IEmailService ---
 
 [ApiController]
 [Route("api/[controller]")]
@@ -22,10 +23,14 @@ public class PagamentoController : ControllerBase
     private readonly IConfiguration _config;
     private readonly AppDbContext _context;
 
-    public PagamentoController(IConfiguration config, AppDbContext context)
+    private readonly IEmailService _emailService;
+
+    // --- 3. INJETE O IEmailService NO CONSTRUTOR ---
+    public PagamentoController(IConfiguration config, AppDbContext context, IEmailService emailService)
     {
         _config = config;
         _context = context;
+        _emailService = emailService; // --- Atribua aqui
         MercadoPagoConfig.AccessToken = _config.GetValue<string>("MercadoPago:AccessToken");
     }
 
@@ -58,10 +63,6 @@ public class PagamentoController : ControllerBase
                     }
                 },
                 
-                // --- BLOCO 'PaymentMethods' REMOVIDO DAQUI ---
-                // Por padrão, o Mercado Pago incluirá todos os meios de
-                // pagamento ativos na sua conta, incluindo PIX.
-
                 Payer = new PreferencePayerRequest 
                 {
                     // Email = User.FindFirst(ClaimTypes.Email)?.Value,
@@ -111,13 +112,21 @@ public class PagamentoController : ControllerBase
                 if (long.TryParse(paymentIdString, out long paymentId))
                 {
                     var client = new PaymentClient();
-                    Payment payment = await client.GetAsync(paymentId); // Busca o pagamento completo
+                    Payment payment = await client.GetAsync(paymentId); 
 
                     var pagamentoEmNossoDB = await _context.Pagamentos
+                        // --- 4. MUITO IMPORTANTE: Inclua o Doador (User) na consulta ---
+                        .Include(p => p.Doador) 
                         .FirstOrDefaultAsync(p => p.ExternalReference == payment.ExternalReference);
 
                     if (pagamentoEmNossoDB != null)
                     {
+                        // Evita processar o mesmo webhook duas vezes
+                        if(pagamentoEmNossoDB.Status == "approved")
+                        {
+                            return Ok("Pagamento já foi processado anteriormente.");
+                        }
+
                         pagamentoEmNossoDB.Status = payment.Status;
                         pagamentoEmNossoDB.MercadoPagoPaymentId = payment.Id;
                         pagamentoEmNossoDB.DataAtualizacao = DateTime.UtcNow;
@@ -128,18 +137,45 @@ public class PagamentoController : ControllerBase
                             pagamentoEmNossoDB.PayerIdentificationNumber = payment.Payer.Identification.Number?.Replace(".", "").Replace("-", "");
                         }
 
-                        // --- Esta lógica está correta e vai funcionar ---
-                        
-                        // Captura o tipo de pagamento (ex: "pix", "credit_card", "ticket")
                         pagamentoEmNossoDB.TipoPagamento = payment.PaymentTypeId;
-
-                        // Captura o valor líquido (quanto a ONG realmente recebeu)
                         if (payment.TransactionDetails != null)
                         {
                             pagamentoEmNossoDB.ValorLiquido = payment.TransactionDetails.NetReceivedAmount;
                         }
-                        // --- Fim da lógica ---
 
+                        // --- 5. LÓGICA DE ENVIO DE E-MAIL ---
+                        if (pagamentoEmNossoDB.Status == "approved" && pagamentoEmNossoDB.Doador != null)
+                        {
+                            // Salva as alterações no banco ANTES de tentar enviar o e-mail
+                            await _context.SaveChangesAsync();
+
+                            // Dispara o e-mail de agradecimento
+                            try
+                            {
+                                var doador = pagamentoEmNossoDB.Doador;
+                                var subject = "Sua doação foi recebida!";
+                                var htmlContent = $"Olá {doador.Nome},<br><br>" +
+                                                  $"Recebemos sua doação no valor de R$ {pagamentoEmNossoDB.Valor.ToString("F2")}. " +
+                                                  "Sua contribuição é muito importante e faz toda a diferença para nós.<br><br>" +
+                                                  "Muito obrigado!<br>" +
+                                                  "Equipe Instituto Maria Claro";
+                                                  
+                                var plainTextContent = $"Olá {doador.Nome}, Recebemos sua doação no valor de R$ {pagamentoEmNossoDB.Valor.ToString("F2")}. Sua contribuição é muito importante e faz toda a diferença para nós. Muito obrigado! Equipe Instituto Maria Claro";
+
+                                // Usamos 'await' para garantir que o envio seja tentado
+                                await _emailService.SendEmailAsync(doador.Email, doador.Nome, subject, plainTextContent, htmlContent);
+                            }
+                            catch (Exception ex)
+                            {
+                                // Se o e-mail falhar, o webhook não deve falhar.
+                                // Apenas registramos o erro no console.
+                                Console.WriteLine($"[AVISO SendGrid] O pagamento {payment.Id} foi APROVADO, mas o e-mail de agradecimento para {pagamentoEmNossoDB.Doador.Email} FALHOU: {ex.Message}");
+                            }
+                            
+                            return Ok(); // Retorna OK (já salvamos)
+                        }
+                        
+                        // Salva as alterações (caso não tenha entrado no 'if' de aprovação)
                         await _context.SaveChangesAsync();
                     }
                 }
