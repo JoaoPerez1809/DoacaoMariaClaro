@@ -1,0 +1,119 @@
+/* Overlay que cobre a tela */
+.modal-overlay {
+  position: fixed; /* Fica fixo na tela */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Fundo semi-transparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001; /* Fica acima de outros elementos */
+}
+
+/* Conteúdo do modal */
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative; /* Para posicionar o botão de fechar */
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh; /* Altura máxima */
+  overflow-y: auto; /* Adiciona scroll se necessário */
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #2a4d9b; /* Azul do header do dashboard */
+  text-align: center;
+}
+
+/* Botão de fechar (X) */
+.modal-close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #888;
+  cursor: pointer;
+}
+.modal-close-button:hover {
+  color: #333;
+}
+
+/* Grid para exibir os detalhes */
+.user-details-grid {
+  display: grid;
+  gap: 12px; /* Espaço entre os itens */
+  text-align: left;
+}
+
+.detail-item {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee; /* Linha separadora sutil */
+}
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-item strong {
+  color: #333;
+  margin-right: 8px;
+  display: inline-block;
+  min-width: 100px; /* Alinha os valores */
+}
+
+/* Adiciona um estilo sutil ao botão na tabela */
+.tabela-usuarios .details-button {
+    padding: 4px 8px;
+    font-size: 12px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.tabela-usuarios .details-button:hover {
+    background-color: #ddd;
+}
+
+
+/* Adiciona estilo para hover nas linhas da tabela */
+.tabela-usuarios tbody tr:hover {
+    background-color: #f0f8ff; /* Azul claro suave */
+}
+
+/* CSS para os controles de paginação */
+.pagination-controls {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.pagination-controls button {
+  background-color: #2a4d9b;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pagination-controls button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination-controls span {
+  font-weight: bold;
+}

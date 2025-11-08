@@ -1,0 +1,86 @@
+/* src/components/auth/AuthForms.module.css */
+
+/* Container externo para centralizar o card */
+.authPage {
+    display: flex;
+    justify-content: center; /* centraliza horizontalmente */
+    align-items: center;     /* centraliza verticalmente */
+    height: 100vh;           /* ocupa toda a altura da tela */
+    background-color: var(--cor-fundo-pagina); /* opcional, define o fundo da página */
+}
+
+.authCard {
+    background-color: var(--cor-fundo-card);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+/* restante do seu CSS continua igual */
+.cardTitle {
+    color: #000;
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 25px;
+}
+
+.input {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--cor-fundo-input);
+    border: 1px solid #D9D9D9;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.inputWrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.inputWrapper .input {
+    padding-right: 40px;
+}
+
+.passwordIcon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #555;
+}
+
+.button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--cor-botao-entrar);
+    color: var(--cor-texto-claro);
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.link {
+    color: var(--cor-link);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 14px;
+}

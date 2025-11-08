@@ -1,0 +1,258 @@
+/* ====== RESET ====== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body, html, #root {
+  height: 100%;
+}
+
+/* Remove qualquer estilo global que possa interferir */
+body {
+  background-color: #f5f5f5 !important;
+}
+
+/* Faixa azul com "Perfil" - encostando no menu e cobrindo toda a tela */
+.topbar {
+  background-color: #1a3a7c !important;
+  color: white;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 12px 0;
+  width: 100% !important;
+  margin: 0 !important;
+  position: relative;
+  left: 0;
+  display: block !important;
+  z-index: 10;
+}
+
+/* Ajusta o container principal */
+.perfil-container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px 20px; /* Padding ajustado */
+  margin: 0;
+  width: 100%;
+  gap: 25px; /* Espaço entre os cards */
+}
+
+/* Nome */
+.perfil-nome {
+  font-size: 28px;
+  color: #1a3a7c;
+  font-weight: bold;
+  margin-bottom: 0; 
+  margin-top: 10px;
+}
+
+/* Card */
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  width: 100%;
+  max-width: 600px; 
+  text-align: left; /* Alinha o texto à esquerda por padrão */
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1a3a7c;
+  margin-bottom: 25px; /* Aumentado espaço */
+  text-align: center; /* Título do card centralizado */
+}
+
+/* Tabela */
+.tabela-doacoes {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.tabela-doacoes th,
+.tabela-doacoes td {
+  padding: 10px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.tabela-doacoes th {
+  font-weight: bold;
+  color: #333;
+  border-bottom: 1px solid #999;
+}
+
+.tabela-doacoes td {
+  color: #000;
+}
+/* Estilos para a nova seção de informações */
+.info-grid {
+  display: grid;
+  gap: 15px;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  /* Adicionado para garantir que o flexbox lide bem com a quebra */
+  gap: 15px; 
+}
+
+/* --- CORREÇÃO APLICADA AQUI (Item 1) --- */
+.info-item strong {
+  color: #333;
+  /* Garante que o label não seja "esmagado" pelo texto longo */
+  flex-shrink: 0; 
+}
+
+/* --- CORREÇÃO APLICADA AQUI (Item 2) --- */
+.info-item span {
+  color: #555;
+  text-align: right; /* Alinha o texto à direita (como na imagem) */
+  
+  /* Permite que palavras longas quebrem para a próxima linha */
+  overflow-wrap: break-word;
+  word-break: break-word; /* Garante a quebra em todos os navegadores */
+  
+  /* Garante que o span não "empurre" o label em um flex container */
+  min-width: 0;
+}
+
+
+/* Contêiner para os botões de ação */
+.actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  justify-content: flex-end; /* Alinha botões à direita */
+}
+
+.actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.actions button:hover {
+    transform: translateY(-2px);
+}
+
+.edit-button {
+  background-color: #3b82f6; /* Azul */
+  color: white;
+}
+
+.delete-button {
+  background-color: #ef4444; /* Vermelho */
+  color: white;
+}
+
+.edit-form {
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group input:disabled {
+  background-color: #eee;
+  cursor: not-allowed;
+}
+
+.tipo-pessoa-edit div {
+  display: flex;
+  gap: 15px;
+  margin-top: 5px;
+}
+.tipo-pessoa-edit label {
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.tipo-pessoa-edit input[type="radio"] {
+  margin-right: 5px;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end; /* Alinha botões à direita */
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.edit-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.cancel-button {
+  background-color: #ccc;
+  color: #333;
+}
+.cancel-button:hover {
+  background-color: #bbb;
+}
+
+.save-button {
+  background-color: #28a745; /* Verde */
+  color: white;
+}
+.save-button:hover {
+  background-color: #218838;
+}
+.save-button:disabled {
+  background-color: #9fdfaf;
+  cursor: not-allowed;
+}
+
+/* --- ESTILO PARA SUBTÍTULOS DENTRO DO CARD --- */
+.card-subtitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #555;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}

@@ -1,0 +1,268 @@
+/* Layout principal */
+.dashboard-container {
+  display: flex;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa; /* Fundo geral um pouco mais claro */
+  min-height: 100vh; /* Ocupa a altura toda */
+}
+
+/* ==================== */
+/* MENU LATERAL AMARELO */
+/* ==================== */
+.sidebar {
+  background-color: #f39c12;
+  width: 60px; /* Mantém largura fixa para ícones */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  flex-shrink: 0; /* Impede que a sidebar encolha */
+  height: 100vh; /* Ocupa a altura toda */
+  position: sticky; /* Fica fixa ao rolar */
+  top: 0;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%; /* Para o background do item ativo ocupar a largura */
+}
+
+.sidebar li {
+  margin: 15px 0; /* Menor espaçamento */
+  font-size: 20px; /* Tamanho do ícone */
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  padding: 12px 0; /* Padding vertical */
+  border-radius: 0; /* Remove borda arredondada */
+  text-align: center; /* Centraliza o ícone */
+  width: 100%;
+}
+
+.sidebar li:hover {
+  background-color: rgba(255, 255, 255, 0.2); /* Efeito hover sutil */
+  color: white;
+}
+.sidebar li.active {
+  background-color: #e0a800; /* Destaque mais forte */
+  color: white;
+}
+
+/* Ícone de Sair na parte inferior (Opcional) */
+.sidebar li:last-child {
+    margin-top: auto; /* Empurra para baixo */
+    margin-bottom: 20px;
+}
+
+/* ========================= */
+/* ÁREA DE CONTEÚDO PRINCIPAL */
+/* ========================= */
+.dashboard-content {
+  flex: 1; /* Ocupa o restante do espaço */
+  display: flex;
+  flex-direction: column;
+  /* Não precisa de background aqui, usa o do container */
+  overflow-y: auto; /* Permite scroll vertical se necessário */
+}
+
+/* Cabeçalho azul (agora dentro do .dashboard-content) */
+.dashboard-header {
+  background-color: #2a4d9b; /* Azul */
+  color: white;
+  text-align: center;
+  padding: 15px 20px; /* Padding ajustado */
+  font-size: 18px; /* Tamanho ajustado */
+  font-weight: bold;
+  width: 100%;
+  flex-shrink: 0; /* Não encolhe */
+  /* Remover position: sticky se não quiser que ele fixe no topo ao rolar */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Conteúdo principal (abaixo do header azul) */
+.dashboard-main {
+  padding: 25px 30px; /* Padding interno */
+  flex-grow: 1; /* Ocupa o espaço restante vertical */
+  /* Não precisa mais centralizar texto aqui */
+}
+
+/* Título da Seção (Ex: Gerenciamento de Usuários) */
+.section-title { /* Renomeado de .titulo */
+  font-size: 22px; /* Tamanho ajustado */
+  color: #333; /* Cor mais escura */
+  margin-bottom: 25px;
+  text-align: left; /* Alinha à esquerda */
+  font-weight: 600;
+}
+
+/* --- ÁREA DE FILTROS --- */
+.filter-controls {
+  background-color: #ffffff; /* Fundo branco */
+  padding: 15px 20px;
+  border-radius: 6px;
+  margin-bottom: 25px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 15px; /* Espaço entre os filtros */
+  align-items: center;
+  flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+}
+
+.search-input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  flex-grow: 1; /* Ocupa espaço disponível */
+  min-width: 200px; /* Largura mínima */
+}
+
+.filter-select {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white; /* Garante fundo branco */
+  min-width: 150px;
+}
+/* --- FIM DA ÁREA DE FILTROS --- */
+
+/* Caixa da tabela */
+.tabela-container {
+  background: #ffffff; /* Fundo branco */
+  padding: 0; /* Padding será nas células */
+  border-radius: 6px; /* Borda arredondada suave */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow-x: auto; /* Permite scroll horizontal na tabela se necessário */
+  width: 100%; /* Ocupa toda a largura disponível */
+}
+
+/* Estilo da tabela */
+.tabela {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px; /* Tamanho de fonte base */
+}
+
+.tabela th,
+.tabela td {
+  padding: 12px 15px; /* Padding interno das células */
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0; /* Linha separadora mais suave */
+  white-space: nowrap; /* Impede quebra de linha indesejada */
+}
+
+.tabela th {
+  background-color: #f8f9fa; /* Fundo levemente cinza para cabeçalho */
+  color: #555; /* Cor do texto do cabeçalho */
+  font-weight: 600; /* Mais negrito */
+  text-transform: uppercase; /* Opcional: Maiúsculas */
+  font-size: 12px; /* Fonte menor para cabeçalho */
+}
+
+.tabela td {
+  color: #333; /* Cor do texto das células */
+}
+
+/* Hover nas linhas */
+.tabela tbody tr:hover {
+  background-color: #f1f1f1; /* Fundo suave ao passar o mouse */
+  cursor: pointer;
+}
+
+/* Remove borda da última linha */
+.tabela tr:last-child td {
+  border-bottom: none;
+}
+
+/* Botão de detalhes na tabela */
+.details-button {
+    padding: 5px 10px;
+    font-size: 12px;
+    background-color: #e0e0e0; /* Cinza claro */
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.details-button:hover {
+    background-color: #d0d0d0;
+}
+
+/* --- BOTÃO EDITAR ROLE --- */
+.edit-role-button {
+    margin-left: 8px; /* Espaço após o botão de detalhes */
+    padding: 5px 8px;
+    font-size: 12px;
+    background-color: #ffc107; /* Amarelo */
+    color: #333;
+    border: 1px solid #dda700;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.edit-role-button:hover {
+    background-color: #e0a800;
+}
+/* --- FIM BOTÃO EDITAR ROLE --- */
+
+/* Estilos para paginação */
+.pagination-controls {
+  margin-top: 25px; /* Aumenta espaço acima */
+  display: flex;
+  justify-content: center; /* Centraliza */
+  align-items: center;
+  gap: 15px;
+}
+
+.pagination-controls button {
+  background-color: #6c757d; /* Cinza */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.2s;
+}
+.pagination-controls button:hover:not(:disabled) {
+    background-color: #5a6268;
+}
+
+.pagination-controls button:disabled {
+  background-color: #e0e0e0; /* Cinza mais claro para desabilitado */
+  color: #999;
+  cursor: not-allowed;
+}
+
+.pagination-controls span {
+  font-weight: 500; /* Peso médio */
+  color: #555;
+  font-size: 14px;
+}
+
+/* Responsividade (Ajustes básicos) */
+@media (max-width: 768px) {
+  .dashboard-main {
+    padding: 15px;
+  }
+  .filter-controls {
+    flex-direction: column;
+    align-items: stretch; /* Faz filtros ocuparem a largura */
+  }
+  .search-input, .filter-select {
+    min-width: 0; /* Remove largura mínima */
+    width: 100%;
+  }
+  .tabela th, .tabela td {
+    padding: 10px 8px; /* Menor padding em telas pequenas */
+    white-space: normal; /* Permite quebra de linha se necessário */
+  }
+}

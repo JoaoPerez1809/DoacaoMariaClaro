@@ -1,0 +1,68 @@
+###########################
+Ficheiros Globais e do SO
+###########################
+Ficheiros do Windows
+Thumbs.db
+ehthumbs.db
+
+Ficheiros do macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+Ficheiros do Editor (VSCode)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+###########################
+Backend (.NET / C#)
+###########################
+Pastas de compilação
+**/[Bb]in/
+**/[Oo]bj/
+
+Ficheiros de configuração de utilizador
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+Ficheiros de build do Rider
+.idea/
+*.sln.iml
+
+Ficheiro do banco de dados SQLite (se usar)
+*.db
+*.db-journal
+
+###########################
+Frontend (Next.js / Node)
+###########################
+Pasta de dependências
+**/node_modules/
+
+Pasta de build do Next.js
+**/.next/
+**/out/
+
+Ficheiros de log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+Ficheiros de cache e outros
+.npm
+.pnp.*
+
+###########################
+Ficheiros Sensíveis
+###########################
+IMPORTANTE: Ignora TODOS os ficheiros .env que contêm senhas e chaves de API
+!.env
+
+
+Exceção: O ficheiro de exemplo, que não tem segredos, PODE ir para o Git.
+!.env.example

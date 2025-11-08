@@ -1,107 +1,160 @@
 using Domain.Entities;
-using API.DTOs;
+using API.DTOs.UserRep;
+using Application.Interfaces;
+using Domain.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Text.RegularExpressions; 
 
-public class UserService : IUserService
+namespace Application.Services
 {
-    private readonly IUserRepository _userRepository;
-
-    public UserService(IUserRepository userRepository)
+    public class UserService : IUserService
     {
-        _userRepository = userRepository;
-    }
+        // NOTA: Você está injetando IAuthRepository aqui. Isso funciona, mas idealmente
+        // você criaria um IUserRepository para separar as responsabilidades de
+        // autenticação (login/register) das de CRUD (get/update/delete).
+        // Por enquanto, manteremos o IAuthRepository.
+        private readonly IAuthRepository _authRepo; 
 
-    public UserDTO RegisterUser(UserDTO userDto)
-    {
-        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
-
-        var user = new User 
+        public UserService(IAuthRepository authRepo) 
         {
-            Name = userDto.Name, 
-            Email = userDto.Email, 
-            Phone = userDto.Phone,
-            Address = userDto.Address,
-            Password = hashedPassword,
-            Photo = userDto.Photo,
-            TipoUsuario = userDto.TipoUsuario
-        };
-        _userRepository.Add(user);
+            _authRepo = authRepo;
+        }
 
-        return userDto;
-    }
-
-    public UserDTO? GetUserDetails(int id)
-    {
-        var user = _userRepository.GetById(id);
-        return user != null ? new UserDTO 
-        { 
-            Id = user.Id,
-            Name = user.Name, 
-            Email = user.Email,
-            Phone = user.Phone,
-            Address = user.Address,
-            Password = user.Password,
-            Photo = user.Photo,
-            TipoUsuario = user.TipoUsuario
-        } : null;
-    }
-
-    public List<UserDTO> GetAllUsers()
-    {
-        return _userRepository.ListAll().Select(user => new UserDTO
+        // Mapeamento completo para GetUserByIdAsync
+        public async Task<UserDto?> GetUserByIdAsync(int id)
         {
-            Id = user.Id,
-            Name = user.Name,
-            Email = user.Email,
-            Phone = user.Phone,
-            Address = user.Address,
-            Password = user.Password,
-            Photo = user.Photo,
-            TipoUsuario = user.TipoUsuario
-        }).ToList();
-    }
+            var user = await _authRepo.GetUserById(id);
+            if (user == null) return null;
 
-    public UserDTO? UpdateUser(int id, UserDTO userDto)
-    {
-        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
-        var user = _userRepository.GetById(id);
-        if (user == null) return null;
+            // Mapeia TODOS os campos da Entidade para o DTO
+            return new UserDto
+            {
+                Id = user.Id,
+                Nome = user.Nome,
+                Email = user.Email,
+                TipoUsuario = user.TipoUsuario.ToString(),
+                TipoPessoa = user.TipoPessoa?.ToString(),
+                Documento = user.Documento,
+                
+                // Mapeamento dos novos campos
+                Telefone = user.Telefone,
+                Cep = user.Cep,
+                Endereco = user.Endereco,
+                Bairro = user.Bairro,
+                Cidade = user.Cidade,
+                Estado = user.Estado,
+                Genero = user.Genero,
+                ComercioEndereco = user.ComercioEndereco,
+                DataNascimento = user.DataNascimento,
+                DataCadastro = user.DataCadastro
+            };
+        }
 
-        user.Name = userDto.Name;
-        user.Email = userDto.Email;
-        user.Phone = userDto.Phone;
-        user.Address = userDto.Address;
-        user.Password = hashedPassword;
-        user.Photo = userDto.Photo;
-        user.TipoUsuario = userDto.TipoUsuario;
-
-        _userRepository.Update(user);
-
-        return userDto;
-    }
-
-    public bool DeleteUser(int id)
-    {
-        var user = _userRepository.GetById(id);
-        if (user == null) return false;
-        _userRepository.Delete(id);
-        return true;
-    }
-
-    public UserDTO? ValidateUser(string email, string password)
-    {
-        var user = _userRepository.GetByEmail(email);
-        if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
-            return null;
-
-        return new UserDTO
+        // Mapeamento completo para GetAllUsersAsync
+        // NOTA: O seu UserController não usa este método, ele consulta o _context diretamente.
+        // Mas se usasse, este seria o mapeamento correto.
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
-            Id = user.Id,
-            Name = user.Name,
-            Email = user.Email,
-            Phone = user.Phone,
-            Address = user.Address,
-            Photo = user.Photo,
-            TipoUsuario = user.TipoUsuario
-        };
+            var users = await _authRepo.GetAllAsync();
+            return users.Select(user => new UserDto
+            {
+                Id = user.Id,
+                Nome = user.Nome,
+                Email = user.Email,
+                TipoUsuario = user.TipoUsuario.ToString(),
+                TipoPessoa = user.TipoPessoa?.ToString(),
+                Documento = user.Documento,
+                
+                // Mapeamento dos novos campos
+                Telefone = user.Telefone,
+                Cep = user.Cep,
+                Endereco = user.Endereco,
+                Bairro = user.Bairro,
+                Cidade = user.Cidade,
+                Estado = user.Estado,
+                Genero = user.Genero,
+                ComercioEndereco = user.ComercioEndereco,
+                DataNascimento = user.DataNascimento,
+                DataCadastro = user.DataCadastro
+            }).ToList();
+        }
+
+        // Mapeamento completo para UpdateUserAsync
+        public async Task<UserDto?> UpdateUserAsync(int id, UserUpdateDto userDto)
+        {
+            var user = await _authRepo.GetUserById(id);
+            if (user == null) return null;
+
+            // Campos principais
+            user.Nome = userDto.Nome;
+            user.Email = userDto.Email;
+            
+            // Lógica do Documento (existente)
+            bool documentoAlterado = false;
+            if (userDto.TipoPessoa.HasValue)
+            {
+                user.TipoPessoa = userDto.TipoPessoa.Value;
+                documentoAlterado = true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(userDto.Documento))
+            {
+                user.Documento = Regex.Replace(userDto.Documento, @"[^\d]", "");
+                documentoAlterado = true;
+            }
+            else if (userDto.Documento == "") // Permite limpar o documento
+            {
+                user.Documento = null;
+                documentoAlterado = true;
+            }
+
+            // Revalida se o documento foi alterado
+            if (documentoAlterado && user.TipoPessoa.HasValue && !string.IsNullOrEmpty(user.Documento))
+            {
+                 if (user.TipoPessoa == TipoPessoa.Fisica && user.Documento.Length != 11)
+                 {
+                     throw new System.Exception("CPF inválido para atualização. Deve conter 11 dígitos numéricos.");
+                 }
+                 else if (user.TipoPessoa == TipoPessoa.Juridica && user.Documento.Length != 14)
+                 {
+                     throw new System.Exception("CNPJ inválido para atualização. Deve conter 14 dígitos numéricos.");
+                 }
+            }
+            
+            // --- CORREÇÃO: ATUALIZAÇÃO DOS NOVOS CAMPOS ---
+            // Atribui os valores do DTO para a entidade
+            user.Telefone = userDto.Telefone;
+            user.Cep = userDto.Cep;
+            user.Endereco = userDto.Endereco;
+            user.Bairro = userDto.Bairro;
+            user.Cidade = userDto.Cidade;
+            user.Estado = userDto.Estado;
+            user.Genero = userDto.Genero;
+            user.ComercioEndereco = userDto.ComercioEndereco;
+            user.DataNascimento = userDto.DataNascimento;
+            // DataCadastro não é atualizada aqui
+            // --- FIM DA CORREÇÃO ---
+
+            await _authRepo.UpdateUser(user);
+            return await GetUserByIdAsync(id); // Retorna DTO atualizado
+        }
+        
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            var user = await _authRepo.GetUserById(id);
+            if (user == null) return false;
+            return await _authRepo.DeleteUser(user);
+        }
+
+        public async Task<bool> UpdateUserRoleAsync(int userId, TipoUsuario novoTipo)
+        {
+            var user = await _authRepo.GetUserById(userId);
+            if (user == null) return false;
+
+            user.TipoUsuario = novoTipo;
+            return await _authRepo.UpdateUser(user);
+        }
     }
 }

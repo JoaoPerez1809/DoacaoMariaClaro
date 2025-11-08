@@ -1,0 +1,35 @@
+/* Contêiner para o input de senha e o ícone */
+.input-wrapper {
+  position: relative; /* Necessário para posicionar o ícone absolutamente dentro dele */
+  width: 100%;
+  margin-bottom: 15px; /* Mantém o mesmo espaçamento dos outros inputs */
+}
+
+/* O input dentro do wrapper não precisa mais de margem inferior */
+.input-wrapper input {
+  margin-bottom: 0;
+}
+
+/* Posicionamento do ícone de olho */
+.password-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%); /* Centraliza o ícone verticalmente */
+  cursor: pointer;
+  color: #6B7280; /* Cor cinza para o ícone */
+  font-size: 16px;
+}
+
+/* Link de "Esqueci minha senha" */
+.forgot-password-link {
+  display: block;
+  margin-top: 15px;
+  color: #1a3a7c;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+}
