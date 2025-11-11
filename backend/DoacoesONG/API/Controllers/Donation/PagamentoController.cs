@@ -32,11 +32,12 @@ public class PagamentoController : ControllerBase
         MercadoPagoConfig.AccessToken = _config.GetValue<string>("MercadoPago:AccessToken");
     }
 
+    // ... (Seu método [HttpPost("criar-preferencia")] existente fica aqui) ...
     [Authorize]
     [HttpPost("criar-preferencia")]
     public async Task<IActionResult> CriarPreferencia([FromBody] DoacaoRequestDto request)
     {
-        // ... (o seu código existente deste método está ótimo) ...
+        // ... (código existente) ...
         try
         {
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -99,10 +100,12 @@ public class PagamentoController : ControllerBase
         }
     }
 
+
+    // ... (Seu método [HttpPost("webhook")] existente fica aqui) ...
     [HttpPost("webhook")]
     public async Task<IActionResult> Webhook([FromBody] MercadoPagoNotification notification)
     {
-        // ... (o seu código existente deste método está ótimo) ...
+        // ... (código existente) ...
         if (notification?.Topic == "payment" && !string.IsNullOrEmpty(notification.ResourceUrl))
         {
             try
@@ -183,12 +186,11 @@ public class PagamentoController : ControllerBase
         return Ok();
     }
 
-    // === ADICIONE ESTE NOVO MÉTODO ===
     /// <summary>
-    /// Busca o histórico de doações aprovadas do usuário logado.
+    /// Busca o histórico de doações aprovadas do usuário logado (self).
     /// </summary>
-    [Authorize] // Garante que apenas usuários logados acessem
-    [HttpGet("me")] // A rota que está a dar 404
+    [Authorize]
+    [HttpGet("me")]
     [ProducesResponseType(typeof(List<PagamentoDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetMyDonations()
@@ -200,11 +202,11 @@ public class PagamentoController : ControllerBase
             return Unauthorized("Não foi possível identificar o usuário logado.");
         }
 
-        // 2. Busca no banco de dados
+        // 2. Busca no banco de dados (igual ao seu código anterior)
         var doacoes = await _context.Pagamentos
-            .Where(p => p.DoadorId == doadorId && p.Status == "approved") // Apenas doações deste usuário E que foram aprovadas
-            .OrderByDescending(p => p.DataCriacao) // Mais recentes primeiro
-            .Select(p => new PagamentoDto // Mapeia para o DTO
+            .Where(p => p.DoadorId == doadorId && p.Status == "approved")
+            .OrderByDescending(p => p.DataCriacao)
+            .Select(p => new PagamentoDto 
             {
                 DataCriacao = p.DataCriacao,
                 Valor = p.Valor,
@@ -212,8 +214,43 @@ public class PagamentoController : ControllerBase
             })
             .ToListAsync();
 
-        return Ok(doacoes); // Retorna a lista
+        return Ok(doacoes);
     }
+
+    // === ADICIONE ESTE NOVO MÉTODO ===
+    /// <summary>
+    /// (Admin) Busca o histórico de doações de um usuário específico.
+    /// </summary>
+    [Authorize(Roles = "Administrador, Colaborador")] // Protegido para Admin/Colaborador
+    [HttpGet("{userId}")] // Nova rota: api/Pagamento/{userId}
+    [ProducesResponseType(typeof(List<PagamentoDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetDonationsByUserId(int userId)
+    {
+        // 1. Verifica se o usuário (doador) existe
+        var doadorExiste = await _context.Users.AnyAsync(u => u.Id == userId);
+        if (!doadorExiste)
+        {
+            return NotFound("Doador não encontrado.");
+        }
+
+        // 2. Busca as doações aprovadas para esse DoadorId
+        var doacoes = await _context.Pagamentos
+            .Where(p => p.DoadorId == userId && p.Status == "approved")
+            .OrderByDescending(p => p.DataCriacao)
+            .Select(p => new PagamentoDto
+            {
+                DataCriacao = p.DataCriacao,
+                Valor = p.Valor,
+                Status = p.Status
+            })
+            .ToListAsync();
+
+        return Ok(doacoes); // Retorna a lista (pode estar vazia)
+    }
+    // === FIM DO NOVO MÉTODO ===
 }
 
 // DTOs
@@ -228,10 +265,6 @@ public class MercadoPagoNotification
     public string? Topic { get; set; }
 }
 
-// === ADICIONE ESTE NOVO DTO NO FINAL ===
-/// <summary>
-/// DTO simples para retornar o histórico de doações.
-/// </summary>
 public class PagamentoDto
 {
     public DateTime DataCriacao { get; set; }
