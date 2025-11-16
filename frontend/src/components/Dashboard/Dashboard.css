@@ -31,7 +31,6 @@
 
 .sidebar li {
   margin: 15px 0; /* Menor espaçamento */
-  font-size: 20px; /* Tamanho do ícone */
   color: #333;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
@@ -39,6 +38,13 @@
   border-radius: 0; /* Remove borda arredondada */
   text-align: center; /* Centraliza o ícone */
   width: 100%;
+}
+
+/* --- ADICIONADO: Estilo para o <Link> (<a>) dentro do <li> --- */
+.sidebar li a {
+  color: inherit; /* Herda a cor do <li> */
+  display: block; /* Ocupa todo o espaço do <li> */
+  font-size: 20px; /* Tamanho do ícone */
 }
 
 .sidebar li:hover {
@@ -50,7 +56,7 @@
   color: white;
 }
 
-/* Ícone de Sair na parte inferior (Opcional) */
+/* Ícone de Sair na parte inferior */
 .sidebar li:last-child {
     margin-top: auto; /* Empurra para baixo */
     margin-bottom: 20px;
@@ -63,21 +69,19 @@
   flex: 1; /* Ocupa o restante do espaço */
   display: flex;
   flex-direction: column;
-  /* Não precisa de background aqui, usa o do container */
   overflow-y: auto; /* Permite scroll vertical se necessário */
 }
 
-/* Cabeçalho azul (agora dentro do .dashboard-content) */
+/* Cabeçalho azul */
 .dashboard-header {
   background-color: #2a4d9b; /* Azul */
   color: white;
   text-align: center;
-  padding: 15px 20px; /* Padding ajustado */
-  font-size: 18px; /* Tamanho ajustado */
+  padding: 15px 20px;
+  font-size: 18px;
   font-weight: bold;
   width: 100%;
-  flex-shrink: 0; /* Não encolhe */
-  /* Remover position: sticky se não quiser que ele fixe no topo ao rolar */
+  flex-shrink: 0;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -85,31 +89,30 @@
 
 /* Conteúdo principal (abaixo do header azul) */
 .dashboard-main {
-  padding: 25px 30px; /* Padding interno */
-  flex-grow: 1; /* Ocupa o espaço restante vertical */
-  /* Não precisa mais centralizar texto aqui */
+  padding: 25px 30px; 
+  flex-grow: 1; 
 }
 
 /* Título da Seção (Ex: Gerenciamento de Usuários) */
-.section-title { /* Renomeado de .titulo */
-  font-size: 22px; /* Tamanho ajustado */
-  color: #333; /* Cor mais escura */
+.section-title { 
+  font-size: 22px; 
+  color: #333; 
   margin-bottom: 25px;
-  text-align: left; /* Alinha à esquerda */
+  text-align: left; 
   font-weight: 600;
 }
 
 /* --- ÁREA DE FILTROS --- */
 .filter-controls {
-  background-color: #ffffff; /* Fundo branco */
+  background-color: #ffffff;
   padding: 15px 20px;
   border-radius: 6px;
   margin-bottom: 25px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   display: flex;
-  gap: 15px; /* Espaço entre os filtros */
+  gap: 15px;
   align-items: center;
-  flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+  flex-wrap: wrap; 
 }
 
 .search-input {
@@ -117,8 +120,8 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
-  flex-grow: 1; /* Ocupa espaço disponível */
-  min-width: 200px; /* Largura mínima */
+  flex-grow: 1; 
+  min-width: 200px;
 }
 
 .filter-select {
@@ -126,64 +129,61 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
-  background-color: white; /* Garante fundo branco */
+  background-color: white;
   min-width: 150px;
 }
-/* --- FIM DA ÁREA DE FILTROS --- */
 
 /* Caixa da tabela */
 .tabela-container {
-  background: #ffffff; /* Fundo branco */
-  padding: 0; /* Padding será nas células */
-  border-radius: 6px; /* Borda arredondada suave */
+  background: #ffffff;
+  padding: 0;
+  border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow-x: auto; /* Permite scroll horizontal na tabela se necessário */
-  width: 100%; /* Ocupa toda a largura disponível */
+  overflow-x: auto;
+  width: 100%;
 }
 
 /* Estilo da tabela */
 .tabela {
   border-collapse: collapse;
   width: 100%;
-  font-size: 14px; /* Tamanho de fonte base */
+  font-size: 14px;
 }
 
 .tabela th,
 .tabela td {
-  padding: 12px 15px; /* Padding interno das células */
+  padding: 12px 15px;
   text-align: left;
-  border-bottom: 1px solid #e0e0e0; /* Linha separadora mais suave */
-  white-space: nowrap; /* Impede quebra de linha indesejada */
+  border-bottom: 1px solid #e0e0e0;
+  white-space: nowrap; 
 }
 
 .tabela th {
-  background-color: #f8f9fa; /* Fundo levemente cinza para cabeçalho */
-  color: #555; /* Cor do texto do cabeçalho */
-  font-weight: 600; /* Mais negrito */
-  text-transform: uppercase; /* Opcional: Maiúsculas */
-  font-size: 12px; /* Fonte menor para cabeçalho */
+  background-color: #f8f9fa; 
+  color: #555;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px; 
 }
 
 .tabela td {
-  color: #333; /* Cor do texto das células */
+  color: #333;
 }
 
-/* Hover nas linhas */
 .tabela tbody tr:hover {
-  background-color: #f1f1f1; /* Fundo suave ao passar o mouse */
+  background-color: #f1f1f1;
   cursor: pointer;
 }
 
-/* Remove borda da última linha */
 .tabela tr:last-child td {
   border-bottom: none;
 }
 
-/* Botão de detalhes na tabela */
+/* Botões na tabela */
 .details-button {
     padding: 5px 10px;
     font-size: 12px;
-    background-color: #e0e0e0; /* Cinza claro */
+    background-color: #e0e0e0;
     color: #333;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -193,13 +193,11 @@
 .details-button:hover {
     background-color: #d0d0d0;
 }
-
-/* --- BOTÃO EDITAR ROLE --- */
 .edit-role-button {
-    margin-left: 8px; /* Espaço após o botão de detalhes */
+    margin-left: 8px;
     padding: 5px 8px;
     font-size: 12px;
-    background-color: #ffc107; /* Amarelo */
+    background-color: #ffc107;
     color: #333;
     border: 1px solid #dda700;
     border-radius: 4px;
@@ -209,19 +207,17 @@
 .edit-role-button:hover {
     background-color: #e0a800;
 }
-/* --- FIM BOTÃO EDITAR ROLE --- */
 
-/* Estilos para paginação */
+/* Paginação */
 .pagination-controls {
-  margin-top: 25px; /* Aumenta espaço acima */
+  margin-top: 25px;
   display: flex;
-  justify-content: center; /* Centraliza */
+  justify-content: center;
   align-items: center;
   gap: 15px;
 }
-
 .pagination-controls button {
-  background-color: #6c757d; /* Cinza */
+  background-color: #6c757d;
   color: white;
   border: none;
   padding: 8px 12px;
@@ -235,34 +231,32 @@
 .pagination-controls button:hover:not(:disabled) {
     background-color: #5a6268;
 }
-
 .pagination-controls button:disabled {
-  background-color: #e0e0e0; /* Cinza mais claro para desabilitado */
+  background-color: #e0e0e0;
   color: #999;
   cursor: not-allowed;
 }
-
 .pagination-controls span {
-  font-weight: 500; /* Peso médio */
+  font-weight: 500;
   color: #555;
   font-size: 14px;
 }
 
-/* Responsividade (Ajustes básicos) */
+/* Responsividade */
 @media (max-width: 768px) {
   .dashboard-main {
     padding: 15px;
   }
   .filter-controls {
     flex-direction: column;
-    align-items: stretch; /* Faz filtros ocuparem a largura */
+    align-items: stretch;
   }
   .search-input, .filter-select {
-    min-width: 0; /* Remove largura mínima */
+    min-width: 0;
     width: 100%;
   }
   .tabela th, .tabela td {
-    padding: 10px 8px; /* Menor padding em telas pequenas */
-    white-space: normal; /* Permite quebra de linha se necessário */
+    padding: 10px 8px;
+    white-space: normal;
   }
 }

@@ -1,14 +1,13 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+// --- 1. IMPORTE O LINK ---
+import Link from 'next/link';
 // Ícones
 import { FaThLarge, FaUsers, FaFileAlt, FaUser, FaSignOutAlt, FaChevronLeft, FaChevronRight, FaEdit } from "react-icons/fa";
 // Estilos
 import "./Dashboard.css";
 // Serviços da API e Tipos
-// (Vamos assumir que getUserStatsRequest será criado no futuro, por enquanto o removemos se não existir)
-// import { getAllUsersRequest, getUserStatsRequest, UserFilters } from "@/services/userService";
-// import type { UserDto, UserStatsDto } from "@/types/user";
 import { getAllUsersRequest, UserFilters } from "@/services/userService";
 import type { UserDto } from "@/types/user";
 
@@ -20,8 +19,6 @@ import EditRoleModal from './EditRoleModal';
 // Utilitário Debounce
 import debounce from 'lodash/debounce';
 
-// --- CORREÇÃO APLICADA AQUI ---
-// Constante para o número de itens por página
 const PAGE_SIZE = 5;
 
 const Dashboard: React.FC = () => {
@@ -41,7 +38,7 @@ const Dashboard: React.FC = () => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
   // Estados para o modal de EDIÇÃO DE PAPEL
-  const [editingUser, setEditingUser] = useState<UserDto | null>(null); // Guarda o objeto User a editar
+  const [editingUser, setEditingUser] = useState<UserDto | null>(null); 
   const [isEditRoleModalOpen, setIsEditRoleModalOpen] = useState(false);
 
   // Estados para os valores dos FILTROS
@@ -49,11 +46,7 @@ const Dashboard: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState('');
   const [selectedTipoPessoa, setSelectedTipoPessoa] = useState('');
 
-  // (Estados para estatísticas - comentei se você ainda não os implementou)
-  // const [stats, setStats] = useState<UserStatsDto | null>(null);
-  // const [statsLoading, setStatsLoading] = useState(true);
-
-  // Calcula o número total de páginas baseado no total de usuários e itens por página
+  // Calcula o número total de páginas
   const totalPages = Math.ceil(totalUsers / PAGE_SIZE);
 
   // --- Função para buscar os usuários da API ---
@@ -61,7 +54,6 @@ const Dashboard: React.FC = () => {
     try {
       setLoading(true); 
       setError(null); 
-      // Chama o serviço da API passando página e filtros
       const data = await getAllUsersRequest(page, PAGE_SIZE, filters);
       setUsers(data.items); 
       setTotalUsers(data.totalCount); 
@@ -72,24 +64,6 @@ const Dashboard: React.FC = () => {
       setLoading(false); 
     }
   }, []); 
-
-  // --- useEffect para buscar as Estatísticas (se existir) ---
-  /*
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setStatsLoading(true);
-        const statsData = await getUserStatsRequest();
-        setStats(statsData);
-      } catch (err) {
-        console.error("Erro ao buscar estatísticas:", err);
-      } finally {
-        setStatsLoading(false);
-      }
-    };
-    fetchStats();
-  }, []); 
-  */
 
   // --- useEffect principal para buscar dados ---
   useEffect(() => {
@@ -114,31 +88,23 @@ const Dashboard: React.FC = () => {
     [fetchUsers] 
   );
 
-  // Função chamada quando o valor do input de busca muda
+  // --- Handlers (sem alterações) ---
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchTerm = event.target.value;
     setSearchTerm(newSearchTerm); 
-    setCurrentPage(1); // Volta para a primeira página
+    setCurrentPage(1);
     debouncedSearch(newSearchTerm, selectedRole, selectedTipoPessoa);
   };
- 
-  // Função chamada quando o select de Papel (Role) muda
   const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRole(event.target.value); 
     setCurrentPage(1); 
   };
-
-  // Função chamada quando o select de Tipo de Pessoa muda
   const handleTipoPessoaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTipoPessoa(event.target.value); 
     setCurrentPage(1); 
   };
-
-  // Funções para controle da paginação
   const handlePreviousPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1)); 
   const handleNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages)); 
-
-  // Funções para abrir/fechar o modal de DETALHES
   const handleRowClick = (userId: number) => { 
     setSelectedUserId(userId);
     setIsDetailsModalOpen(true);
@@ -147,8 +113,6 @@ const Dashboard: React.FC = () => {
     setIsDetailsModalOpen(false);
     setSelectedUserId(null); 
   };
-
-  // Funções para abrir/fechar o modal de EDIÇÃO DE PAPEL
   const handleEditRoleClick = (event: React.MouseEvent, userToEdit: UserDto) => { 
     event.stopPropagation(); 
     setEditingUser(userToEdit); 
@@ -158,7 +122,6 @@ const Dashboard: React.FC = () => {
     setIsEditRoleModalOpen(false);
     setEditingUser(null); 
   };
-  
   const handleRoleUpdated = () => {
       const currentFilters: UserFilters = { search: searchTerm, role: selectedRole, tipoPessoa: selectedTipoPessoa };
       fetchUsers(currentPage, currentFilters);
@@ -170,10 +133,31 @@ const Dashboard: React.FC = () => {
       {/* Sidebar (Menu Lateral Amarelo) */}
       <aside className="sidebar">
          <ul>
-           <li><FaThLarge title="Visão Geral (Não implementado)" /></li>
-           <li className="active"><FaUsers title="Usuários" /></li>
-           <li><FaFileAlt title="Doações (Não implementado)" /></li>
-           <li><FaUser title="Meu Perfil" /></li> 
+           <li>
+             <Link href="/admin/dashboard" title="Visão Geral (Não implementado)">
+               <FaThLarge />
+             </Link>
+           </li>
+           
+           {/* MARCA ESTA PÁGINA COMO ATIVA */}
+           <li className="active">
+             <Link href="/admin/dashboard" title="Usuários">
+               <FaUsers />
+             </Link>
+           </li>
+           
+           {/* ADICIONA O LINK PARA RELATÓRIOS */}
+           <li>
+             <Link href="/admin/relatorios" title="Relatórios de Arrecadação">
+               <FaFileAlt />
+             </Link>
+           </li>
+           
+           <li>
+             <Link href="/doador/perfil" title="Meu Perfil">
+              <FaUser />
+             </Link>
+           </li> 
            <li onClick={signOut} title="Sair"><FaSignOutAlt /></li>
          </ul>
       </aside>
@@ -195,7 +179,7 @@ const Dashboard: React.FC = () => {
               placeholder="Buscar por nome, e-mail ou ID..."
               className="search-input"
               value={searchTerm}
-              onChange={handleSearchChange} // Usa a função com debounce
+              onChange={handleSearchChange} 
             />
             <select className="filter-select" value={selectedRole} onChange={handleRoleChange}>
               <option value="">Todos os Papéis</option>
@@ -259,7 +243,7 @@ const Dashboard: React.FC = () => {
                 </table>
               </div>
 
-              {/* Controles de Paginação (só aparecem se houver mais de uma página) */}
+              {/* Controles de Paginação */}
               {totalPages > 1 && (
                 <div className="pagination-controls"> 
                   <button onClick={handlePreviousPage} disabled={currentPage === 1}>

@@ -20,7 +20,6 @@ export type UserDto = {
   tipoPessoa?: TipoPessoa;
   documento?: string;
   
-  // --- NOVOS CAMPOS ADICIONADOS ---
   telefone?: string;
   cep?: string;
   endereco?: string;
@@ -29,8 +28,8 @@ export type UserDto = {
   estado?: string;
   genero?: string;
   comercioEndereco?: string;
-  dataNascimento?: string; // Vem como string ISO da API (ou null)
-  dataCadastro: string; // Vem como string ISO da API
+  dataNascimento?: string; 
+  dataCadastro: string; 
 };
 
 /**
@@ -61,7 +60,6 @@ export type UserUpdateDto = {
   tipoPessoa?: TipoPessoa;
   documento?: string;
   
-  // --- NOVOS CAMPOS ADICIONADOS ---
   telefone?: string;
   cep?: string;
   endereco?: string;
@@ -70,7 +68,7 @@ export type UserUpdateDto = {
   estado?: string;
   genero?: string;
   comercioEndereco?: string;
-  dataNascimento?: string; // Envia como string YYYY-MM-DD
+  dataNascimento?: string; 
 };
 
 /**
@@ -91,7 +89,6 @@ export type DecodedToken = {
   iat: number;
 };
 
-// === ADICIONE ESTE NOVO TIPO ===
 /**
  * DTO para o histórico de pagamentos (PagamentoDto.cs)
  */
@@ -99,4 +96,15 @@ export type PagamentoDto = {
   dataCriacao: string; // Vem como string ISO da API
   valor: number;
   status: string;
+};
+
+// === TIPOS DE RELATÓRIO ===
+
+/**
+ * DTO para o relatório de arrecadação (RelatorioArrecadacaoDto.cs)
+ */
+export type RelatorioArrecadacaoDto = {
+  totalArrecadado: number;
+  totalLiquido: number;
+  totalDoacoesAprovadas: number;
 };

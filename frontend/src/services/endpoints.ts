@@ -7,7 +7,6 @@ const crudAPI = (resource: string) => ({
   getById: (id: number) => `${BASE_URL}/${resource}/${id}`,
   update: (id: number) => `${BASE_URL}/${resource}/${id}`,
   delete: (id: number) => `${BASE_URL}/${resource}/${id}`,
-  // Adicionamos um endpoint específico para a atualização de papel (role)
   updateRole: (id: number) => `${BASE_URL}/${resource}/${id}/role`,
 });
 
@@ -23,6 +22,11 @@ export const userAPI = crudAPI('Users');
 // Endpoints para Pagamentos/Doações
 export const pagamentoAPI = {
   getMyDonations: () => `${BASE_URL}/Pagamento/me`,
-  // === ADICIONE ESTA LINHA ===
   getDonationsByUserId: (userId: number) => `${BASE_URL}/Pagamento/${userId}`,
+  
+  // Rota para o relatório com filtros
+  getRelatorioArrecadacao: () => `${BASE_URL}/Pagamento/relatorio-arrecadacao`,
+  
+  // Rota para buscar os anos
+  getAnosDisponiveis: () => `${BASE_URL}/Pagamento/anos-disponiveis`,
 };
