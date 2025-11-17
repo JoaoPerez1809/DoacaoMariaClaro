@@ -1,55 +1,40 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-// --- 1. IMPORTE O LINK ---
 import Link from 'next/link';
-// Ícones
 import { FaThLarge, FaUsers, FaFileAlt, FaUser, FaSignOutAlt, FaChevronLeft, FaChevronRight, FaEdit } from "react-icons/fa";
-// Estilos
 import "./Dashboard.css";
-// Serviços da API e Tipos
 import { getAllUsersRequest, UserFilters } from "@/services/userService";
 import type { UserDto } from "@/types/user";
-
-// Contexto de Autenticação
 import { useAuth } from "@/contexts/AuthContext";
-// Modais
 import UserDetailsModal from './UserDetailsModal';
 import EditRoleModal from './EditRoleModal'; 
-// Utilitário Debounce
 import debounce from 'lodash/debounce';
+
+// --- 1. IMPORTE A ACTIONBAR ---
+import { ActionBar } from '@/components/layout/ActionBar';
 
 const PAGE_SIZE = 5;
 
 const Dashboard: React.FC = () => {
-  // Estados para a lista de usuários, carregamento e erro geral
+  // ... (Estados existentes: users, loading, error, etc.) ...
   const [users, setUsers] = useState<UserDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // Obtém o usuário logado e a função signOut do contexto
   const { user: authUser, signOut } = useAuth();
-
-  // Estados para controle da paginação
   const [currentPage, setCurrentPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
-
-  // Estados para o modal de DETALHES
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-
-  // Estados para o modal de EDIÇÃO DE PAPEL
   const [editingUser, setEditingUser] = useState<UserDto | null>(null); 
   const [isEditRoleModalOpen, setIsEditRoleModalOpen] = useState(false);
-
-  // Estados para os valores dos FILTROS
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
   const [selectedTipoPessoa, setSelectedTipoPessoa] = useState('');
 
-  // Calcula o número total de páginas
   const totalPages = Math.ceil(totalUsers / PAGE_SIZE);
 
-  // --- Função para buscar os usuários da API ---
+  // ... (Função fetchUsers existente) ...
   const fetchUsers = useCallback(async (page: number, filters: UserFilters = {}) => {
     try {
       setLoading(true); 
@@ -65,7 +50,7 @@ const Dashboard: React.FC = () => {
     }
   }, []); 
 
-  // --- useEffect principal para buscar dados ---
+  // ... (useEffect existente) ...
   useEffect(() => {
     const currentFilters: UserFilters = {
       search: searchTerm || undefined, 
@@ -75,7 +60,7 @@ const Dashboard: React.FC = () => {
     fetchUsers(currentPage, currentFilters);
   }, [currentPage, searchTerm, selectedRole, selectedTipoPessoa, fetchUsers]); 
 
-  // --- Lógica de Debounce para o campo de busca ---
+  // ... (debounce e handlers existentes) ...
   const debouncedSearch = useCallback(
     debounce((term: string, currentRole: string, currentTipo: string) => {
       const currentFilters: UserFilters = {
@@ -87,8 +72,6 @@ const Dashboard: React.FC = () => {
     }, 500), 
     [fetchUsers] 
   );
-
-  // --- Handlers (sem alterações) ---
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchTerm = event.target.value;
     setSearchTerm(newSearchTerm); 
@@ -130,46 +113,26 @@ const Dashboard: React.FC = () => {
   // --- Renderização do Componente ---
   return (
     <div className="dashboard-container">
-      {/* Sidebar (Menu Lateral Amarelo) */}
+      {/* Sidebar */}
       <aside className="sidebar">
          <ul>
-           <li>
-             <Link href="/admin/dashboard" title="Visão Geral (Não implementado)">
-               <FaThLarge />
-             </Link>
-           </li>
-           
-           {/* MARCA ESTA PÁGINA COMO ATIVA */}
-           <li className="active">
-             <Link href="/admin/dashboard" title="Usuários">
-               <FaUsers />
-             </Link>
-           </li>
-           
-           {/* ADICIONA O LINK PARA RELATÓRIOS */}
-           <li>
-             <Link href="/admin/relatorios" title="Relatórios de Arrecadação">
-               <FaFileAlt />
-             </Link>
-           </li>
-           
-           <li>
-             <Link href="/doador/perfil" title="Meu Perfil">
-              <FaUser />
-             </Link>
-           </li> 
+           <li><Link href="/admin/dashboard" title="Visão Geral (Não implementado)"><FaThLarge /></Link></li>
+           <li className="active"><Link href="/admin/dashboard" title="Usuários"><FaUsers /></Link></li>
+           <li><Link href="/admin/relatorios" title="Relatórios de Arrecadação"><FaFileAlt /></Link></li>
+           <li><Link href="/doador/perfil" title="Meu Perfil"><FaUser /></Link></li> 
            <li onClick={signOut} title="Sair"><FaSignOutAlt /></li>
          </ul>
       </aside>
 
-      {/* Conteúdo Principal (à direita da sidebar) */}
+      {/* Conteúdo Principal */}
       <div className="dashboard-content">
-        {/* Header (Barra Azul no Topo) */}
         <header className="dashboard-header">Dashboard</header>
+        
+        {/* --- 2. ADICIONE A ACTIONBAR AQUI --- */}
+        <ActionBar />
 
-        {/* Área Principal abaixo do Header */}
+        {/* Área Principal */}
         <main className="dashboard-main">
-          {/* Título da Seção */}
           <h2 className="section-title">Gerenciamento de Usuários</h2>
 
           {/* Área de Filtros */}
@@ -194,7 +157,7 @@ const Dashboard: React.FC = () => {
             </select>
           </div>
 
-          {/* Exibição Condicional: Carregando / Erro / Tabela */}
+          {/* ... (Resto do seu código: Tabela, Paginação, Modais) ... */}
           {loading && <p style={{ textAlign: 'center', padding: '30px' }}>Carregando usuários...</p>}
           {error && <p style={{ color: 'red', textAlign: 'center', padding: '30px' }}>{error}</p>}
 
@@ -243,7 +206,6 @@ const Dashboard: React.FC = () => {
                 </table>
               </div>
 
-              {/* Controles de Paginação */}
               {totalPages > 1 && (
                 <div className="pagination-controls"> 
                   <button onClick={handlePreviousPage} disabled={currentPage === 1}>
@@ -260,11 +222,10 @@ const Dashboard: React.FC = () => {
         </main>
       </div>
 
-      {/* Renderização Condicional dos Modais */}
+      {/* Modais */}
       {isDetailsModalOpen && selectedUserId && (
         <UserDetailsModal userId={selectedUserId} onClose={handleCloseDetailsModal} />
       )}
-
       {isEditRoleModalOpen && editingUser && (
         <EditRoleModal
           user={editingUser} 

@@ -1,13 +1,13 @@
 import { TopBar } from './TopBar';
-// Correção: Importe 'Navbar' sem as chaves {}
 import Navbar from './Navbar';
+// 1. A ActionBar foi REMOVIDA daqui
 
 export function Header() {
   return (
-    // O fragmento <>...</> permite-nos retornar múltiplos componentes
     <>
       <TopBar />
       <Navbar />
+      {/* 2. A ActionBar foi REMOVIDA daqui */}
     </>
   );
 }

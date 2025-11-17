@@ -1,0 +1,83 @@
+/* src/components/layout/ActionBar.css */
+
+.action-bar-container {
+  background-color: #f39c12; /* Cor amarela/dourada da TopBar */
+  padding: 10px 5%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 999; /* Fica abaixo do menu principal */
+  position: relative; /* Garante o z-index */
+}
+
+.action-bar-content {
+  display: flex;
+  justify-content: flex-end; /* Alinha botões à direita */
+  align-items: center;
+  max-width: 1300px;
+  margin: 0 auto;
+  gap: 15px; /* Espaço entre os botões */
+}
+
+.action-button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 50px; /* Botões arredondados */
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+/* --- Variações de Botões --- */
+
+/* Botão DOAR (Verde) */
+.action-button.donate {
+  background-color: #4CAF50;
+  color: white;
+}
+.action-button.donate:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+/* Botão LOGIN (Azul) */
+.action-button.primary {
+  background-color: #1f3b88; /* Azul */
+  color: white;
+}
+.action-button.primary:hover {
+  background-color: #163072;
+  transform: translateY(-2px);
+}
+
+/* Botão REGISTRAR / PERFIL / DASHBOARD (Branco) */
+.action-button.secondary {
+  background-color: #fff;
+  color: #1f3b88;
+  border: 1px solid #1f3b88;
+}
+.action-button.secondary:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+/* Botão SAIR (Vermelho) */
+.action-button.danger {
+  background-color: #dc3545;
+  color: white;
+  font-family: Arial, sans-serif; /* Garante que 'button' tenha a fonte certa */
+}
+.action-button.danger:hover {
+  background-color: #c82333;
+  transform: translateY(-2px);
+}
+
+/* --- Responsividade --- */
+@media (max-width: 1366px) {
+  .action-bar-content {
+    /* Centraliza os botões no mobile */
+    justify-content: center;
+    flex-wrap: wrap; /* Permite que os botões quebrem linha */
+  }
+}

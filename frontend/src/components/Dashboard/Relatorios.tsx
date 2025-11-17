@@ -2,24 +2,19 @@
 
 import React, { useState, useEffect } from "react";
 import Link from 'next/link';
-// Ícones
 import { FaThLarge, FaUsers, FaFileAlt, FaUser, FaSignOutAlt, FaDownload } from "react-icons/fa";
-// CSS
-import "./Relatorios.css"; // (Vamos criar este)
-import "./Dashboard.css"; // (Reutiliza a sidebar)
-// Serviços da API e Tipos
+import "./Relatorios.css"; 
+import "./Dashboard.css"; 
 import { getRelatorioArrecadacaoRequest, getAnosDisponiveisRequest, RelatorioFilters } from "@/services/userService";
 import type { RelatorioArrecadacaoDto } from "@/types/user";
 import { generateArrecadacaoPDF } from "@/utils/pdfGenerator";
 import { formatValor } from "@/utils/formatters";
-// Contexto de Autenticação
 import { useAuth } from "@/contexts/AuthContext";
 
-// --- Helpers para os Dropdowns ---
-// (Esta função foi REMOVIDA, pois agora buscamos da API)
-// const getAnosOptions = () => { ... }; 
+// --- 1. IMPORTE A ACTIONBAR ---
+import { ActionBar } from '@/components/layout/ActionBar';
 
-// Constantes para os filtros
+// --- (Helpers para os Dropdowns: meses, trimestres, semestres) ---
 const meses = [
   { value: 1, label: "Janeiro" }, { value: 2, label: "Fevereiro" },
   { value: 3, label: "Março" }, { value: 4, label: "Abril" },
@@ -43,24 +38,19 @@ const semestres = [
 const Relatorios: React.FC = () => {
   const { signOut } = useAuth();
   
-  // --- Estados dos Filtros ---
+  // ... (Estados existentes: tipoRelatorio, ano, mes, etc.) ...
   const [tipoRelatorio, setTipoRelatorio] = useState<'mensal' | 'trimestral' | 'semestral'>('mensal');
-  
-  // Estados para o Ano (agora carregados da API)
   const [anosOptions, setAnosOptions] = useState<number[]>([]);
-  const [ano, setAno] = useState<number>(new Date().getFullYear()); // Inicia com o ano atual
-  const [anosLoading, setAnosLoading] = useState(true); // Estado de loading para os anos
-  
-  const [mes, setMes] = useState(new Date().getMonth() + 1); // Mês atual
+  const [ano, setAno] = useState<number>(new Date().getFullYear()); 
+  const [anosLoading, setAnosLoading] = useState(true); 
+  const [mes, setMes] = useState(new Date().getMonth() + 1); 
   const [trimestre, setTrimestre] = useState(1);
   const [semestre, setSemestre] = useState(1);
-
-  // --- Estados de UI ---
   const [relatorio, setRelatorio] = useState<RelatorioArrecadacaoDto | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // Loading para o *relatório*
+  const [isLoading, setIsLoading] = useState(false); 
   const [error, setError] = useState<string | null>(null);
   
-  // --- UseEffect para buscar os anos disponíveis ---
+  // ... (useEffect fetchAnos existente) ...
   useEffect(() => {
     const fetchAnos = async () => {
         try {
@@ -68,9 +58,8 @@ const Relatorios: React.FC = () => {
             const anosData = await getAnosDisponiveisRequest();
             if (anosData.length > 0) {
                 setAnosOptions(anosData);
-                setAno(anosData[0]); // Define o ano mais recente (já vem ordenado)
+                setAno(anosData[0]); 
             } else {
-                // Se não houver doações, usa o ano atual como fallback
                 const anoAtual = new Date().getFullYear();
                 setAnosOptions([anoAtual]);
                 setAno(anoAtual);
@@ -78,7 +67,6 @@ const Relatorios: React.FC = () => {
         } catch (e) {
             console.error("Erro ao buscar anos disponíveis:", e);
             setError("Não foi possível carregar os anos para o filtro.");
-            // Fallback em caso de erro
             const anoAtual = new Date().getFullYear();
             setAnosOptions([anoAtual]);
             setAno(anoAtual);
@@ -87,18 +75,17 @@ const Relatorios: React.FC = () => {
         }
     };
     fetchAnos();
-  }, []); // Roda apenas uma vez quando o componente é montado
+  }, []); 
 
-  // Função para buscar e gerar o relatório
+  // ... (Função handleGenerateReport existente) ...
   const handleGenerateReport = async () => {
     setIsLoading(true);
     setError(null);
-    setRelatorio(null); // Limpa o relatório anterior
+    setRelatorio(null); 
     
     let periodo = 1;
-    let filterText = ""; // Texto para o PDF
+    let filterText = ""; 
 
-    // Correção do Bug de 'undefined' (adiciona fallback '??')
     if (tipoRelatorio === 'mensal') {
       periodo = mes;
       filterText = `${meses.find(m => m.value === mes)?.label ?? 'Mês'} de ${ano}`;
@@ -117,17 +104,13 @@ const Relatorios: React.FC = () => {
     };
 
     try {
-      // 1. Busca os dados do sumário da API
       const relatorioData = await getRelatorioArrecadacaoRequest(filters);
       
-      // 2. Verifica se há doações
       if (relatorioData.totalDoacoesAprovadas === 0) {
         setError(`Nenhuma doação (aprovada) encontrada para ${filterText}.`);
         setRelatorio(null);
       } else {
-        // 3. Armazena os dados no estado para exibir na tela
         setRelatorio(relatorioData);
-        // 4. Gera o PDF
         generateArrecadacaoPDF(relatorioData, filters, filterText);
       }
     } catch (err) {
@@ -140,42 +123,26 @@ const Relatorios: React.FC = () => {
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar (Menu Lateral Amarelo) */}
+      {/* Sidebar */}
       <aside className="sidebar">
          <ul>
-           <li>
-             <Link href="/admin/dashboard" title="Visão Geral (Não implementado)">
-               <FaThLarge />
-             </Link>
-           </li>
-           <li>
-             <Link href="/admin/dashboard" title="Usuários">
-               <FaUsers />
-             </Link>
-           </li>
-           {/* MARCA ESTA PÁGINA COMO ATIVA */}
-           <li className="active">
-             <Link href="/admin/relatorios" title="Relatórios de Arrecadação">
-               <FaFileAlt />
-             </Link>
-           </li>
-           <li>
-             <Link href="/doador/perfil" title="Meu Perfil">
-              <FaUser />
-             </Link>
-           </li> 
+           <li><Link href="/admin/dashboard" title="Visão Geral (Não implementado)"><FaThLarge /></Link></li>
+           <li><Link href="/admin/dashboard" title="Usuários"><FaUsers /></Link></li>
+           <li className="active"><Link href="/admin/relatorios" title="Relatórios de Arrecadação"><FaFileAlt /></Link></li>
+           <li><Link href="/doador/perfil" title="Meu Perfil"><FaUser /></Link></li> 
            <li onClick={signOut} title="Sair"><FaSignOutAlt /></li>
          </ul>
       </aside>
 
-      {/* Conteúdo Principal (à direita da sidebar) */}
+      {/* Conteúdo Principal */}
       <div className="dashboard-content">
-        {/* Header (Barra Azul no Topo) */}
         <header className="dashboard-header">Dashboard</header>
 
-        {/* Área Principal abaixo do Header */}
+        {/* --- 2. ADICIONE A ACTIONBAR AQUI --- */}
+        <ActionBar />
+
+        {/* Área Principal */}
         <main className="dashboard-main">
-          {/* Título da Seção */}
           <h2 className="section-title">Relatórios de Arrecadação</h2>
           
           <div className="relatorio-container">
@@ -185,7 +152,7 @@ const Relatorios: React.FC = () => {
               aprovadas (Valor Bruto vs. Valor Líquido).
             </p>
             
-            {/* --- ÁREA DE FILTROS --- */}
+            {/* ... (Filtros existentes) ... */}
             <div className="relatorio-filtros">
               <div className="filtro-item">
                 <label htmlFor="tipo">Tipo de Relatório:</label>
@@ -195,7 +162,6 @@ const Relatorios: React.FC = () => {
                   <option value="semestral">Semestral</option>
                 </select>
               </div>
-
               <div className="filtro-item">
                 <label htmlFor="ano">Ano:</label>
                 <select id="ano" value={ano} onChange={(e) => setAno(parseInt(e.target.value))} disabled={anosLoading}>
@@ -208,8 +174,6 @@ const Relatorios: React.FC = () => {
                   )}
                 </select>
               </div>
-
-              {/* Dropdown de Período (Condicional) */}
               <div className="filtro-item">
                 {tipoRelatorio === 'mensal' && (
                   <>
@@ -244,27 +208,22 @@ const Relatorios: React.FC = () => {
               </div>
             </div>
 
+            {/* ... (Botão e Feedback existentes) ... */}
             <button 
               className="report-button-main"
               onClick={handleGenerateReport}
-              disabled={isLoading || anosLoading} // Desabilita se estiver carregando anos OU o relatório
+              disabled={isLoading || anosLoading}
             >
               <FaDownload />
               {isLoading ? 'Gerando...' : 'Gerar e Baixar Relatório PDF'}
             </button>
-            
-            {/* Área de Feedback (Erros) */}
             {error && (
               <p className="relatorio-feedback error">{error}</p>
             )}
-            
-            {/* Área de Feedback (Sucesso e Pré-visualização) */}
             {!isLoading && !error && relatorio && (
               <div className="relatorio-feedback success">
                 <h4>Relatório Gerado com Sucesso!</h4>
                 <p>O seu download deve começar em breve. Caso não comece, clique no botão novamente.</p>
-                
-                {/* Pré-visualização dos totais na tela */}
                 <div className="relatorio-preview">
                   <div className="preview-item">
                     <span>Total Arrecadado (Bruto)</span>

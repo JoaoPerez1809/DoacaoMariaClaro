@@ -1,38 +1,26 @@
 import React, { useState, useEffect } from 'react';
-// --- 1. IMPORTE A NOVA FUNÇÃO ---
 import { getUserByIdRequest, getDonationsByUserIdRequest } from '@/services/userService';
-// --- 2. IMPORTE O NOVO TIPO ---
 import type { UserDto, PagamentoDto } from '@/types/user';
 import './UserDetailsModal.css'; 
 import { FaTimes } from 'react-icons/fa'; 
 
-// --- 3. COPIE OS HELPERS DE FORMATAÇÃO (do Profile.tsx) ---
-const formatDataExibicao = (dateString: string | null | undefined) => {
-  if (!dateString) return 'Não informado';
-  try {
-    const data = new Date(dateString);
-    const dataUtc = new Date(data.getUTCFullYear(), data.getUTCMonth(), data.getUTCDate());
-    return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      timeZone: 'UTC'
-    }).format(dataUtc);
-  } catch (e) {
-    return 'Data inválida';
-  }
-};
-const formatValor = (valor: number) => {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  }).format(valor);
-};
-const formatStatus = (status: string) => {
-  if (status.toLowerCase() === 'approved') return 'Aprovado';
-  return status;
-};
-// --- FIM DOS HELPERS ---
+// --- 1. IMPORTE TUDO DE FORMATTERS ---
+// Importa os formatadores de data/valor e as novas máscaras
+import { 
+  formatDataExibicao, 
+  formatValor, 
+  formatStatus,
+  maskCPF,
+  maskCNPJ,
+  maskTelefone,
+  maskCEP
+} from '@/utils/formatters';
+
+
+// --- 2. REMOVA OS HELPERS LOCAIS ---
+// const formatDataExibicao = (...) // REMOVIDO
+// const formatValor = (...) // REMOVIDO
+// const formatStatus = (...) // REMOVIDO
 
 
 type UserDetailsModalProps = {
@@ -45,12 +33,10 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ userId, onClose }) 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // --- 4. NOVOS ESTADOS PARA PAGINAÇÃO E DOAÇÕES ---
   const [currentPage, setCurrentPage] = useState(1); // 1: Obrigatórios, 2: Extras, 3: Doações
   const [donations, setDonations] = useState<PagamentoDto[]>([]);
   const [donationsLoading, setDonationsLoading] = useState(false);
   const [donationsError, setDonationsError] = useState<string | null>(null);
-  // --- FIM DOS NOVOS ESTADOS ---
 
   // Função para buscar doações (só é chamada quando necessário)
   const fetchUserDonations = async (id: number) => {
@@ -98,16 +84,18 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ userId, onClose }) 
   }, [currentPage, userId]); // Depende do currentPage e userId
 
   
-  // --- Lógica para os Dados Extras (Página 2) ---
+  // --- 3. Lógica para os Dados Extras (Página 2) - ATUALIZADA ---
   const renderDadosExtras = () => {
     if (!userDetails) return null;
 
     // Mapeia os campos extras
     const extraFields = [
-      { label: 'Telefone', value: userDetails.telefone },
+      // APLICA A MÁSCARA AQUI
+      { label: 'Telefone', value: userDetails.telefone ? maskTelefone(userDetails.telefone) : null },
       { label: 'Gênero', value: userDetails.genero },
       { label: 'Data Nasc.', value: formatDataExibicao(userDetails.dataNascimento) },
-      { label: 'CEP', value: userDetails.cep },
+      // APLICA A MÁSCARA AQUI
+      { label: 'CEP', value: userDetails.cep ? maskCEP(userDetails.cep) : null },
       { label: 'Endereço', value: userDetails.endereco },
       { label: 'Bairro', value: userDetails.bairro },
       { label: 'Cidade', value: userDetails.cidade },
@@ -182,7 +170,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ userId, onClose }) 
         {/* Título (muda com base no usuário) */}
         <h2>{userDetails ? `Detalhes de ${userDetails.nome}` : 'Detalhes do Usuário'}</h2>
 
-        {/* === 5. BOTÕES DE PAGINAÇÃO === */}
+        {/* === BOTÕES DE PAGINAÇÃO === */}
         <div className="modal-pagination">
           <button 
             className={`modal-page-button ${currentPage === 1 ? 'active' : ''}`}
@@ -221,7 +209,17 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ userId, onClose }) 
                   <div className="detail-item"><strong>Email:</strong> {userDetails.email}</div>
                   <div className="detail-item"><strong>Papel:</strong> {userDetails.tipoUsuario}</div>
                   <div className="detail-item"><strong>Tipo Pessoa:</strong> {userDetails.tipoPessoa || 'Não informado'}</div>
-                  <div className="detail-item"><strong>Documento:</strong> {userDetails.documento || 'Não informado'}</div>
+                  
+                  {/* --- 4. ATUALIZADO PARA USAR MÁSCARA (Documento) --- */}
+                  <div className="detail-item">
+                    <strong>Documento:</strong> 
+                    <span>
+                      {userDetails.tipoPessoa === 'Fisica' ? maskCPF(userDetails.documento || '') :
+                       userDetails.tipoPessoa === 'Juridica' ? maskCNPJ(userDetails.documento || '') :
+                       userDetails.documento || 'Não informado'}
+                    </span>
+                  </div>
+                  
                   <div className="detail-item"><strong>Membro desde:</strong> {formatDataExibicao(userDetails.dataCadastro)}</div>
                 </div>
               )}

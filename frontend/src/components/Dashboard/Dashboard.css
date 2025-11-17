@@ -88,9 +88,13 @@
 }
 
 /* Conteúdo principal (abaixo do header azul) */
-.dashboard-main {
+dashboard-main {
   padding: 25px 30px; 
   flex-grow: 1; 
+  /* --- ADICIONE ISTO --- */
+  /* Reserva altura mínima para o conteúdo, 
+     impedindo o footer de "saltar" */
+  min-height: 80vh; 
 }
 
 /* Título da Seção (Ex: Gerenciamento de Usuários) */

@@ -3,14 +3,12 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaLinkedinIn,
-  FaWhatsapp,
-  FaInfoCircle,
-  FaInfo,
-} from 'react-icons/fa';
+import { FaFacebookF } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
+import { FaLinkedinIn } from "react-icons/fa";
+import { FaWhatsapp } from "react-icons/fa";
+import { FaInfoCircle } from "react-icons/fa";
+import { FaInfo } from "react-icons/fa";
 import './Footer.css'; 
 
 const Footer: React.FC = () => {

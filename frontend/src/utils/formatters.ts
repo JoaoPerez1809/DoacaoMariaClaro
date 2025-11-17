@@ -52,3 +52,47 @@ export const formatDataParaInput = (dateString: string | null | undefined): stri
     return "";
   }
 };
+
+// === NOVAS FUNÇÕES DE MÁSCARA ADICIONADAS ABAIXO ===
+
+/**
+ * Aplica máscara de CPF (###.###.###-##)
+ */
+export const maskCPF = (value: string) => {
+  return value
+    .replace(/\D/g, '') // Remove tudo que não é dígito
+    .replace(/(\d{3})(\d)/, '$1.$2') // Coloca ponto após o terceiro dígito
+    .replace(/(\d{3})(\d)/, '$1.$2') // Coloca ponto após o sexto dígito
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Coloca hífen antes dos dois últimos dígitos
+};
+
+/**
+ * Aplica máscara de CNPJ (##.###.###/####-##)
+ */
+export const maskCNPJ = (value: string) => {
+  return value
+    .replace(/\D/g, '') // Remove tudo que não é dígito
+    .replace(/^(\d{2})(\d)/, '$1.$2') // Coloca ponto após o segundo dígito
+    .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3') // Coloca ponto após o quinto dígito
+    .replace(/\.(\d{3})(\d)/, '.$1/$2') // Coloca barra após o oitavo dígito
+    .replace(/(\d{4})(\d)/, '$1-$2'); // Coloca hífen antes dos dois últimos dígitos
+};
+
+/**
+ * Aplica máscara de Telefone (XX) XXXXX-XXXX
+ */
+export const maskTelefone = (value: string) => {
+  return value
+    .replace(/\D/g, '') // Remove tudo que não é dígito
+    .replace(/^(\d{2})(\d)/g, '($1) $2') // Coloca parênteses em volta dos dois primeiros dígitos
+    .replace(/(\d{5})(\d)/, '$1-$2'); // Coloca hífen após o quinto dígito (para celular)
+};
+
+/**
+ * Aplica máscara de CEP (XXXXX-XXX)
+ */
+export const maskCEP = (value: string) => {
+  return value
+    .replace(/\D/g, '') // Remove tudo que não é dígito
+    .replace(/(\d{5})(\d)/, '$1-$2'); // Coloca hífen após o quinto dígito
+};
