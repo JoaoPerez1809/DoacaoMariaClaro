@@ -32,7 +32,7 @@ public class PagamentoController : ControllerBase
         MercadoPagoConfig.AccessToken = _config.GetValue<string>("MercadoPago:AccessToken");
     }
 
-    // ... (O seu método [HttpPost("criar-preferencia")] existente) ...
+    // ... (O seu método [HttpPost("criar-preferencia")] existente. Não precisa de o alterar.) ...
     [Authorize]
     [HttpPost("criar-preferencia")]
     public async Task<IActionResult> CriarPreferencia([FromBody] DoacaoRequestDto request)
@@ -98,7 +98,7 @@ public class PagamentoController : ControllerBase
     }
 
 
-    // ... (O seu método [HttpPost("webhook")] existente) ...
+    // ... (O seu método [HttpPost("webhook")] existente. Não precisa de o alterar.) ...
     [HttpPost("webhook")]
     public async Task<IActionResult> Webhook([FromBody] MercadoPagoNotification notification)
     {
@@ -182,7 +182,7 @@ public class PagamentoController : ControllerBase
         return Ok();
     }
 
-    // ... (O seu método [HttpGet("me")] existente, para o Perfil do Doador) ...
+    // ... (O seu método [HttpGet("me")] existente. Não precisa de o alterar.) ...
     [Authorize]
     [HttpGet("me")]
     [ProducesResponseType(typeof(List<PagamentoDto>), StatusCodes.Status200OK)]
@@ -207,7 +207,7 @@ public class PagamentoController : ControllerBase
         return Ok(doacoes);
     }
 
-    // ... (O seu método [HttpGet("{userId}")] existente, para o Modal do Admin) ...
+    // ... (O seu método [HttpGet("{userId}")] existente. Não precisa de o alterar.) ...
     [Authorize(Roles = "Administrador, Colaborador")]
     [HttpGet("{userId}")]
     [ProducesResponseType(typeof(List<PagamentoDto>), StatusCodes.Status200OK)]
@@ -234,32 +234,7 @@ public class PagamentoController : ControllerBase
         return Ok(doacoes);
     }
 
-    // === NOVO MÉTODO (PARA BUSCAR OS ANOS) ===
-    /// <summary>
-    /// (Admin) Retorna uma lista de anos únicos que tiveram doações aprovadas.
-    /// </summary>
-    [Authorize(Roles = "Administrador, Colaborador")]
-    [HttpGet("anos-disponiveis")]
-    [ProducesResponseType(typeof(List<int>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> GetAnosDisponiveis()
-    {
-        var anos = await _context.Pagamentos
-            .Where(p => p.Status == "approved") // Apenas de doações aprovadas
-            .Select(p => p.DataCriacao.Year) // Seleciona só o ano
-            .Distinct() // Pega valores únicos
-            .OrderByDescending(ano => ano) // Ordena do mais novo para o mais velho
-            .ToListAsync();
-
-        return Ok(anos); // Retorna ex: [2025, 2024, 2023, 2021]
-    }
-
-
-    // === MÉTODO DE RELATÓRIO (COM FILTROS) ===
-    /// <summary>
-    /// (Admin) Gera um relatório de sumário de arrecadação (Bruto vs Líquido) com base em filtros de data.
-    /// </summary>
+    // ... (O seu método [HttpGet("relatorio-arrecadacao")] existente. Não precisa de o alterar.) ...
     [Authorize(Roles = "Administrador, Colaborador")]
     [HttpGet("relatorio-arrecadacao")]
     [ProducesResponseType(typeof(RelatorioArrecadacaoDto), StatusCodes.Status200OK)]
@@ -268,8 +243,8 @@ public class PagamentoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetRelatorioArrecadacao(
         [FromQuery] int ano, 
-        [FromQuery] string tipo, // "mensal", "trimestral", "semestral"
-        [FromQuery] int periodo // 1-12 (mês), 1-4 (trimestre), 1-2 (semestre)
+        [FromQuery] string tipo, 
+        [FromQuery] int periodo 
     )
     {
         DateTime startDate;
@@ -287,14 +262,14 @@ public class PagamentoController : ControllerBase
 
                 case "trimestral":
                     if (periodo < 1 || periodo > 4) return BadRequest("Trimestre inválido. Use 1-4.");
-                    int startMonthTrimestre = (periodo - 1) * 3 + 1; // Q1=M1, Q2=M4, Q3=M7, Q4=M10
+                    int startMonthTrimestre = (periodo - 1) * 3 + 1; 
                     startDate = new DateTime(ano, startMonthTrimestre, 1);
                     endDate = startDate.AddMonths(3);
                     break;
 
                 case "semestral":
                     if (periodo < 1 || periodo > 2) return BadRequest("Semestre inválido. Use 1-2.");
-                    int startMonthSemestre = (periodo - 1) * 6 + 1; // S1=M1, S2=M7
+                    int startMonthSemestre = (periodo - 1) * 6 + 1; 
                     startDate = new DateTime(ano, startMonthSemestre, 1);
                     endDate = startDate.AddMonths(6);
                     break;
@@ -307,15 +282,13 @@ public class PagamentoController : ControllerBase
         {
             return BadRequest("Data inválida. Verifique o ano e o período.");
         }
-
-        // 1. Busca as doações APROVADAS dentro do range de datas (UTC)
+        
         var doacoesAprovadas = await _context.Pagamentos
             .Where(p => p.Status == "approved" && 
                         p.DataCriacao >= startDate.ToUniversalTime() && 
                         p.DataCriacao < endDate.ToUniversalTime())
             .ToListAsync();
 
-        // 2. Monta o DTO de Relatório apenas com os totais
         var relatorio = new RelatorioArrecadacaoDto
         {
             TotalArrecadado = doacoesAprovadas.Sum(p => p.Valor),
@@ -325,9 +298,89 @@ public class PagamentoController : ControllerBase
 
         return Ok(relatorio);
     }
+
+    // ... (O seu método [HttpGet("anos-disponiveis")] existente. Não precisa de o alterar.) ...
+    [Authorize(Roles = "Administrador, Colaborador")]
+    [HttpGet("anos-disponiveis")]
+    [ProducesResponseType(typeof(List<int>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetAnosDisponiveis()
+    {
+        var anos = await _context.Pagamentos
+            .Where(p => p.Status == "approved") 
+            .Select(p => p.DataCriacao.Year) 
+            .Distinct() 
+            .OrderByDescending(ano => ano) 
+            .ToListAsync();
+
+        return Ok(anos);
+    }
+
+    // === MÉTODO ATUALIZADO (LISTA DE DOAÇÕES) ===
+    /// <summary>
+    /// (Admin) Lista todas as doações aprovadas de forma paginada E retorna os totais.
+    /// </summary>
+    [Authorize(Roles = "Administrador, Colaborador")]
+    [HttpGet("lista-doacoes")]
+    [ProducesResponseType(typeof(PagedDonationsResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetListaDoacoes(
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10 
+    )
+    {
+        if (pageNumber < 1) pageNumber = 1;
+        if (pageSize < 1) pageSize = 10;
+        if (pageSize > 100) pageSize = 100;
+
+        var query = _context.Pagamentos
+            .Where(p => p.Status == "approved")
+            .Include(p => p.Doador);
+
+        // --- CORREÇÃO (LINQ TO OBJECTS) ---
+        // 1. Trazemos todos os dados aprovados para a memória ANTES de sumarizar
+        var todasDoacoesAprovadas = await query.ToListAsync();
+
+        // 2. Agora calculamos os totais na memória (LINQ to Objects)
+        var totalCount = todasDoacoesAprovadas.Count;
+        var totalBruto = todasDoacoesAprovadas.Sum(p => p.Valor);
+        var totalLiquido = todasDoacoesAprovadas.Sum(p => p.ValorLiquido ?? 0);
+        // --- FIM DA CORREÇÃO ---
+
+        // 3. Aplicamos a paginação e o Select na lista em memória
+        var doacoes = todasDoacoesAprovadas
+            .OrderByDescending(p => p.DataCriacao) 
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(p => new DoacaoDetalhadaDto 
+            {
+                PagamentoId = p.Id,
+                Valor = p.Valor,
+                ValorLiquido = p.ValorLiquido, 
+                Status = p.Status,
+                DataCriacao = p.DataCriacao,
+                DoadorId = p.DoadorId ?? 0,
+                DoadorNome = p.Doador != null ? p.Doador.Nome : "Doador Anônimo/Excluído",
+                DoadorEmail = p.Doador != null ? p.Doador.Email : "N/A"
+            })
+            .ToList(); // Note: .ToList() síncrono, não .ToListAsync()
+
+        // 4. Monta o resultado com os totais
+        var result = new PagedDonationsResult
+        {
+            Items = doacoes,
+            TotalCount = totalCount,
+            TotalArrecadadoBruto = totalBruto, 
+            TotalArrecadadoLiquido = totalLiquido 
+        };
+        
+        return Ok(result);
+    }
 }
 
-// DTOs
+// === DTOs (EXISTENTES) ===
 public class DoacaoRequestDto { public decimal Valor { get; set; } }
 
 public class MercadoPagoNotification
@@ -346,14 +399,31 @@ public class PagamentoDto
     public string Status { get; set; }
 }
 
-// === DTO ATUALIZADO (SIMPLIFICADO) ===
-
-/// <summary>
-/// DTO para o relatório de arrecadação (SUMÁRIO).
-/// </summary>
 public class RelatorioArrecadacaoDto
 {
-    public decimal TotalArrecadado { get; set; } // Soma de 'Valor'
-    public decimal TotalLiquido { get; set; } // Soma de 'ValorLiquido'
-    public int TotalDoacoesAprovadas { get; set; } // Contagem de doações
+    public decimal TotalArrecadado { get; set; }
+    public decimal TotalLiquido { get; set; } 
+    public int TotalDoacoesAprovadas { get; set; } 
+}
+
+
+// === DTOs ATUALIZADOS (PARA LISTA DE DOAÇÕES) ===
+public class DoacaoDetalhadaDto
+{
+    public int PagamentoId { get; set; }
+    public decimal Valor { get; set; }
+    public decimal? ValorLiquido { get; set; } 
+    public string Status { get; set; }
+    public DateTime DataCriacao { get; set; }
+    public int DoadorId { get; set; }
+    public string DoadorNome { get; set; }
+    public string DoadorEmail { get; set; }
+}
+
+public class PagedDonationsResult
+{
+    public List<DoacaoDetalhadaDto> Items { get; set; } = new List<DoacaoDetalhadaDto>();
+    public int TotalCount { get; set; }
+    public decimal TotalArrecadadoBruto { get; set; }
+    public decimal TotalArrecadadoLiquido { get; set; }
 }

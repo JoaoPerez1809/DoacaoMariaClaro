@@ -98,8 +98,6 @@ export type PagamentoDto = {
   status: string;
 };
 
-// === TIPOS DE RELATÓRIO ===
-
 /**
  * DTO para o relatório de arrecadação (RelatorioArrecadacaoDto.cs)
  */
@@ -107,4 +105,42 @@ export type RelatorioArrecadacaoDto = {
   totalArrecadado: number;
   totalLiquido: number;
   totalDoacoesAprovadas: number;
+};
+
+/**
+ * DTO para a lista detalhada de doações (DoacaoDetalhadaDto.cs)
+ */
+export type DoacaoDetalhadaDto = {
+  pagamentoId: number;
+  valor: number;
+  valorLiquido: number | null; 
+  status: string;
+  dataCriacao: string;
+  doadorId: number;
+  doadorNome: string;
+  doadorEmail: string;
+};
+
+/**
+ * Resposta paginada da API de doações (PagedDonationsResult.cs)
+ */
+export type PagedDonationsResponse = {
+  items: DoacaoDetalhadaDto[];
+  totalCount: number;
+  totalArrecadadoBruto: number;
+  totalArrecadadoLiquido: number;
+};
+
+// === NOVO TIPO (PARA ESTATÍSTICAS DE USUÁRIOS) ===
+
+/**
+ * DTO para as estatísticas do dashboard (UserStatsDto.cs)
+ */
+export type UserStatsDto = {
+  totalUsuarios: number;
+  totalPessoaFisica: number;
+  totalPessoaJuridica: number;
+  totalDoadores: number;
+  totalColaboradores: number;
+  totalAdministradores: number;
 };

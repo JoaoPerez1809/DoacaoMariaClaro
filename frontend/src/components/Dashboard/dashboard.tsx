@@ -2,26 +2,47 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from 'next/link';
-import { FaThLarge, FaUsers, FaFileAlt, FaUser, FaSignOutAlt, FaChevronLeft, FaChevronRight, FaEdit } from "react-icons/fa";
+import { 
+  FaThLarge, FaUsers, FaFileAlt, FaUser, FaSignOutAlt, 
+  FaChevronLeft, FaChevronRight, FaEdit, FaHandHoldingHeart 
+} from "react-icons/fa";
 import "./Dashboard.css";
-import { getAllUsersRequest, UserFilters } from "@/services/userService";
-import type { UserDto } from "@/types/user";
+
+// --- 1. IMPORTE O NOVO SERVIÇO E TIPO ---
+import { 
+  getAllUsersRequest, 
+  UserFilters, 
+  getUserStatsRequest 
+} from "@/services/userService";
+import type { UserDto, UserStatsDto } from "@/types/user";
+
 import { useAuth } from "@/contexts/AuthContext";
 import UserDetailsModal from './UserDetailsModal';
 import EditRoleModal from './EditRoleModal'; 
 import debounce from 'lodash/debounce';
-
-// --- 1. IMPORTE A ACTIONBAR ---
 import { ActionBar } from '@/components/layout/ActionBar';
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
+
+// --- Helper para o loading dos cards ---
+const StatsLoadingCard = () => (
+  <div className="info-card stats-loading">
+    <div className="loading-shimmer title"></div>
+    <div className="loading-shimmer value"></div>
+  </div>
+);
 
 const Dashboard: React.FC = () => {
-  // ... (Estados existentes: users, loading, error, etc.) ...
   const [users, setUsers] = useState<UserDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user: authUser, signOut } = useAuth();
+  
+  // --- 2. NOVOS ESTADOS PARA ESTATÍSTICAS ---
+  const [stats, setStats] = useState<UserStatsDto | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  // ... (Estados de paginação e filtros existentes) ...
   const [currentPage, setCurrentPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
@@ -34,7 +55,7 @@ const Dashboard: React.FC = () => {
 
   const totalPages = Math.ceil(totalUsers / PAGE_SIZE);
 
-  // ... (Função fetchUsers existente) ...
+  // Função para buscar os usuários (paginados)
   const fetchUsers = useCallback(async (page: number, filters: UserFilters = {}) => {
     try {
       setLoading(true); 
@@ -50,7 +71,25 @@ const Dashboard: React.FC = () => {
     }
   }, []); 
 
-  // ... (useEffect existente) ...
+  // --- 3. NOVO useEffect PARA BUSCAR ESTATÍSTICAS (Roda 1 vez) ---
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        setStatsLoading(true);
+        const statsData = await getUserStatsRequest();
+        setStats(statsData);
+      } catch (err) {
+        console.error("Erro ao buscar estatísticas:", err);
+        // Não define o erro principal, para a tabela ainda carregar
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+    
+    fetchStats();
+  }, []); // Array vazio, roda só no início
+
+  // useEffect principal para buscar a lista de usuários (paginada)
   useEffect(() => {
     const currentFilters: UserFilters = {
       search: searchTerm || undefined, 
@@ -106,18 +145,21 @@ const Dashboard: React.FC = () => {
     setEditingUser(null); 
   };
   const handleRoleUpdated = () => {
+      // Atualiza a lista E as estatísticas
       const currentFilters: UserFilters = { search: searchTerm, role: selectedRole, tipoPessoa: selectedTipoPessoa };
       fetchUsers(currentPage, currentFilters);
+      getUserStatsRequest().then(setStats).catch(console.error); // Recarrega stats
   };
 
   // --- Renderização do Componente ---
   return (
     <div className="dashboard-container">
-      {/* Sidebar */}
+      {/* Sidebar (Atualizada) */}
       <aside className="sidebar">
          <ul>
            <li><Link href="/admin/dashboard" title="Visão Geral (Não implementado)"><FaThLarge /></Link></li>
            <li className="active"><Link href="/admin/dashboard" title="Usuários"><FaUsers /></Link></li>
+           <li><Link href="/admin/doacoes" title="Doações Recebidas"><FaHandHoldingHeart /></Link></li>
            <li><Link href="/admin/relatorios" title="Relatórios de Arrecadação"><FaFileAlt /></Link></li>
            <li><Link href="/doador/perfil" title="Meu Perfil"><FaUser /></Link></li> 
            <li onClick={signOut} title="Sair"><FaSignOutAlt /></li>
@@ -127,15 +169,60 @@ const Dashboard: React.FC = () => {
       {/* Conteúdo Principal */}
       <div className="dashboard-content">
         <header className="dashboard-header">Dashboard</header>
-        
-        {/* --- 2. ADICIONE A ACTIONBAR AQUI --- */}
         <ActionBar />
-
-        {/* Área Principal */}
         <main className="dashboard-main">
+          
+          {/* --- 4. NOVOS CARDS INFORMATIVOS (USUÁRIOS) --- */}
+          <div className="info-card-container stats-grid">
+            {statsLoading ? (
+              // Mostra 6 "esqueletos" de loading
+              <>
+                <StatsLoadingCard />
+                <StatsLoadingCard />
+                <StatsLoadingCard />
+                <StatsLoadingCard />
+                <StatsLoadingCard />
+                <StatsLoadingCard />
+              </>
+            ) : stats ? (
+              // Mostra os cards reais
+              <>
+                <div className="info-card">
+                  <h3 className="info-card-title">Total de Usuários</h3>
+                  <p className="info-card-value">{stats.totalUsuarios}</p>
+                </div>
+                <div className="info-card">
+                  <h3 className="info-card-title">Pessoa Física</h3>
+                  <p className="info-card-value">{stats.totalPessoaFisica}</p>
+                </div>
+                <div className="info-card">
+                  <h3 className="info-card-title">Pessoa Jurídica</h3>
+                  <p className="info-card-value">{stats.totalPessoaJuridica}</p>
+                </div>
+                <div className="info-card">
+                  <h3 className="info-card-title">Doadores</h3>
+                  <p className="info-card-value">{stats.totalDoadores}</p>
+                </div>
+                <div className="info-card">
+                  <h3 className="info-card-title">Colaboradores</h3>
+                  <p className="info-card-value">{stats.totalColaboradores}</p>
+                </div>
+                <div className="info-card">
+                  <h3 className="info-card-title">Administradores</h3>
+                  <p className="info-card-value">{stats.totalAdministradores}</p>
+                </div>
+              </>
+            ) : (
+              <p style={{color: 'red'}}>Não foi possível carregar as estatísticas.</p>
+            )}
+          </div>
+          {/* --- FIM DOS CARDS --- */}
+
+
+          {/* Título da Seção (Gerenciamento) */}
           <h2 className="section-title">Gerenciamento de Usuários</h2>
 
-          {/* Área de Filtros */}
+          {/* Área de Filtros (Sem alteração) */}
           <div className="filter-controls">
             <input
               type="text"
@@ -157,55 +244,47 @@ const Dashboard: React.FC = () => {
             </select>
           </div>
 
-          {/* ... (Resto do seu código: Tabela, Paginação, Modais) ... */}
           {loading && <p style={{ textAlign: 'center', padding: '30px' }}>Carregando usuários...</p>}
           {error && <p style={{ color: 'red', textAlign: 'center', padding: '30px' }}>{error}</p>}
 
           {!loading && !error && ( 
             <>
-              <div className="tabela-container">
-                <table className="tabela tabela-usuarios">
-                  <thead>
-                    <tr>
-                      <th>Nome</th>
-                      <th>E-mail</th>
-                      <th>Papel</th>
-                      <th>Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users.map((user) => (
-                      <tr key={user.id} onClick={() => handleRowClick(user.id)} title="Clique para ver detalhes">
-                        <td>{user.nome}</td>
-                        <td>{user.email}</td>
-                        <td>{user.tipoUsuario}</td>
-                        <td>
-                          <button className="details-button" onClick={(e) => { e.stopPropagation(); handleRowClick(user.id); }}>
-                            Detalhes
-                          </button>
-                          {authUser?.role === 'Administrador' && user.id !== parseInt(authUser.id, 10) && (
-                             <button
-                               className="edit-role-button" 
-                               onClick={(e) => handleEditRoleClick(e, user)}
-                               title="Editar Papel"
-                              >
-                               <FaEdit /> 
-                             </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                    {users.length === 0 && (
-                      <tr>
-                        <td colSpan={4} style={{ textAlign: 'center', padding: '20px', color: '#777' }}>
-                          Nenhum usuário encontrado com os filtros aplicados.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+              {/* Grelha de Cards (Já implementada) */}
+              <div className="user-card-grid">
+                {users.map((user) => (
+                  <div key={user.id} className="user-card">
+                    <div className="user-card-info">
+                      <span className={`user-card-role role-${user.tipoUsuario.toLowerCase()}`}>
+                        {user.tipoUsuario}
+                      </span>
+                      <h3 className="user-card-name">{user.nome}</h3>
+                      <p className="user-card-email">{user.email}</p>
+                    </div>
+                    <div className="user-card-actions">
+                      <button className="details-button" onClick={() => handleRowClick(user.id)}>
+                        Detalhes
+                      </button>
+                      {authUser?.role === 'Administrador' && user.id !== parseInt(authUser.id, 10) && (
+                         <button
+                           className="edit-role-button" 
+                           onClick={(e) => handleEditRoleClick(e, user)}
+                           title="Editar Papel"
+                          >
+                           <FaEdit /> 
+                         </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                
+                {users.length === 0 && (
+                  <p className="no-users-found">
+                    Nenhum usuário encontrado com os filtros aplicados.
+                  </p>
+                )}
               </div>
-
+              
+              {/* Paginação (Sem alteração) */}
               {totalPages > 1 && (
                 <div className="pagination-controls"> 
                   <button onClick={handlePreviousPage} disabled={currentPage === 1}>
@@ -222,7 +301,7 @@ const Dashboard: React.FC = () => {
         </main>
       </div>
 
-      {/* Modais */}
+      {/* Modais (Sem alteração) */}
       {isDetailsModalOpen && selectedUserId && (
         <UserDetailsModal userId={selectedUserId} onClose={handleCloseDetailsModal} />
       )}

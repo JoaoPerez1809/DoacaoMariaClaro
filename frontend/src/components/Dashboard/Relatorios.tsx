@@ -2,7 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Link from 'next/link';
-import { FaThLarge, FaUsers, FaFileAlt, FaUser, FaSignOutAlt, FaDownload } from "react-icons/fa";
+// --- 1. IMPORTE O NOVO ÍCONE ---
+import { 
+  FaThLarge, FaUsers, FaFileAlt, FaUser, FaSignOutAlt, 
+  FaDownload, FaHandHoldingHeart 
+} from "react-icons/fa";
 import "./Relatorios.css"; 
 import "./Dashboard.css"; 
 import { getRelatorioArrecadacaoRequest, getAnosDisponiveisRequest, RelatorioFilters } from "@/services/userService";
@@ -10,8 +14,6 @@ import type { RelatorioArrecadacaoDto } from "@/types/user";
 import { generateArrecadacaoPDF } from "@/utils/pdfGenerator";
 import { formatValor } from "@/utils/formatters";
 import { useAuth } from "@/contexts/AuthContext";
-
-// --- 1. IMPORTE A ACTIONBAR ---
 import { ActionBar } from '@/components/layout/ActionBar';
 
 // --- (Helpers para os Dropdowns: meses, trimestres, semestres) ---
@@ -123,25 +125,44 @@ const Relatorios: React.FC = () => {
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar */}
+      {/* --- 2. SIDEBAR ATUALIZADA --- */}
       <aside className="sidebar">
          <ul>
-           <li><Link href="/admin/dashboard" title="Visão Geral (Não implementado)"><FaThLarge /></Link></li>
-           <li><Link href="/admin/dashboard" title="Usuários"><FaUsers /></Link></li>
-           <li className="active"><Link href="/admin/relatorios" title="Relatórios de Arrecadação"><FaFileAlt /></Link></li>
-           <li><Link href="/doador/perfil" title="Meu Perfil"><FaUser /></Link></li> 
+           <li>
+             <Link href="/admin/dashboard" title="Visão Geral (Não implementado)">
+               <FaThLarge />
+             </Link>
+           </li>
+           <li>
+             <Link href="/admin/dashboard" title="Usuários">
+               <FaUsers />
+             </Link>
+           </li>
+           {/* NOVO LINK PARA DOAÇÕES */}
+           <li>
+             <Link href="/admin/doacoes" title="Doações Recebidas">
+               <FaHandHoldingHeart />
+             </Link>
+           </li>
+           {/* MARCA ESTA PÁGINA COMO ATIVA */}
+           <li className="active">
+             <Link href="/admin/relatorios" title="Relatórios de Arrecadação">
+               <FaFileAlt />
+             </Link>
+           </li>
+           <li>
+             <Link href="/doador/perfil" title="Meu Perfil">
+              <FaUser />
+             </Link>
+           </li> 
            <li onClick={signOut} title="Sair"><FaSignOutAlt /></li>
          </ul>
       </aside>
 
-      {/* Conteúdo Principal */}
+      {/* Conteúdo Principal (à direita da sidebar) */}
       <div className="dashboard-content">
         <header className="dashboard-header">Dashboard</header>
-
-        {/* --- 2. ADICIONE A ACTIONBAR AQUI --- */}
         <ActionBar />
-
-        {/* Área Principal */}
         <main className="dashboard-main">
           <h2 className="section-title">Relatórios de Arrecadação</h2>
           

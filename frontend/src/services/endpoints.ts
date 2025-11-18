@@ -17,16 +17,18 @@ export const authAPI = {
 };
 
 // Endpoints para Gerenciamento de Usuários, usando a factory CRUD
-export const userAPI = crudAPI('Users');
+export const userAPI = {
+  ...crudAPI('Users'), // Mantém getAll, getById, etc.
+  
+  // === ADICIONE ESTA LINHA ===
+  getStats: () => `${BASE_URL}/Users/stats`, // Novo endpoint de estatísticas
+};
 
 // Endpoints para Pagamentos/Doações
 export const pagamentoAPI = {
   getMyDonations: () => `${BASE_URL}/Pagamento/me`,
   getDonationsByUserId: (userId: number) => `${BASE_URL}/Pagamento/${userId}`,
-  
-  // Rota para o relatório com filtros
   getRelatorioArrecadacao: () => `${BASE_URL}/Pagamento/relatorio-arrecadacao`,
-  
-  // Rota para buscar os anos
   getAnosDisponiveis: () => `${BASE_URL}/Pagamento/anos-disponiveis`,
+  getListaDoacoes: () => `${BASE_URL}/Pagamento/lista-doacoes`,
 };
