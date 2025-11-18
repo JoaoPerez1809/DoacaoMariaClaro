@@ -7,9 +7,9 @@ using Application.Interfaces;
 using API.DTOs.UserRep;
 using Infrastructure.Data;
 using System.Linq;
-using Domain.Entities; // Required for Enums
-using System; // Required for Enum.TryParse
-using System.Collections.Generic; // Required for List
+using Domain.Entities; 
+using System; 
+using System.Collections.Generic; 
 
 namespace API.Controllers.UserRep
 {
@@ -19,14 +19,26 @@ namespace API.Controllers.UserRep
         public List<T> Items { get; set; } = new List<T>();
         public int TotalCount { get; set; }
     }
-    // --- FIM DO DTO ---
+
+    // === NOVO DTO PARA AS ESTATÍSTICAS ===
+    public class UserStatsDto
+    {
+        public int TotalUsuarios { get; set; }
+        public int TotalPessoaFisica { get; set; }
+        public int TotalPessoaJuridica { get; set; }
+        public int TotalDoadores { get; set; }
+        public int TotalColaboradores { get; set; }
+        public int TotalAdministradores { get; set; }
+    }
+    // === FIM DO NOVO DTO ===
+
 
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly AppDbContext _context; // Inject DbContext para consulta direta
+        private readonly AppDbContext _context; 
 
         public UsersController(IUserService userService, AppDbContext context)
         {
@@ -37,14 +49,7 @@ namespace API.Controllers.UserRep
         /// <summary>
         /// Obtém uma lista paginada e filtrada de usuários.
         /// </summary>
-        /// <param name="pageNumber">Número da página (começando em 1).</param>
-        /// <param name="pageSize">Quantidade de itens por página.</param>
-        /// <param name="search">Termo para buscar em Nome, Email ou ID.</param>
-        /// <param name="role">Filtra pelo papel do usuário (Doador, Colaborador, Administrador).</param>
-        /// <param name="tipoPessoa">Filtra pelo tipo de pessoa (Fisica, Juridica).</param>
-        /// <response code="200">Retorna a lista paginada de usuários.</response>
-        /// <response code="401">Usuário não autenticado.</response>
-        /// <response code="403">Usuário não autorizado.</response>
+        // ... (atributos existentes) ...
         [Authorize(Roles = "Administrador, Colaborador")]
         [HttpGet]
         [ProducesResponseType(typeof(PagedResult<UserDto>), StatusCodes.Status200OK)]
@@ -53,75 +58,68 @@ namespace API.Controllers.UserRep
         public async Task<IActionResult> GetAllUsers(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 20,
-            [FromQuery] string? search = null, // Filtro de busca
-            [FromQuery] string? role = null, // Filtro de papel
-            [FromQuery] string? tipoPessoa = null // Filtro de tipo pessoa
+            [FromQuery] string? search = null, 
+            [FromQuery] string? role = null, 
+            [FromQuery] string? tipoPessoa = null 
         )
         {
             if (pageNumber < 1) pageNumber = 1;
             if (pageSize < 1) pageSize = 20;
-            if (pageSize > 100) pageSize = 100; // Limite
+            if (pageSize > 100) pageSize = 100; 
 
-            // --- APLICAÇÃO DOS FILTROS ---
-            var query = _context.Users.AsQueryable(); // Começa consulta
+            var query = _context.Users.AsQueryable(); 
 
-            // Filtro de Busca (Nome, Email, ID) - Case-insensitive
+            // Filtro de Busca (Nome, Email, ID)
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var searchTermLower = search.ToLower().Trim();
                 query = query.Where(u =>
-                    EF.Functions.Like(u.Nome.ToLower(), $"%{searchTermLower}%") || // Usa Like para contains
+                    EF.Functions.Like(u.Nome.ToLower(), $"%{searchTermLower}%") || 
                     EF.Functions.Like(u.Email.ToLower(), $"%{searchTermLower}%") ||
-                    u.Id.ToString() == searchTermLower // Compara ID como string
+                    u.Id.ToString() == searchTermLower 
                 );
             }
 
-            // Filtro de Papel (Role) - Case-insensitive
+            // Filtro de Papel (Role)
             if (!string.IsNullOrWhiteSpace(role) && Enum.TryParse<TipoUsuario>(role, true, out var roleEnum))
             {
                 query = query.Where(u => u.TipoUsuario == roleEnum);
             }
 
-            // Filtro de Tipo de Pessoa - Case-insensitive
+            // Filtro de Tipo de Pessoa
             if (!string.IsNullOrWhiteSpace(tipoPessoa) && Enum.TryParse<TipoPessoa>(tipoPessoa, true, out var tipoPessoaEnum))
             {
-                // Inclui usuários onde TipoPessoa é null se o filtro não for específico
-                // query = query.Where(u => u.TipoPessoa == tipoPessoaEnum); // Versão anterior
-                query = query.Where(u => u.TipoPessoa.HasValue && u.TipoPessoa.Value == tipoPessoaEnum); // Garante que não seja nulo
+                query = query.Where(u => u.TipoPessoa.HasValue && u.TipoPessoa.Value == tipoPessoaEnum); 
             }
-            // --- FIM DA APLICAÇÃO DOS FILTROS ---
 
-            // Conta o total DEPOIS de aplicar os filtros
             var totalUsers = await query.CountAsync();
 
-            // Aplica ordenação, paginação e projeção (Select para DTO)
             var users = await query
-                .OrderBy(u => u.Nome) // Ordena por nome
-                .Skip((pageNumber - 1) * pageSize) // Pula páginas anteriores
-                .Take(pageSize) // Pega a quantidade da página atual
-                .Select(user => new UserDto // Mapeia para o DTO de resposta
+                .OrderBy(u => u.Nome) 
+                .Skip((pageNumber - 1) * pageSize) 
+                .Take(pageSize) 
+                .Select(user => new UserDto 
                 {
                     Id = user.Id,
                     Nome = user.Nome,
                     Email = user.Email,
                     TipoUsuario = user.TipoUsuario.ToString(),
-                    TipoPessoa = user.TipoPessoa.HasValue ? user.TipoPessoa.Value.ToString() : null, // Converte Enum? para string?
-                    Documento = user.Documento // Assume que documento já está limpo no DB
+                    TipoPessoa = user.TipoPessoa.HasValue ? user.TipoPessoa.Value.ToString() : null, 
+                    Documento = user.Documento 
                 })
                 .ToListAsync();
 
-            // Monta o resultado paginado
             var result = new PagedResult<UserDto>
             {
                 Items = users,
                 TotalCount = totalUsers
             };
 
-            return Ok(result); // Retorna 200 OK com os dados
+            return Ok(result); 
         }
 
         // --- Outros endpoints (GetMyProfile, GetUserById, UpdateUser, UpdateUserRole, DeleteUser) ---
-        // Manter os atributos [ProducesResponseType] neles como na resposta anterior
+        // (Sem alterações, continuam aqui)
 
         [Authorize]
         [HttpGet("me")]
@@ -217,6 +215,31 @@ namespace API.Controllers.UserRep
             var success = await _userService.DeleteUserAsync(id);
             if (!success) return NotFound("Usuário não encontrado.");
             return NoContent();
+        }
+
+        // === NOVO ENDPOINT DE ESTATÍSTICAS ===
+        /// <summary>
+        /// (Admin) Obtém estatísticas rápidas sobre os usuários.
+        /// </summary>
+        [Authorize(Roles = "Administrador, Colaborador")]
+        [HttpGet("stats")]
+        [ProducesResponseType(typeof(UserStatsDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> GetUserStats()
+        {
+            // Usa Task.WhenAll para executar todas as contagens em paralelo
+            var stats = new UserStatsDto
+            {
+                TotalUsuarios = await _context.Users.CountAsync(),
+                TotalPessoaFisica = await _context.Users.CountAsync(u => u.TipoPessoa == TipoPessoa.Fisica),
+                TotalPessoaJuridica = await _context.Users.CountAsync(u => u.TipoPessoa == TipoPessoa.Juridica),
+                TotalDoadores = await _context.Users.CountAsync(u => u.TipoUsuario == TipoUsuario.Doador),
+                TotalColaboradores = await _context.Users.CountAsync(u => u.TipoUsuario == TipoUsuario.Colaborador),
+                TotalAdministradores = await _context.Users.CountAsync(u => u.TipoUsuario == TipoUsuario.Administrador)
+            };
+            
+            return Ok(stats);
         }
     }
 }

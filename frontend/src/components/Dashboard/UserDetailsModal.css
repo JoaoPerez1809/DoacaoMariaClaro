@@ -117,3 +117,98 @@
 .pagination-controls span {
   font-weight: bold;
 }
+
+.modal-close-button:hover {
+  color: #333;
+}
+.user-details-grid {
+  display: grid;
+  gap: 12px; 
+  text-align: left;
+}
+.detail-item {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee; 
+}
+.detail-item:last-child {
+  border-bottom: none;
+}
+.detail-item strong {
+  color: #333;
+  margin-right: 8px;
+  display: inline-block;
+  min-width: 100px; 
+}
+/* ... (Restante dos seus estilos existentes) ... */
+
+
+/* === ADICIONE OS ESTILOS ABAIXO NO FINAL DO ARQUIVO === */
+
+/* --- Estilos da Paginação Interna do Modal --- */
+.modal-pagination {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #eee;
+}
+
+.modal-page-button {
+  background: none;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 3px solid transparent; /* Borda inferior transparente */
+  margin-bottom: -2px; /* Alinha com a borda do container */
+  transition: color 0.2s, border-color 0.2s;
+}
+.modal-page-button:hover {
+  color: #111;
+}
+.modal-page-button.active {
+  color: #2a4d9b; /* Azul */
+  border-bottom-color: #2a4d9b; /* Borda azul quando ativo */
+}
+
+/* --- Estilos do Conteúdo da Página --- */
+.modal-page-content {
+  /* Adiciona uma altura mínima para o conteúdo não "pular" */
+  min-height: 200px; 
+}
+
+/* --- Tabela de Doações (Página 3) --- */
+.modal-tabela-doacoes {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+}
+.modal-tabela-doacoes th,
+.modal-tabela-doacoes td {
+  padding: 10px 8px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+.modal-tabela-doacoes th {
+  font-weight: 600;
+  color: #333;
+  background-color: #f8f9fa;
+}
+.modal-tabela-doacoes td {
+  color: #555;
+}
+/* Zebra-striping (opcional) */
+.modal-tabela-doacoes tbody tr:nth-child(even) {
+  background-color: #fdfdfd;
+}
+
+/* --- Mensagem de "Nenhum dado" (Página 2 e 3) --- */
+.modal-no-data {
+  text-align: center;
+  padding: 40px 20px;
+  color: #777;
+  font-style: italic;
+  font-size: 15px;
+}

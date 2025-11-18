@@ -2,8 +2,8 @@
 .dashboard-container {
   display: flex;
   font-family: Arial, sans-serif;
-  background-color: #f8f9fa; /* Fundo geral um pouco mais claro */
-  min-height: 100vh; /* Ocupa a altura toda */
+  background-color: #f8f9fa; 
+  min-height: 100vh;
 }
 
 /* ==================== */
@@ -11,14 +11,14 @@
 /* ==================== */
 .sidebar {
   background-color: #f39c12;
-  width: 60px; /* Mantém largura fixa para ícones */
+  width: 60px; 
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-top: 20px;
-  flex-shrink: 0; /* Impede que a sidebar encolha */
-  height: 100vh; /* Ocupa a altura toda */
-  position: sticky; /* Fica fixa ao rolar */
+  flex-shrink: 0; 
+  height: 100vh; 
+  position: sticky; 
   top: 0;
 }
 
@@ -26,33 +26,36 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  width: 100%; /* Para o background do item ativo ocupar a largura */
-}
-
-.sidebar li {
-  margin: 15px 0; /* Menor espaçamento */
-  font-size: 20px; /* Tamanho do ícone */
-  color: #333;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-  padding: 12px 0; /* Padding vertical */
-  border-radius: 0; /* Remove borda arredondada */
-  text-align: center; /* Centraliza o ícone */
   width: 100%;
 }
 
+.sidebar li {
+  margin: 15px 0; 
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  padding: 12px 0; 
+  text-align: center; 
+  width: 100%;
+}
+
+.sidebar li a {
+  color: inherit; 
+  display: block; 
+  font-size: 20px; 
+}
+
 .sidebar li:hover {
-  background-color: rgba(255, 255, 255, 0.2); /* Efeito hover sutil */
+  background-color: rgba(255, 255, 255, 0.2); 
   color: white;
 }
 .sidebar li.active {
-  background-color: #e0a800; /* Destaque mais forte */
+  background-color: #e0a800; 
   color: white;
 }
 
-/* Ícone de Sair na parte inferior (Opcional) */
 .sidebar li:last-child {
-    margin-top: auto; /* Empurra para baixo */
+    margin-top: auto; 
     margin-bottom: 20px;
 }
 
@@ -60,24 +63,22 @@
 /* ÁREA DE CONTEÚDO PRINCIPAL */
 /* ========================= */
 .dashboard-content {
-  flex: 1; /* Ocupa o restante do espaço */
+  flex: 1; 
   display: flex;
   flex-direction: column;
-  /* Não precisa de background aqui, usa o do container */
-  overflow-y: auto; /* Permite scroll vertical se necessário */
+  overflow-y: auto; 
 }
 
-/* Cabeçalho azul (agora dentro do .dashboard-content) */
+/* Cabeçalho azul */
 .dashboard-header {
   background-color: #2a4d9b; /* Azul */
   color: white;
   text-align: center;
-  padding: 15px 20px; /* Padding ajustado */
-  font-size: 18px; /* Tamanho ajustado */
+  padding: 15px 20px;
+  font-size: 18px;
   font-weight: bold;
   width: 100%;
-  flex-shrink: 0; /* Não encolhe */
-  /* Remover position: sticky se não quiser que ele fixe no topo ao rolar */
+  flex-shrink: 0;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -85,31 +86,31 @@
 
 /* Conteúdo principal (abaixo do header azul) */
 .dashboard-main {
-  padding: 25px 30px; /* Padding interno */
-  flex-grow: 1; /* Ocupa o espaço restante vertical */
-  /* Não precisa mais centralizar texto aqui */
+  padding: 25px 30px; 
+  flex-grow: 1; 
+  min-height: 80vh; 
 }
 
 /* Título da Seção (Ex: Gerenciamento de Usuários) */
-.section-title { /* Renomeado de .titulo */
-  font-size: 22px; /* Tamanho ajustado */
-  color: #333; /* Cor mais escura */
+.section-title { 
+  font-size: 22px; 
+  color: #333; 
   margin-bottom: 25px;
-  text-align: left; /* Alinha à esquerda */
+  text-align: left; 
   font-weight: 600;
 }
 
 /* --- ÁREA DE FILTROS --- */
 .filter-controls {
-  background-color: #ffffff; /* Fundo branco */
+  background-color: #ffffff;
   padding: 15px 20px;
   border-radius: 6px;
   margin-bottom: 25px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   display: flex;
-  gap: 15px; /* Espaço entre os filtros */
+  gap: 15px;
   align-items: center;
-  flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+  flex-wrap: wrap; 
 }
 
 .search-input {
@@ -117,8 +118,8 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
-  flex-grow: 1; /* Ocupa espaço disponível */
-  min-width: 200px; /* Largura mínima */
+  flex-grow: 1; 
+  min-width: 200px;
 }
 
 .filter-select {
@@ -126,64 +127,114 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
-  background-color: white; /* Garante fundo branco */
+  background-color: white;
   min-width: 150px;
 }
-/* --- FIM DA ÁREA DE FILTROS --- */
 
-/* Caixa da tabela */
-.tabela-container {
-  background: #ffffff; /* Fundo branco */
-  padding: 0; /* Padding será nas células */
-  border-radius: 6px; /* Borda arredondada suave */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow-x: auto; /* Permite scroll horizontal na tabela se necessário */
-  width: 100%; /* Ocupa toda a largura disponível */
-}
+/* --- ESTILOS ANTIGOS DA TABELA (REMOVIDOS) --- */
+/* .tabela-container, .tabela, etc. foram removidos */
 
-/* Estilo da tabela */
-.tabela {
-  border-collapse: collapse;
+
+/* === NOVOS ESTILOS: GRELHA DE CARDS === */
+.user-card-grid {
+  display: grid;
+  /* Cria colunas responsivas:
+     - Tenta criar colunas de 300px
+     - Se não couber, elas encolhem (minmax)
+     - 'auto-fill' cria quantas colunas couberem no espaço
+  */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
   width: 100%;
-  font-size: 14px; /* Tamanho de fonte base */
 }
 
-.tabela th,
-.tabela td {
-  padding: 12px 15px; /* Padding interno das células */
+.user-card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column; /* Organiza info em cima, ações embaixo */
+  justify-content: space-between; /* Empurra ações para o fundo */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.user-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Informações do usuário (Nome, Email, Papel) */
+.user-card-info {
+  padding: 20px;
   text-align: left;
-  border-bottom: 1px solid #e0e0e0; /* Linha separadora mais suave */
-  white-space: nowrap; /* Impede quebra de linha indesejada */
 }
 
-.tabela th {
-  background-color: #f8f9fa; /* Fundo levemente cinza para cabeçalho */
-  color: #555; /* Cor do texto do cabeçalho */
-  font-weight: 600; /* Mais negrito */
-  text-transform: uppercase; /* Opcional: Maiúsculas */
-  font-size: 12px; /* Fonte menor para cabeçalho */
+.user-card-role {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  display: inline-block;
+  text-transform: uppercase;
+}
+/* Cores por papel */
+.role-administrador {
+  background-color: #fde2e4; /* Vermelho claro */
+  color: #9b2226;
+}
+.role-colaborador {
+  background-color: #e0f2fe; /* Azul claro */
+  color: #0c4a6e;
+}
+.role-doador {
+  background-color: #dcfce7; /* Verde claro */
+  color: #15803d;
 }
 
-.tabela td {
-  color: #333; /* Cor do texto das células */
+.user-card-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 5px 0;
+  word-break: break-word; /* Quebra nomes longos */
 }
 
-/* Hover nas linhas */
-.tabela tbody tr:hover {
-  background-color: #f1f1f1; /* Fundo suave ao passar o mouse */
-  cursor: pointer;
+.user-card-email {
+  font-size: 14px;
+  color: #777;
+  margin: 0;
+  word-break: break-all; /* Quebra emails longos */
 }
 
-/* Remove borda da última linha */
-.tabela tr:last-child td {
-  border-bottom: none;
+/* Ações (Botões) */
+.user-card-actions {
+  display: flex;
+  gap: 10px;
+  padding: 15px 20px;
+  border-top: 1px solid #f0f0f0; /* Linha separadora */
+  background-color: #fcfcfc; /* Fundo levemente diferente */
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
-/* Botão de detalhes na tabela */
+/* Mensagem de "Nenhum usuário encontrado" */
+.no-users-found {
+  text-align: center;
+  padding: 40px;
+  color: #777;
+  font-style: italic;
+  font-size: 16px;
+  /* Ocupa a grelha inteira */
+  grid-column: 1 / -1; 
+}
+/* === FIM DOS NOVOS ESTILOS DE CARD === */
+
+
+/* Botões na tabela (Reutilizados nos cards) */
 .details-button {
     padding: 5px 10px;
     font-size: 12px;
-    background-color: #e0e0e0; /* Cinza claro */
+    background-color: #e0e0e0;
     color: #333;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -193,13 +244,11 @@
 .details-button:hover {
     background-color: #d0d0d0;
 }
-
-/* --- BOTÃO EDITAR ROLE --- */
 .edit-role-button {
-    margin-left: 8px; /* Espaço após o botão de detalhes */
+    margin-left: 8px;
     padding: 5px 8px;
     font-size: 12px;
-    background-color: #ffc107; /* Amarelo */
+    background-color: #ffc107;
     color: #333;
     border: 1px solid #dda700;
     border-radius: 4px;
@@ -209,19 +258,17 @@
 .edit-role-button:hover {
     background-color: #e0a800;
 }
-/* --- FIM BOTÃO EDITAR ROLE --- */
 
-/* Estilos para paginação */
+/* Paginação (Sem alteração) */
 .pagination-controls {
-  margin-top: 25px; /* Aumenta espaço acima */
+  margin-top: 25px;
   display: flex;
-  justify-content: center; /* Centraliza */
+  justify-content: center;
   align-items: center;
   gap: 15px;
 }
-
 .pagination-controls button {
-  background-color: #6c757d; /* Cinza */
+  background-color: #6c757d;
   color: white;
   border: none;
   padding: 8px 12px;
@@ -235,34 +282,95 @@
 .pagination-controls button:hover:not(:disabled) {
     background-color: #5a6268;
 }
-
 .pagination-controls button:disabled {
-  background-color: #e0e0e0; /* Cinza mais claro para desabilitado */
+  background-color: #e0e0e0;
   color: #999;
   cursor: not-allowed;
 }
-
 .pagination-controls span {
-  font-weight: 500; /* Peso médio */
+  font-weight: 500;
   color: #555;
   font-size: 14px;
 }
 
-/* Responsividade (Ajustes básicos) */
+/* Responsividade (Ajustada) */
 @media (max-width: 768px) {
   .dashboard-main {
     padding: 15px;
   }
   .filter-controls {
     flex-direction: column;
-    align-items: stretch; /* Faz filtros ocuparem a largura */
+    align-items: stretch;
   }
   .search-input, .filter-select {
-    min-width: 0; /* Remove largura mínima */
+    min-width: 0;
     width: 100%;
   }
-  .tabela th, .tabela td {
-    padding: 10px 8px; /* Menor padding em telas pequenas */
-    white-space: normal; /* Permite quebra de linha se necessário */
+  
+  /* Faz os cards ocuparem a largura total */
+  .user-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Container (copiado do DoacoesDashboard.css) */
+.info-card-container {
+  display: grid;
+  gap: 20px;
+  margin-bottom: 25px; /* Espaço antes do título "Gerenciamento" */
+}
+
+/* Grelha de 6 colunas para os stats */
+.stats-grid {
+  /* Tenta 6 colunas, mínimo de 150px cada */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.info-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra mais sutil */
+  text-align: left;
+}
+
+.info-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+}
+
+.info-card-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f3b88; /* Azul */
+  margin: 0;
+}
+
+/* === EFEITO DE LOADING (SHIMMER) === */
+.stats-loading .loading-shimmer {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite linear;
+  background: linear-gradient(to right, #e0e0e0 8%, #f0f0f0 18%, #e0e0e0 33%);
+  background-size: 1200px 100%;
+}
+.stats-loading .title {
+  height: 14px;
+  width: 80%;
+  margin-bottom: 10px;
+}
+.stats-loading .value {
+  height: 28px;
+  width: 50%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1200px 0;
+  }
+  100% {
+    background-position: 1200px 0;
   }
 }

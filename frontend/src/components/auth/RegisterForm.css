@@ -24,10 +24,11 @@ body, html, #root {
 /* ====== CONTAINER ====== */
 .cadastro-container {
   background-color: #ddd;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 80vh; 
+  padding-bottom: 60px;
 }
  
 /* ====== FORM ====== */
@@ -39,12 +40,18 @@ body, html, #root {
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   width: 100%;
   max-width: 350px;
-  text-align: center;
+  
+  /* === 1. CORREÇÃO AQUI === */
+  /* A linha "text-align: center;" foi REMOVIDA daqui */
 }
  
 .form-box h2 {
   margin-bottom: 20px;
   color: #000;
+  
+  /* === 2. CORREÇÃO AQUI === */
+  /* O alinhamento foi MOVIDO para aqui, para afetar só o título */
+  text-align: center; 
 }
  
 /* Inputs */
@@ -72,4 +79,27 @@ body, html, #root {
  
 .form-box button:hover {
   background-color: #2e8b57;
+}
+
+/* --- Correção Alinhamento Pessoa Física/Jurídica --- */
+/* Este código agora vai funcionar, pois .form-box não o força mais a centrar */
+.tipo-pessoa-group {
+  width: 100%; 
+  margin-bottom: 15px;
+  text-align: left; /* Garante o alinhamento à esquerda */
+  padding-left: 5px;
+}
+
+.tipo-pessoa-group label {
+  align-items: center; /* Alinha verticalmente */
+  gap: 8px; /* Espaço entre o radio e o texto */
+  margin-bottom: 12px; 
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tipo-pessoa-group input[type="radio"] {
+  margin: 0;
+  vertical-align: middle;
+  flex-shrink: 0;
 }

@@ -3,19 +3,17 @@
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 10px 5%;
-  position: sticky;
+  /* As 3 linhas de 'sticky' estão corretamente comentadas */
+  /* position: sticky;
   top: 0;
-  z-index: 1000;
-  /* width: 100%; */ /* Correto, esta linha fica comentada */
+  z-index: 1000; */
 }
 
 .navbar-content {
   display: flex;
-  /* justify-content: space-between; */
   align-items: center;
   max-width: 1300px;
   margin: 0 auto;
-  /* 1. ADICIONADO: Posição relativa para o ícone mobile */
   position: relative;
 }
 
@@ -25,7 +23,6 @@
   height: auto;
 }
 .navbar-main-nav {
-  /* 2. ADICIONADO MARGEM PARA SEPARAR DO LOGO */
   margin-left: 40px;
 }
 
@@ -45,20 +42,17 @@
 .nav-dropdown > .dropdown-trigger {
   position: relative;
   text-decoration: none;
-  
-  /* === 1. ALTERAÇÃO NO ESTILO DOS LINKS === */
-  color: #1A4D85; /* Cor: cinza-escuro (como na imagem) */
-  font-weight: 600; /* Espessura: semi-bold */
-  
+  color: #1A4D85; /* Cor azul-escuro */
+  font-weight: 600; 
   font-size: 1rem;
   transition: color 0.3s ease;
   display: flex;
   align-items: center;
   gap: 8px; 
-  white-space: nowrap; /* Impede que o texto ("Quem Somos") quebre a linha */
+  white-space: nowrap; 
 }
 
-/* Linha amarela escondida inicialmente */
+/* Linha amarela escondida */
 .navbar-main-nav a::after,
 .nav-dropdown > button::after,
 .nav-dropdown > .dropdown-trigger::after {
@@ -69,7 +63,7 @@
   width: 0;
   height: 3px;
   background-color: #F9A70A; /* amarelo */
-  transition: width 0.3s ease; /* Adicionada transição suave */
+  transition: width 0.3s ease; 
 }
 
 /* Hover: linha aparece */
@@ -79,12 +73,10 @@
   width: 100%;
 }
 
-/* Hover também muda a cor do texto */
 .navbar-main-nav a:hover,
 .nav-dropdown > button:hover,
 .nav-dropdown > .dropdown-trigger:hover {
-  /* === 2. ALTERAÇÃO NA COR DO HOVER === */
-  color: #1A4D85; /* Cor: azul no hover */
+  color: #1A4D85; 
 }
 
 /* --- Dropdown Menu --- */
@@ -127,7 +119,10 @@
   transform: translateY(10px);
   transition: opacity 0.2s ease, transform 0.2s ease;
   pointer-events: none;
-  z-index: 999;
+  
+  /* === CORREÇÃO AQUI === */
+  /* Aumentado de 999 para 1001, para ficar ACIMA da ActionBar (que tem 999) */
+  z-index: 1001; 
 }
 
 .dropdown-menu.active {
@@ -161,43 +156,8 @@
   transition: transform 0.3s ease;
 }
 
-/* Quando o dropdown estiver aberto, gira a seta */
 .nav-dropdown:hover .sub-arrow {
   transform: rotate(180deg);
-}
-
-.login-button {
-  background-color: #25d451; 
-  color: white;
-  padding: 10px 25px;
-  border: none;
-  border-radius: 50px;
-  text-decoration: none;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 0.9rem;
-}
-
-.login-button:hover {
-  background-color: #0d8919;
-}
-
-.logout-button {
-  background-color: #dc3545; 
-  color: white;
-  padding: 10px 25px;
-  border: none;
-  border-radius: 50px;
-  text-decoration: none;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 0.9rem;
-}
-
-.logout-button:hover {
-  background-color: #c82333;
 }
 
 
@@ -206,14 +166,13 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  margin-left: 25px;
+  margin-left: auto; 
 }
 
 .social-icons {
   display: flex;
   gap: 15px;
-  /* === 3. ADICIONADA SEPARAÇÃO === */
-  margin-right: 30px; /* Cria um espaço entre os ícones e os botões */
+  margin-right: 0; 
 }
 
 .social-icons a {
@@ -224,20 +183,6 @@
 
 .social-icons a:hover {
   color: #0056b3;
-}
-
-.donate-button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 25px;
-  border-radius: 50px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.donate-button:hover {
-  background-color: #45a049;
 }
 
 /* --- Mobile --- */
@@ -275,23 +220,6 @@
   display: block;
 }
 
-.mobile-donate-button-container {
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column; 
-  gap: 15px;
-  align-items: flex-start; 
-  width: 100%;
-}
-
-.mobile-donate-button-container .donate-button,
-.mobile-donate-button-container .login-button,
-.mobile-donate-button-container .logout-button {
-  width: auto; 
-  text-align: center;
-}
-
-
 /* ===== NOVOS ESTILOS PARA DROPDOWN MOBILE ===== */
 
 .mobile-nav-dropdown {
@@ -314,7 +242,6 @@
   transition: transform 0.3s ease;
 }
 
-/* Gira a seta quando o dropdown está aberto */
 .mobile-dropdown-trigger .sub-arrow.open {
   transform: rotate(180deg);
 }
@@ -340,13 +267,12 @@
 }
 
 
-/* === AQUI ESTÁ A MUDANÇA PARA O MOBILE === */
-@media (max-width: 992px) {
+/* === MEDIA QUERIES (Sem alteração) === */
+@media (max-width: 1200px) {
   
-  /* 2. Centraliza o logo e prepara para o ícone */
   .navbar-content {
     justify-content: center;
-    position: relative; /* Obrigatório para o 'absolute' funcionar */
+    position: relative; 
   }
 
   .navbar-main-nav,
@@ -354,56 +280,18 @@
     display: none;
   }
 
-  /* 3. Posiciona o ícone de menu no canto direito */
   .mobile-menu-icon {
     display: block;
     position: absolute;
-    right: 0; /* Alinha à direita do .navbar-content */
+    right: 0; 
     top: 50%;
-    transform: translateY(-50%); /* Centraliza verticalmente */
+    transform: translateY(-50%); 
   }
   
-  .navbar-mobile-nav {
-     /* (Os estilos principais já estão definidos acima) */
-  }
   .navbar-logo img {
-    /* 4. Mantém o logo em 150px para caber */
     width: 150px !important; 
     height: auto !important; 
   }
-
-}
-
-@media (max-width: 1366px) { /* Alterado de 992px para 1200px */
-  /* Centraliza o logo e prepara para o ícone */
-  .navbar-content {
-    justify-content: center;
-    position: relative; /* Obrigatório para o 'absolute' funcionar */
-  }
-
-  .navbar-main-nav,
-  .navbar-actions {
-    display: none;
-  }
-
-  /* Posiciona o ícone de menu no canto direito */
-  .mobile-menu-icon {
-    display: block;
-    position: absolute;
-    right: 0; /* Alinha à direita do .navbar-content */
-    top: 50%;
-    transform: translateY(-50%); /* Centraliza verticalmente */
-  }
-  
-  .navbar-mobile-nav {
-     /* (Os estilos principais já estão definidos acima) */
-  }
-  .navbar-logo img {
-    /* Mantém o logo em 150px para caber */
-    width: 150px !important; 
-    height: auto !important; 
-  }
-
 }
 
 /* Estilos para o menu mobile (ícones na parte branca) */
@@ -414,29 +302,12 @@
 
 .mobile-header-social-icons .social-icons {
   display: flex;
-  justify-content: center; /* Centralizado */
+  justify-content: center;
   gap: 20px; 
-  margin-right: 0; /* Reseta a margem no mobile */
+  margin-right: 0; 
 }
 
-
-/* AJUSTE NOS BOTÕES DOAR/SAIR MOBILE */
-.mobile-donate-button-container {
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column; 
-  gap: 15px;
-  align-items: stretch; /* Faz os botões esticarem */
-  width: 100%;
-}
-
-.mobile-donate-button-container .donate-button,
-.mobile-donate-button-container .login-button,
-.mobile-donate-button-container .logout-button {
-  text-align: center;
-}
-
-/* Regras de ícone social do menu azul (não são mais usadas, mas não prejudicam) */
+/* ... (Restante do CSS) ... */
 .mobile-social-icons-container {
   margin-top: 0;
   padding-top: 0;
@@ -459,19 +330,16 @@
   transform: scale(1.1);
 }
 
-/* Garante que o link dentro do dropdown-trigger tenha a cor correta */
 .dropdown-trigger a,
 .mobile-dropdown-trigger a {
-  color: inherit; /* Herda a cor azul do elemento pai */
-  text-decoration: none; /* Remove o sublinhado */
+  color: inherit; 
+  text-decoration: none; 
 }
 
-/* Garante que o texto e a seta fiquem separados no mobile */
 .mobile-dropdown-trigger {
   justify-content: space-between; 
 }
 
-/* Mostra que a seta é clicável no mobile */
 .mobile-dropdown-trigger .sub-arrow {
   cursor: pointer;
 }

@@ -1,0 +1,148 @@
+/* src/components/Dashboard/Relatorios.css */
+
+.relatorio-container {
+  background-color: #ffffff;
+  padding: 25px 30px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 800px; /* Aumentado */
+  margin: 0 auto; /* Centraliza o card de relatório */
+}
+
+.relatorio-container h3 {
+  font-size: 20px;
+  color: #2a4d9b; /* Azul */
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.relatorio-container p {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* --- Área de Filtros --- */
+.relatorio-filtros {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap; /* Permite quebrar linha */
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #eee;
+}
+
+.filtro-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Alinha labels à esquerda */
+  flex-grow: 1; /* Fazem os itens crescerem */
+  min-width: 180px; /* Largura mínima */
+}
+
+.filtro-item label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.filtro-item select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+}
+
+/* Desabilita os selects durante o loading */
+.filtro-item select:disabled {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+}
+
+
+/* Botão principal de geração */
+.report-button-main {
+  background-color: #1f3b88; /* Azul escuro */
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px; /* Espaço entre ícone e texto */
+}
+.report-button-main:hover:not(:disabled) {
+  background-color: #163072; /* Azul mais escuro */
+}
+.report-button-main:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* --- Área de Feedback (Resultados/Erros) --- */
+.relatorio-feedback {
+  margin-top: 30px;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: left;
+}
+.relatorio-feedback.error {
+  background-color: #fff5f5;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  font-weight: 500;
+  text-align: center;
+}
+.relatorio-feedback.success {
+  background-color: #f8f9fa;
+  border: 1px solid #eee;
+}
+.relatorio-feedback h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 16px;
+  text-align: center;
+}
+.relatorio-feedback p {
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 1px dashed #ccc;
+  padding-bottom: 20px;
+}
+
+/* Pré-visualização dos totais */
+.relatorio-preview {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap; /* Permite quebrar linha */
+  text-align: center;
+}
+.preview-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+}
+.preview-item span {
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+.preview-item strong {
+  font-size: 20px;
+  color: #28a745; /* Verde */
+  font-weight: 700;
+}

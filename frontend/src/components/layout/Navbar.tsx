@@ -3,10 +3,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaFacebookF, FaInstagram, FaBars, FaTimes, FaInfo, FaWhatsapp, FaChevronDown } from 'react-icons/fa';
+import { FaFacebookF } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
+import { FaBars } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
+import { FaInfo } from "react-icons/fa";
+import { FaWhatsapp } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
 import './Navbar.css';
 
-import { useAuth } from '@/contexts/AuthContext';
+// O useAuth foi removido daqui, pois os botões de auth não estão mais aqui
+// import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -15,7 +22,8 @@ const Navbar: React.FC = () => {
 
   const dropdownRef = useRef<HTMLLIElement>(null);
 
-   const { isAuthenticated, signOut } = useAuth();
+  // O useAuth foi removido daqui
+  // const { isAuthenticated, signOut } = useAuth();
 
   const handleDropdownClick = (dropdownName: string) => {
     setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
@@ -43,12 +51,11 @@ const Navbar: React.FC = () => {
 
 
   return (
-    // 1. ADICIONA UM FRAGMENTO AQUI
     <>
       <header className="navbar-container">
         <div className="navbar-content">
           <div className="navbar-logo">
-            <Image src="/logomariaclaro.svg" alt="Logo Maria Claro" width={180} height={50} />
+            <Image src="/logomariaclaro.svg" alt="Logo Maria Claro" width={180} height={50} priority={true} />
           </div>
 
           <nav className="navbar-main-nav">
@@ -99,6 +106,7 @@ const Navbar: React.FC = () => {
             </ul>
           </nav>
           
+          {/* === OS BOTÕES DE AÇÃO FORAM REMOVIDOS DAQUI === */}
           <div className="navbar-actions">
             <div className="social-icons">
               <a href="https://www.facebook.com/institutomariaclaro" target="_blank" rel="noopener noreferrer"><FaFacebookF /></a>
@@ -106,12 +114,6 @@ const Navbar: React.FC = () => {
               <a href="https://api.whatsapp.com/send?phone=5515988124427" target="_blank" rel="noopener noreferrer"><FaWhatsapp /></a>
               <a href="https://portaldatransparencia.gov.br/busca/pessoa-juridica/71868962000105-lar-espirita-ivan-santos-de-albuquerque" target="_blank" rel="noopener noreferrer"><FaInfo /></a>
             </div>
-            <Link href="/doar" className="donate-button">DOAR</Link>
-            {isAuthenticated ? (
-              <button onClick={signOut} className="logout-button">SAIR</button>
-            ) : (
-              <Link href="/login" className="login-button">LOGIN</Link>
-            )}
           </div>
           
           <div className="mobile-menu-icon" onClick={toggleMobileMenu}>
@@ -131,7 +133,6 @@ const Navbar: React.FC = () => {
           )}
       </header>
       
-      {/* 3. O MENU MOBILE AGORA FICA AQUI, DO LADO DE FORA */}
       {isMobileMenuOpen && (
         <nav className="navbar-mobile-nav">
            <ul>
@@ -179,20 +180,12 @@ const Navbar: React.FC = () => {
 
             <li><Link href="https://mariaclaro.org.br/contato">CONTATO</Link></li>
             
-            <li className="mobile-donate-button-container">
-                <Link href="/doar" className="donate-button">DOAR</Link>
-                {isAuthenticated ? (
-                  <button onClick={signOut} className="logout-button">SAIR</button>
-                ) : (
-                  <Link href="/login" className="login-button">LOGIN</Link>
-                )}
-            </li>
-
+            {/* === O CONTAINER DE BOTÕES MOBILE FOI REMOVIDO DAQUI === */}
             
           </ul>
         </nav>
       )}
-    </> // 4. FECHA O FRAGMENTO
+    </> 
   );
 };
 

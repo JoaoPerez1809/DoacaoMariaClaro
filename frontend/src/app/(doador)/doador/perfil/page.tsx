@@ -3,7 +3,7 @@
 import React from 'react';
 import { Header } from '@/components/layout/Header';
 import Profile from '@/components/Perfil/Profile'; // Importe o componente de Perfil
-import "@/app/globals.css";
+
 
 const PerfilPage: React.FC = () => {
   return (

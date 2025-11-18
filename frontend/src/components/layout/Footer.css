@@ -1,0 +1,187 @@
+/* src/components/layout/Footer.css */
+
+.footer-root {
+  font-family: Arial, sans-serif;
+  color: #f0f0f0;
+  clear: both;
+}
+
+/* === BLOCO AZUL (Principal) === */
+.footer-bloco-principal-container {
+  background-color: #1A4D85;
+  padding: 50px 0; /* Padding vertical no container de fundo */
+  width: 100%;
+}
+
+/* === WRAPPER DE CONTEÚDO (BLOCO AZUL) === */
+.footer-wrapper-grid {
+  max-width: 1300px;
+  margin: 0 auto; /* Centraliza o wrapper */
+  padding: 0 20px; /* Garante um padding lateral mínimo */
+  display: flex;
+  
+  /* === CORREÇÃO 1: Alinhamento (como na imagem) === */
+  /* Alinha a logo ao TOPO do bloco de texto, não ao centro */
+  align-items: center; 
+}
+
+/* Coluna 1: Logo */
+.footer-col-logo {
+  /* === CORREÇÃO 2: Tamanho da "caixa" da logo === */
+  /* Ajustado para 160px (para bater com o width={160} do TSX) */
+  flex-basis: 160px; 
+  flex-shrink: 0; 
+}
+
+/* === CORREÇÃO DE TAMANHO DA LOGO === */
+.footer-col-logo img {
+  width: 100%; /* Faz a imagem ter 100% da caixa de 160px */
+  height: auto;
+  display: block; 
+}
+
+
+/* Coluna 2: Conteúdo da Direita */
+.footer-col-conteudo {
+  flex-grow: 1; /* Faz esta coluna preencher todo o espaço restante */
+  
+  /* === CORREÇÃO 3: "Espaço gigantesco" === */
+  /* Diminuído de 80px para 60px (ajuste se precisar) */
+  margin-left: 60px; 
+  
+  display: flex;
+  flex-direction: column;
+  gap: 30px; 
+  width: 100%;
+}
+
+
+/* Linha 1: As 3 colunas de texto */
+.footer-linha-textos {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* 3 colunas iguais */
+  gap: 30px;
+}
+
+.footer-col-texto {
+  font-size: 14px;
+  line-height: 1.6;
+  word-break: break-word;
+  min-width: 0;
+}
+
+.footer-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #F9A70A;
+  margin-bottom: 20px;
+}
+
+.footer-col-texto p { margin: 0 0 10px 0; color: #ccc; }
+.footer-col-texto a { color: #fff; text-decoration: none; font-weight: bold; }
+.footer-col-texto a:hover { text-decoration: underline; }
+
+/* Linha 2: Contato e Social */
+.footer-linha-contato-social {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  
+  /* === CORREÇÃO 4: "Linha aleatória" REMOVIDA === */
+  border-top: none; /* Linha removida */
+  padding-top: 0;   /* Padding removido */
+}
+
+/* === CORREÇÃO 5: Email/WhatsApp na mesma linha === */
+.footer-contact { 
+  font-size: 14px;
+  display: flex; /* Coloca os <p> lado a lado */
+  gap: 30px; /* Espaço entre email e whatsapp */
+  flex-wrap: wrap; /* Permite quebrar linha se não couber */
+}
+.footer-contact p { 
+  margin: 0; /* Remove a margem que fazia quebrar linha */
+}
+.footer-contact a { 
+  color: #fff; 
+  text-decoration: none; 
+}
+.footer-contact a:hover { 
+  text-decoration: underline; 
+}
+
+.footer-social-actions { display: flex; align-items: center; gap: 25px; flex-wrap: wrap; justify-content: center; }
+.lgpd-button { background-color: #F9A70A; color: #1A4D85; padding: 12px 25px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 14px; transition: background-color 0.3s ease; white-space: nowrap; }
+.lgpd-button:hover { background-color: #fbc24a; }
+
+.footer-social-icons { display: flex; gap: 15px; }
+.footer-social-icons a { color: #fff; font-size: 20px; transition: color 0.3s ease, transform 0.3s ease; }
+.footer-social-icons a:hover { color: #F9A70A; transform: translateY(-2px); }
+
+
+/* === LINHA DE COPYRIGHT (DENTRO DO AZUL) === */
+.footer-linha-copyright {
+  text-align: left;
+  font-size: 12px;
+  color: #ccc;
+  margin-top: 30px; /* Adiciona espaço acima do copyright */
+}
+.footer-linha-copyright p { margin: 0; }
+.footer-linha-copyright a { color: #fff; text-decoration: none; }
+.footer-linha-copyright a:hover { text-decoration: underline; }
+
+
+/* === RESPONSIVIDADE (Corrigida para usar flex) === */
+
+@media (max-width: 1024px) {
+  /* O layout principal (Logo + Conteúdo) vira uma coluna */
+  .footer-wrapper-grid {
+    flex-direction: column;
+    align-items: center; /* Centraliza logo */
+    gap: 30px;
+  }
+  .footer-col-logo {
+    flex-basis: auto; /* Reseta a largura fixa */
+    margin-bottom: 20px;
+  }
+  .footer-col-conteudo {
+    margin-left: 0; /* Remove a margem desnecessária no mobile */
+    align-items: center; /* Centraliza o conteúdo da coluna */
+  }
+  .footer-linha-textos {
+    grid-template-columns: 1fr; /* Textos ficam 1-col */
+    text-align: center;
+  }
+  .footer-linha-contato-social {
+    justify-content: center; /* Centraliza no tablet */
+  }
+  .footer-linha-copyright {
+    text-align: center; /* Centraliza o copyright */
+  }
+  /* Faz email/whats ficarem centralizados no mobile */
+  .footer-contact {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Os textos já estão 1-col pela regra de 1024px */
+  
+  .footer-linha-contato-social {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+  .footer-contact {
+    text-align: center;
+    gap: 15px; /* Diminui o gap no mobile */
+  }
+  .footer-social-actions {
+    flex-direction: column;
+  }
+  .footer-linha-copyright {
+    text-align: center;
+  }
+}

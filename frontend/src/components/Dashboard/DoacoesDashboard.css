@@ -1,0 +1,160 @@
+/* src/components/Dashboard/DoacoesDashboard.css */
+
+/* --- Estilos dos Cards Informativos (Topo) --- */
+.info-card-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 20px;
+  margin-bottom: 30px; /* Aumentado o espaço antes da lista */
+}
+
+.info-card {
+  background-color: #ffffff;
+  padding: 20px 25px; /* Mais padding */
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra mais sutil */
+  border: 1px solid #e7e7e7;
+  text-align: left;
+}
+
+.info-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+}
+
+.info-card-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f3b88; /* Azul */
+  margin: 0;
+  white-space: nowrap; /* Impede que o valor quebre a linha */
+}
+
+/* Cor diferente para o valor líquido */
+.info-card:last-child .info-card-value {
+  color: #28a745; /* Verde */
+}
+/* --- Fim dos Cards Informativos --- */
+
+
+/* --- Estilos da Lista de Cards de Doação --- */
+.doacao-card-list {
+  display: flex;
+  flex-direction: column; /* Uma lista vertical */
+  gap: 15px; /* Espaço entre os cards */
+}
+
+.doacao-card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e7e7e7;
+  display: grid;
+  /* Define 3 colunas: Doador (flexível) | Valores (fixo) | Data (fixo) */
+  grid-template-columns: 1.5fr 1fr 1fr; 
+  align-items: center;
+  padding: 20px 25px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.doacao-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Coluna 1: Doador */
+.doacao-card-doador {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  word-break: break-all; /* Quebra emails longos */
+}
+.doacao-card-nome {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+.doacao-card-email {
+  font-size: 13px;
+  color: #777;
+}
+
+/* Coluna 2: Valores */
+.doacao-card-valores {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  font-family: 'Courier New', Courier, monospace;
+}
+.doacao-card-valor-bruto {
+  font-size: 18px;
+  font-weight: 700;
+  color: #15803d; /* Verde escuro */
+}
+.doacao-card-valor-liquido {
+  font-size: 13px;
+  color: #555;
+  font-weight: 600;
+}
+
+/* Coluna 3: Data */
+.doacao-card-data {
+  text-align: right;
+  font-size: 14px;
+  color: #555;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 992px) {
+  .doacao-card {
+    /* Doador e Valores | Data */
+    grid-template-columns: 1.5fr 1fr;
+    gap: 15px;
+  }
+  .doacao-card-data {
+    grid-column: 2 / 3; /* Data vai para a coluna 2 */
+    grid-row: 1 / 2; /* Fica na linha 1 */
+    font-size: 13px;
+  }
+  .doacao-card-valores {
+    text-align: left;
+  }
+  .doacao-card-doador {
+    grid-column: 1 / 2; /* Doador fica na coluna 1 */
+    grid-row: 1 / 2; /* Fica na linha 1 */
+  }
+}
+
+@media (max-width: 768px) {
+  .info-card-container {
+    /* Faz os cards de info ficarem em 1 coluna */
+    grid-template-columns: 1fr; 
+  }
+  .info-card-value {
+    font-size: 24px;
+  }
+  
+  .doacao-card {
+    grid-template-columns: 1fr; /* Empilha tudo */
+    gap: 15px;
+    text-align: center;
+  }
+  /* Centraliza tudo no mobile */
+  .doacao-card-doador,
+  .doacao-card-valores,
+  .doacao-card-data {
+    text-align: center;
+  }
+  .doacao-card-valores {
+    padding: 15px 0;
+    border-top: 1px dashed #eee;
+    border-bottom: 1px dashed #eee;
+  }
+  .doacao-card-data {
+    grid-column: 1 / -1; /* Ocupa a largura total */
+    grid-row: auto; /* Volta ao fluxo normal */
+  }
+}

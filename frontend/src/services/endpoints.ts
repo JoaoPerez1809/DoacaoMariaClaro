@@ -7,7 +7,6 @@ const crudAPI = (resource: string) => ({
   getById: (id: number) => `${BASE_URL}/${resource}/${id}`,
   update: (id: number) => `${BASE_URL}/${resource}/${id}`,
   delete: (id: number) => `${BASE_URL}/${resource}/${id}`,
-  // Adicionamos um endpoint específico para a atualização de papel (role)
   updateRole: (id: number) => `${BASE_URL}/${resource}/${id}/role`,
 });
 
@@ -18,4 +17,18 @@ export const authAPI = {
 };
 
 // Endpoints para Gerenciamento de Usuários, usando a factory CRUD
-export const userAPI = crudAPI('Users');
+export const userAPI = {
+  ...crudAPI('Users'), // Mantém getAll, getById, etc.
+  
+  // === ADICIONE ESTA LINHA ===
+  getStats: () => `${BASE_URL}/Users/stats`, // Novo endpoint de estatísticas
+};
+
+// Endpoints para Pagamentos/Doações
+export const pagamentoAPI = {
+  getMyDonations: () => `${BASE_URL}/Pagamento/me`,
+  getDonationsByUserId: (userId: number) => `${BASE_URL}/Pagamento/${userId}`,
+  getRelatorioArrecadacao: () => `${BASE_URL}/Pagamento/relatorio-arrecadacao`,
+  getAnosDisponiveis: () => `${BASE_URL}/Pagamento/anos-disponiveis`,
+  getListaDoacoes: () => `${BASE_URL}/Pagamento/lista-doacoes`,
+};
