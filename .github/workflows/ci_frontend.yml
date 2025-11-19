@@ -1,0 +1,52 @@
+name: Frontend CI - Build e Lint Next.js
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'frontend/**' # Aciona apenas quando o código no frontend muda
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - 'frontend/**'
+
+jobs:
+  build_lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Setup do Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' 
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+
+      - name: 📦 Instalar Dependências do Frontend
+        run: npm ci
+        working-directory: ./frontend
+        
+      - name: 🔎 Executar Lint (Análise de Qualidade de Código)
+        # Verifica padronização e possíveis erros de sintaxe (se configurado no package.json)
+        # Presume-se um script 'lint' no package.json
+        run: npm run lint
+        working-directory: ./frontend
+
+      - name: 🏗️ Executar Build da Aplicação Next.js
+        # O passo mais importante para testar o código do frontend
+        run: npm run build
+        working-directory: ./frontend
+        env:
+          # É comum que Next.js precise de variáveis de ambiente mesmo no build.
+          # Adicione as variáveis de ambiente aqui, se houver:
+          # NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }} 
+          # Por enquanto, deixamos vazias.
+          CI: true 
+          
+      - name: ✅ Build e Lint Concluídos
+        run: echo "Frontend passou na verificação de qualidade e build."

@@ -1,0 +1,33 @@
+name: Backend CI - Build .NET
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'backend/DoacoesONG/**' # Aciona apenas quando o código no backend muda tedasdg
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - 'backend/DoacoesONG/**'
+
+jobs:
+  build_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Setup do .NET (Versão 8.0)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x' 
+
+      - name: 📦 Restore de Dependências
+        run: dotnet restore backend/DoacoesONG/DoacoesONG.csproj
+        
+      - name: 🏗️ Compilar o Projeto Backend
+        # Verifica se o código C# está correto e compila sem erros
+        run: dotnet build backend/DoacoesONG/DoacoesONG.csproj --configuration Release --no-restore
