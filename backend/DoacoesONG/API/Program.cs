@@ -10,7 +10,8 @@ using Infrastructure.Repositories;
 using Application.Interfaces;
 using Application.Services;
 // --- ADICIONE ESTE USING ---
-using System.Text.Json.Serialization; 
+using System.Text.Json.Serialization;
+using Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -127,6 +128,7 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+await DbSeeder.SeedAdminUser(app);
 // --- Configuração do pipeline de requisições HTTP ---
 if (app.Environment.IsDevelopment())
 {

@@ -6,10 +6,8 @@ import { parseCookies } from 'nookies';
 
 // 2. Defina a URL base da sua API .NET.
 //    Verifique no seu terminal do backend qual é a porta correta (ex: 5041).
-const API_URL = 'http://localhost:5041/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5041/api';
 
-// 3. Crie uma instância do Axios com a configuração base.
-//    Todos os outros ficheiros de serviço irão importar e usar esta instância "api".
 export const api = axios.create({
   baseURL: API_URL,
 });
@@ -28,4 +26,6 @@ api.interceptors.request.use(config => {
 
   // Retorna a configuração da requisição, agora com o token (se existir).
   return config;
+
+  
 });

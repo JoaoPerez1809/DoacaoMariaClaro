@@ -40,6 +40,7 @@ public class PagamentoController : ControllerBase
         try
         {
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var frontendUrl = _config.GetValue<string>("FrontendUrl");
             if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var doadorId))
             {
                 return Unauthorized("Não foi possível identificar o usuário logado.");
@@ -67,8 +68,8 @@ public class PagamentoController : ControllerBase
                 },
                 BackUrls = new PreferenceBackUrlsRequest
                 {
-                    Success = "http://localhost:3000/doacao/sucesso",
-                    Failure = "http://localhost:3000/doacao/falha",
+                Success = $"{frontendUrl}/doacao/sucesso",
+                Failure = $"{frontendUrl}/doacao/falha",
                 },
                 NotificationUrl = _config.GetValue<string>("MercadoPago:WebhookUrl"),
             };
