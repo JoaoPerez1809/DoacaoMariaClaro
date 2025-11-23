@@ -1,5 +1,5 @@
 // A URL base da sua API .NET.
-const BASE_URL = 'http://localhost:5041/api';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5041/api';
 
 // Factory para criar endpoints CRUD (Criar, Ler, Atualizar, Deletar)
 const crudAPI = (resource: string) => ({
