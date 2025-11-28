@@ -10,25 +10,26 @@ using Infrastructure.Repositories;
 using Application.Interfaces;
 using Application.Services;
 // --- ADICIONE ESTE USING ---
-using System.Text.Json.Serialization; 
+using System.Text.Json.Serialization;
+using Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // --- Adicionar serviços ao contêiner ---
 
 // 1. Configuração do DbContext
-if (builder.Environment.IsDevelopment())
-{
-    Console.WriteLine("Ambiente de Desenvolvimento: Usando banco de dados SQLite.");
-    builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection")));
-}
-else
-{
+// if (builder.Environment.IsDevelopment())
+// {
+//     Console.WriteLine("Ambiente de Desenvolvimento: Usando banco de dados SQLite.");
+//     builder.Services.AddDbContext<AppDbContext>(options =>
+//         options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection")));
+// }
+// else
+// {
     Console.WriteLine("Ambiente de Produção/Docker: Usando banco de dados PostgreSQL.");
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
-}
+// }
 
 // 2. Injeção de Dependência
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
@@ -43,7 +44,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") // Permite apenas o seu frontend
+        policy.WithOrigins("http://localhost:3000", "https://doacao-maria-claro.vercel.app", "https://main.d2y2snun4xtyx8.amplifyapp.com") // Permite apenas o seu frontend
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -127,6 +128,7 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+await DbSeeder.SeedAdminUser(app);
 // --- Configuração do pipeline de requisições HTTP ---
 if (app.Environment.IsDevelopment())
 {

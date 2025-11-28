@@ -48,6 +48,6 @@ namespace API.DTOs.UserRep
         [MaxLength(200)]
         public string? ComercioEndereco { get; set; }
 
-        public DateTime? DataNascimento { get; set; }
+        public string? DataNascimento { get; set; }
     }
 }

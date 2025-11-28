@@ -3,12 +3,14 @@ name: Backend CI - Build .NET
 on:
   push:
     branches:
+      - main
       - develop
     paths:
-      - 'backend/DoacoesONG/**' # Aciona apenas quando o código no backend muda tedasdg
+      - 'backend/DoacoesONG/**' # Aciona apenas quando o código no backend muda
   pull_request:
     branches:
       - develop
+      - main # O CI agora será executado para Pull Requests na main
     paths:
       - 'backend/DoacoesONG/**'
 
@@ -25,9 +27,10 @@ jobs:
         with:
           dotnet-version: '8.0.x' 
 
-      - name: 📦 Restore de Dependências
-        run: dotnet restore backend/DoacoesONG/DoacoesONG.csproj
+      - name: 📦 Restore de Dependências (Usando SLN)
+        # O comando dotnet restore no .sln restaura todas as dependências dos projetos na solução.
+        run: dotnet restore DoacaoMariaClaro.sln
         
-      - name: 🏗️ Compilar o Projeto Backend
-        # Verifica se o código C# está correto e compila sem erros
-        run: dotnet build backend/DoacoesONG/DoacoesONG.csproj --configuration Release --no-restore
+      - name: 🏗️ Compilar o Projeto Backend (Usando SLN)
+        # O comando dotnet build no .sln compila todos os projetos na solução.
+        run: dotnet build DoacaoMariaClaro.sln --configuration Release --no-restore

@@ -133,7 +133,21 @@ namespace Application.Services
             user.Estado = userDto.Estado;
             user.Genero = userDto.Genero;
             user.ComercioEndereco = userDto.ComercioEndereco;
-            user.DataNascimento = userDto.DataNascimento;
+            if (!string.IsNullOrEmpty(userDto.DataNascimento))
+            {
+                if (DateTime.TryParse(userDto.DataNascimento, out var dataParsed))
+                {
+                    // Converte para UTC para o Postgres aceitar sem reclamar
+                    user.DataNascimento = DateTime.SpecifyKind(dataParsed, DateTimeKind.Utc);
+                }
+                else
+                {
+                    // Se a data for inválida, você pode lançar erro ou apenas ignorar
+                    // throw new Exception("Data de nascimento inválida.");
+                    Console.WriteLine($"[UpdateUser] Formato de data inválido recebido: {userDto.DataNascimento}");
+                }
+            }
+            // user.DataNascimento = userDto.DataNascimento;
             // DataCadastro não é atualizada aqui
             // --- FIM DA CORREÇÃO ---
 

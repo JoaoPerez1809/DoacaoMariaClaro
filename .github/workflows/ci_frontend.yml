@@ -3,12 +3,14 @@ name: Frontend CI - Build e Lint Next.js
 on:
   push:
     branches:
+      - main
       - develop
     paths:
       - 'frontend/**' # Aciona apenas quando o código no frontend muda
   pull_request:
     branches:
       - develop
+      - main # O CI agora será executado para Pull Requests na main
     paths:
       - 'frontend/**'
 
