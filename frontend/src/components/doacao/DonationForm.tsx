@@ -10,7 +10,7 @@ const Doacao: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const valoresRapidos = ["10.00", "100.00", "1000.00"];
+  const valoresRapidos = ["10.00", "20.00", "50.00"];
 
   const handleClick = (v: string) => {
     setValor(v);
@@ -72,6 +72,10 @@ const Doacao: React.FC = () => {
             <img src="/img/QRcode-pix-itau-site-01.webp" alt="QR Code Pix" className="qr-image" />
           </div>
           <div className="form-container">
+            <label htmlFor="valorInput" style={{ fontWeight: 'bold', color: '#333', marginBottom: '5px' }}>
+            Digite o valor da sua doação:
+            </label>
+
             <input
               type="text" 
               value={`R$${valor}`}

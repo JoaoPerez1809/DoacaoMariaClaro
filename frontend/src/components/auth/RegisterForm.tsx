@@ -16,7 +16,7 @@ const RegisterForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
-  const [tipoPessoa, setTipoPessoa] = useState<TipoPessoa>('Fisica');
+  const [tipoPessoa, setTipoPessoa] = useState<TipoPessoa | undefined>(undefined);
   const [documento, setDocumento] = useState("");
   // const [error, setError] = useState<string | null>(null); // <-- Removido
   const [isLoading, setIsLoading] = useState(false);
@@ -38,13 +38,19 @@ const RegisterForm: React.FC = () => {
 
     const documentoLimpo = limparDocumento(documento);
 
-    if (tipoPessoa === 'Fisica' && !isValidCPF(documentoLimpo)) {
-      toast.error("CPF inválido. Verifique os dígitos.");
-      return;
-    }
-    if (tipoPessoa === 'Juridica' && !isValidCNPJ(documentoLimpo)) { 
-      toast.error("CNPJ inválido. Verifique os dígitos.");
-      return;
+    if (documentoLimpo.length > 0) {
+        if (!tipoPessoa) {
+            toast.error("Se informar documento, selecione o Tipo de Pessoa.");
+            return;
+        }
+        if (tipoPessoa === 'Fisica' && !isValidCPF(documentoLimpo)) {
+          toast.error("CPF inválido.");
+          return;
+        }
+        if (tipoPessoa === 'Juridica' && !isValidCNPJ(documentoLimpo)) { 
+          toast.error("CNPJ inválido.");
+          return;
+        }
     }
     
     setIsLoading(true);
@@ -53,7 +59,7 @@ const RegisterForm: React.FC = () => {
       nome,
       email,
       senha,
-      tipoPessoa,
+      tipoPessoa: tipoPessoa!,
       documento: documentoLimpo 
     };
 
@@ -99,7 +105,7 @@ const RegisterForm: React.FC = () => {
              <input type="email" placeholder="Insira seu e-mail" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={isLoading} />
              <input type="password" placeholder="Insira sua senha" value={senha} onChange={(e) => setSenha(e.target.value)} required disabled={isLoading} />
              <input type="password" placeholder="Confirme sua senha" value={confirmarSenha} onChange={(e) => setConfirmarSenha(e.target.value)} required disabled={isLoading} />
-
+            <label>Abaixo é opcional</label>
             <div className="tipo-pessoa-group">
               <label>
                 <input type="radio" name="tipoPessoa" value="Fisica" checked={tipoPessoa === 'Fisica'} onChange={() => setTipoPessoa('Fisica')} disabled={isLoading} /> Pessoa Física
@@ -114,7 +120,6 @@ const RegisterForm: React.FC = () => {
               placeholder={tipoPessoa === 'Fisica' ? "CPF (somente números)" : "CNPJ (somente números)"}
               value={documento}
               onChange={(e) => setDocumento(e.target.value)} 
-              required
               disabled={isLoading}
               maxLength={tipoPessoa === 'Fisica' ? 14 : 18} 
             />

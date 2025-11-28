@@ -10,6 +10,7 @@ import Footer from "@/components/layout/Footer";
 
 // --- 1. IMPORTE O TOASTER ---
 import { Toaster } from 'react-hot-toast';
+import { FaWhatsapp } from "react-icons/fa";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,9 +40,22 @@ export default function RootLayout({
               },
             }}
           />
-          
-          <main>{children}</main>
-          <Footer />
+          {/* Adicione a classe wrapper para corrigir o footer (veja ponto 3 abaixo) */}
+          <div className="layout-wrapper">
+             <main className="layout-content">{children}</main>
+             <Footer />
+          </div>
+
+          {/* BOTÃO WHATSAPP FIXO */}
+          <a 
+            href="https://api.whatsapp.com/send?phone=5515988124427" 
+            className="whatsapp-float" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            aria-label="Fale conosco no WhatsApp"
+          >
+            <FaWhatsapp />
+          </a>
         </AuthProvider>
       </body>
     </html>

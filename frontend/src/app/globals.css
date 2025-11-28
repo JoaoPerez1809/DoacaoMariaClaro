@@ -37,3 +37,57 @@ body {
     padding: 20px;
 }
 
+.whatsapp-float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 40px;
+  right: 40px;
+  background-color: #25d366;
+  color: #FFF;
+  border-radius: 50px;
+  text-align: center;
+  font-size: 30px;
+  box-shadow: 2px 2px 3px #999;
+  z-index: 10000; /* Alto z-index para ficar acima de tudo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s;
+  text-decoration: none;
+}
+
+.whatsapp-float:hover {
+  background-color: #20ba5a;
+  transform: scale(1.1);
+  color: #FFF;
+}
+
+/* Ajuste para telas menores */
+@media (max-width: 768px) {
+  .whatsapp-float {
+    width: 50px;
+    height: 50px;
+    bottom: 20px;
+    right: 20px;
+    font-size: 25px;
+  }
+}
+
+/* Garante que o body ocupe a altura toda */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* Wrapper que envolve Main e Footer (Adicionado no layout.tsx acima) */
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Altura mínima da tela inteira */
+}
+
+/* O conteúdo principal cresce para ocupar o espaço vazio */
+.layout-content {
+  flex: 1;
+}

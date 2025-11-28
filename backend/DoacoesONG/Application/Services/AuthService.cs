@@ -29,13 +29,18 @@ namespace Application.Services
             
             string cleanedDocumento = Regex.Replace(userDto.Documento ?? "", @"[^\d]", ""); 
 
-            if (userDto.TipoPessoa == TipoPessoa.Fisica && cleanedDocumento.Length != 11)
+            if (!string.IsNullOrEmpty(userDto.Documento))
             {
-                 throw new System.Exception("CPF inválido. Deve conter 11 dígitos numéricos.");
-            }
-            else if (userDto.TipoPessoa == TipoPessoa.Juridica && cleanedDocumento.Length != 14)
-            {
-                 throw new System.Exception("CNPJ inválido. Deve conter 14 dígitos numéricos.");
+                cleanedDocumento = Regex.Replace(userDto.Documento, @"[^\d]", ""); 
+
+                if (userDto.TipoPessoa == TipoPessoa.Fisica && cleanedDocumento.Length != 11)
+                {
+                    throw new System.Exception("CPF inválido. Deve conter 11 dígitos numéricos.");
+                }
+                else if (userDto.TipoPessoa == TipoPessoa.Juridica && cleanedDocumento.Length != 14)
+                {
+                    throw new System.Exception("CNPJ inválido. Deve conter 14 dígitos numéricos.");
+                }
             }
 
             var newUser = new User
