@@ -44,7 +44,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "https://doacao-maria-claro.vercel.app", "https://main.d2y2snun4xtyx8.amplifyapp.com","https://main.d2i6hca6f55f45.amplifyapp.com","https://main.d2ujxkja8fb6eg.amplifyapp.com", "https://main.d3sj88kbrkv11r.amplifyapp.com") // Permite apenas o seu frontend
+        policy.WithOrigins("http://localhost:3000", "https://doacao-maria-claro.vercel.app", "https://main.d2y2snun4xtyx8.amplifyapp.com","https://main.d2i6hca6f55f45.amplifyapp.com","https://main.d2ujxkja8fb6eg.amplifyapp.com", "https://main.d3sj88kbrkv11r.amplifyapp.com", "https://main.d3nrtz3dbpf89k.amplifyapp.com") // Permite apenas o seu frontend
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
